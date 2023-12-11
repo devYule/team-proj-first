@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team6.project.todo.TodoMapper">
+
+
+    <insert id="insTodo" useGeneratedKeys="true" keyProperty="itodo">
+        insert into t_todo
+        set
+        iuser = #{iuser},
+        todo_content = #{todoContent},
+        start_date = #{startDate},
+        end_date = #{endDate}
+        <if test="startTime != null">
+            ,
+            start_time = #{startTime}
+        </if>
+        <if test="endTime != null">
+            ,
+            end_time = #{endTime}
+        </if>
+    </insert>
+    <insert id="insRepeat">
+        insert into t_todo_repeat
+        set itodo = #{itodo}
+        <if test="repeatEndDate != null">
+            ,
+            repeat_end_date = #{repeatEndDate}
+        </if>
+        ,
+        repeat_type = #{repeatType},
+        repeat_num = #{repeatNum}
+
+    </insert>
+
+</mapper>
