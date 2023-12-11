@@ -9,7 +9,7 @@ import java.time.LocalTime;
 
 @Getter
 @Setter
-public class InsTodoDto {
+public class InsertTodoDto {
     private Integer itodo;
     private Integer iuser;
     private String todoContent;
@@ -18,15 +18,14 @@ public class InsTodoDto {
     private LocalTime startTime;
     private LocalTime endTime;
 
-    public InsTodoDto(TodoRegDto dto) {
+    public InsertTodoDto(TodoRegDto dto) {
         this.iuser = dto.getIuser();
         this.todoContent = dto.getTodoContent();
         this.startDate = dto.getStartDate();
         this.endDate = dto.getEndDate();
-        if(dto.getStartDate() != null) {
-            this.startTime = dto.getStartTime();
-        }
-
+        this.startTime = dto.getStartTime();
         this.endTime = dto.getEndTime();
     }
+
+
 }

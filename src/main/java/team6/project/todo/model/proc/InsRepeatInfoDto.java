@@ -2,6 +2,7 @@ package team6.project.todo.model.proc;
 
 import lombok.Getter;
 import lombok.Setter;
+import team6.project.todo.model.PatchTodoDto;
 import team6.project.todo.model.TodoRegDto;
 
 import java.time.LocalDate;
@@ -16,6 +17,12 @@ public class InsRepeatInfoDto {
 
     public InsRepeatInfoDto(TodoRegDto dto, Integer itodo) {
         this.itodo = itodo;
+        this.repeatEndDate = dto.getRepeatEndDate();
+        this.repeatType = dto.getRepeatType();
+        this.repeatNum = dto.getRepeatNum();
+    }
+    public InsRepeatInfoDto(PatchTodoDto dto){
+        this.itodo = dto.getItodo();
         this.repeatEndDate = dto.getRepeatEndDate();
         this.repeatType = dto.getRepeatType();
         this.repeatNum = dto.getRepeatNum();
