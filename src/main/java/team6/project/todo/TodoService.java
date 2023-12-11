@@ -4,10 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import team6.project.common.Const;
 import team6.project.common.ResVo;
 import team6.project.common.exception.BadDateInformationException;
 import team6.project.common.exception.BadInformationException;
@@ -24,6 +20,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static team6.project.common.Const.*;
 
 @Slf4j
 @Service
@@ -67,16 +65,16 @@ public class TodoService {
         allTodos.forEach(todo -> {
             try {
                 // 주반복
-                if (todo.getRepeatType().equalsIgnoreCase(Const.WEEK)) {
+                if (todo.getRepeatType().equalsIgnoreCase(WEEK)) {
                     // 1: 월 ~ 7: 일
-                    LocalDate refDate = dto.getSelectedDate().withDayOfMonth(1);
+                    LocalDate refDate = dto.getSelectedDate().withDayOfMonth(FIRST_DAY);
                     while (refDate.getDayOfWeek().getValue() != todo.getRepeatNum()) {
                         // 첫번째 요일
-                        refDate = refDate.plusDays(1);
+                        refDate = refDate.plusDays(FIRST_DAY);
                     }
                     while (true) {
                         // 1주씩 추가
-                        refDate = refDate.plusWeeks(1);
+                        refDate = refDate.plusWeeks(FIRST_DAY);
                         log.debug("refDate = {}", refDate);
                         // 요일 체크 날짜가 해당 월의 마지막날과 같거나, 마지막날 보다 크면 break;
                         if (refDate.isEqual(dto.getSelectedDate().withDayOfMonth(dto.getSelectedDate().lengthOfMonth()))
@@ -90,7 +88,7 @@ public class TodoService {
                         }
                     }
                 }
-                if (todo.getRepeatType().equalsIgnoreCase(Const.MONTH)) {
+                if (todo.getRepeatType().equalsIgnoreCase(MONTH)) {
                     if (todo.getRepeatNum() == dto.getSelectedDate().getDayOfMonth()) {
                         result.add(new TodoSelectVo(todo.getItodo(), todo.getTodoContent()));
                     }
