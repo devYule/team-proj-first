@@ -28,9 +28,7 @@ public class TodoController {
         log.debug("postTodo's dto = {}", dto);
 
         return service.regTodo(dto);
-//        return null;
     }
-    // TODO - @GetMapping - 구현
 
     @GetMapping("/{iuser}")
     public List<TodoSelectVo> getTodo(@PathVariable Integer iuser,
@@ -43,7 +41,6 @@ public class TodoController {
 
     }
 
-    // TODO - 구현
     @PatchMapping
     public ResVo patchTodo(@RequestBody PatchTodoDto dto) {
         log.debug("patchTodo's dto = {}", dto);

@@ -31,7 +31,9 @@ public class TodoService {
 
     @Transactional
     public ResVo regTodo(TodoRegDto dto) {
-        // TODO 아직 예외처리 X
+        /* TODO: 12/11/23
+            아직 예외처리 X
+            --by Hyunmin */
 
         // startDate & endDate 그리고 startTime & endTime 오류 검증
         checkIsBefore(dto.getEndDate(), dto.getStartDate(), dto.getEndTime(), dto.getStartTime());
@@ -111,7 +113,9 @@ public class TodoService {
         return result;
     }
 
-    // TODO @Transactional 여부 고민
+    /* TODO: 12/11/23
+        @Transactional 여부 고민
+        --by Hyunmin */
     public ResVo patchTodo(PatchTodoDto dto) {
         // startDate & endDate 오류 검증
         if (dto.getStartDate() != null && dto.getEndDate() != null) {
@@ -160,7 +164,9 @@ public class TodoService {
     }
 
     public ResVo deleteTodo(Integer iuser, Integer itodo) {
-        // TODO iuser 혹은 itodo 가 DB 에 없는 값일때의 예외 처리
+        /* TODO: 12/11/23
+            iuser 혹은 itodo 가 DB 에 없는 값일때의 예외 처리
+            --by Hyunmin */
         mapper.deleteTodoRepeat(iuser, itodo);
         return new ResVo(mapper.deleteTodo(iuser, itodo));
     }
