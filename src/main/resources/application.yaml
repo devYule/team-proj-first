@@ -11,3 +11,5 @@ mybatis:
 springdoc:
   swagger-ui:
     path: /swagger.html
+server:
+  port: 8082

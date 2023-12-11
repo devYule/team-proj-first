@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import team6.project.common.ResVo;
-import team6.project.emotion.model.EmotionInsDto;
-import team6.project.emotion.model.EmotionSelDto;
-import team6.project.emotion.model.EmotionSelVo;
+import team6.project.emotion.model.*;
 
 import java.util.List;
 
@@ -21,18 +19,19 @@ public class EmotionController {
         log.info("EmotionInsDto : {}",dto);
         return emotionService.postEmo(dto);
     }
-    @GetMapping
+    @GetMapping("/iuser")
     public List<EmotionSelVo> getEmo(EmotionSelDto dto){
         log.info("EmotionSelDto : {}",dto);
         return emotionService.getEmo(dto);
     }
-
     @DeleteMapping
-    public ResVo deleteEmo(){
-        return null;
+    public ResVo deleteEmo(EmotionDelDto dto){
+        log.info("EmotionDelDto : {}",dto);
+        return emotionService.delEmo(dto);
     }
-    @DeleteMapping
-    public ResVo deleteTag(){
-        return null;
+    @GetMapping
+    public EmotionSelAsChartVo getEmoChart(int iuser){
+        log.info("iuser : {}",iuser);
+        return emotionService.getEmoChart(iuser);
     }
 }

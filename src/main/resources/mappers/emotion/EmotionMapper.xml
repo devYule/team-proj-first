@@ -7,7 +7,6 @@
             iuser=#{iuser},iemotion_grade=#{emoGrade},iemotion_tag=#{emoTag}
         </set>
     </insert>
-
     <select id="getEmotions">
         SELECT DATE_FORMAT(A.created_at, '%Y/%m/%d') AS emotionCreatedAt,
         A.iemotion_grade AS emotionGrade,A.iemotion_tag AS emotionTag,
@@ -21,7 +20,17 @@
         WHERE A.created_at >= '#{year}-#{month}-01'
         AND A.created_at &lt; DATE_ADD('#{year}-#{month}-01',INTERVAL 1 MONTH )
         AND A.iuser=#{iuser}
-        ORDER BY A.created_at ASC;
+        ORDER BY A.created_at ASC
     </select>
-    <delete id=""
+    <delete id="delEmo">
+        DELETE FROM t_emotion
+        WHERE iuser=#{iuser} AND iemotion=#{iemotion}
+    </delete>
+    <select id="getEmoChart">
+        SELECT iemotion_grade AS emotionGrade,DATE_FORMAT(created_at,'%w') AS dayOfTheWeek
+        FROM t_emotion
+        WHERE created_at >= '#{startWeek} 00:00:00' AND created_at &lt;='#{today} 23:59:59'
+        AND iuser=#{iuser}
+        ORDER BY created_at ASC
+    </select>
 </mapper>
