@@ -1,4 +1,4 @@
 package team6.project.user;
 
-public class TestClass {
+public class UserController {
 }
