@@ -15,16 +15,16 @@ public class InsRepeatInfoDto {
     private String repeatType; // not null
     private Integer repeatNum; // not null
 
-    public InsRepeatInfoDto(TodoRegDto dto, Integer itodo) {
+    public InsRepeatInfoDto(TodoRegDto dto, Integer itodo, Integer repeatNum) {
         this.itodo = itodo;
         this.repeatEndDate = dto.getRepeatEndDate();
         this.repeatType = dto.getRepeatType();
-        this.repeatNum = dto.getRepeatNum();
+        this.repeatNum = repeatNum;
     }
-    public InsRepeatInfoDto(PatchTodoDto dto){
+    public InsRepeatInfoDto(PatchTodoDto dto, Integer repeatNum){
         this.itodo = dto.getItodo();
         this.repeatEndDate = dto.getRepeatEndDate();
         this.repeatType = dto.getRepeatType();
-        this.repeatNum = dto.getRepeatNum();
+        this.repeatNum = repeatNum;
     }
 }

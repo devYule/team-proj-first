@@ -7,14 +7,12 @@ import org.springframework.transaction.annotation.Transactional;
 import team6.project.common.ResVo;
 import team6.project.common.exception.BadDateInformationException;
 import team6.project.common.exception.BadInformationException;
+import team6.project.common.utils.WeekFormatResolver;
 import team6.project.todo.model.PatchTodoDto;
 import team6.project.todo.model.TodoRegDto;
 import team6.project.todo.model.TodoSelectDto;
 import team6.project.todo.model.TodoSelectVo;
-import team6.project.todo.model.proc.InsRepeatInfoDto;
-import team6.project.todo.model.proc.InsertTodoDto;
-import team6.project.todo.model.proc.TodoSelectTmpResult;
-import team6.project.todo.model.proc.UpdateTodoDto;
+import team6.project.todo.model.proc.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -29,6 +27,8 @@ import static team6.project.common.Const.*;
 public class TodoService {
     private final TodoMapper mapper;
 
+    private final WeekFormatResolver weekFormatResolver;
+
     @Transactional
     public ResVo regTodo(TodoRegDto dto) {
         // TODO 아직 예외처리 X
@@ -42,7 +42,11 @@ public class TodoService {
             log.debug("todo service in try");
             InsertTodoDto insertTodoDto = new InsertTodoDto(dto);
             mapper.insTodo(insertTodoDto);
-            InsRepeatInfoDto insRepeatInfoDto = new InsRepeatInfoDto(dto, insertTodoDto.getItodo());
+            // resolve week format from JS to JAVA
+            InsRepeatInfoDto insRepeatInfoDto = new InsRepeatInfoDto(dto, insertTodoDto.getItodo(),
+                    dto.getRepeatType().equalsIgnoreCase(WEEK) ?
+                            weekFormatResolver.toJavaFrom(dto.getRepeatNum()) :
+                            dto.getRepeatNum());
             mapper.insRepeat(insRepeatInfoDto);
             return new ResVo(insRepeatInfoDto.getItodo());
 
@@ -66,12 +70,14 @@ public class TodoService {
             try {
                 // 주반복
                 if (todo.getRepeatType().equalsIgnoreCase(WEEK)) {
-                    // 1: 월 ~ 7: 일
+                    // 1: 월 ~ 7: 일 ('JAVA format') 로 DB 에 저장되어 있는것 사용.
+                    // 현재 update 는 front 로 요일정보를 넘기지 않기 때문에 WeekFormatResolver 객체 사용 하지 않음.
                     LocalDate refDate = dto.getSelectedDate().withDayOfMonth(FIRST_DAY);
                     while (refDate.getDayOfWeek().getValue() != todo.getRepeatNum()) {
                         // 첫번째 요일
                         refDate = refDate.plusDays(FIRST_DAY);
                     }
+                    // 첫번째 요일 (자바기준 week) 획득
                     while (true) {
                         // 1주씩 추가
                         refDate = refDate.plusWeeks(FIRST_DAY);
@@ -94,8 +100,11 @@ public class TodoService {
                     }
                 }
             } catch (NullPointerException e) {
-                // 반복이 없는경우 로직 (endDate 는 무조건 해당 날짜보다 같거나 이후이고,
-                // startDate 는 무조건 해당날짜와 같거나 이전임이 보장된 상황.)
+                /*
+                    반복이 없는경우 로직
+                    (endDate 는 무조건 해당 날짜보다 같거나 이후이고, startDate 는 무조건 해당날짜와 같거나 이전임이 보장된 상황.)
+                 */
+
                 result.add(new TodoSelectVo(todo.getItodo(), todo.getTodoContent()));
             }
         });
@@ -114,22 +123,32 @@ public class TodoService {
         }
 
         if (mapper.isRepeat(dto.getIuser(), dto.getItodo()) == 0) {
-            // 기존 일정이 Repeat 이 아닌 일정일 경우
+            // 기존 일정이 repeat 이 아닌 일정일 경우
             try {
                 checkRepeatTypeAndRepeatNum(dto.getRepeatType(), dto.getRepeatNum());
                 // repeat insert
-                mapper.insRepeat(new InsRepeatInfoDto(dto));
+                // resolve week format from JS to JAVA
+                mapper.insRepeat(new InsRepeatInfoDto(dto,
+                        dto.getRepeatType().equalsIgnoreCase(WEEK) ?
+                                weekFormatResolver.toJavaFrom(dto.getRepeatNum()) :
+                                dto.getRepeatNum()));
                 // t_todo update (at last)
             } catch (NullPointerException e) {
                 checkRepeatNumInCatch(dto.getRepeatNum());
                 // t_todo update (at last)
             }
         } else {
-            // 기존 일정이 Repeat 인 일정일 경우
+            // 기존 일정이 repeat 인 일정일 경우
             try {
                 checkRepeatTypeAndRepeatNum(dto.getRepeatType(), dto.getRepeatNum());
-                // repeat, t_todo 모두 update
-                mapper.patchTodoAndRepeat(dto);
+                // repeat update
+
+                // resolve week format from JS to JAVA
+                mapper.patchRepeat(new UpdateRepeatDto(dto.getItodo(), dto.getRepeatEndDate(), dto.getRepeatType(),
+                        dto.getRepeatType().equalsIgnoreCase(WEEK) ?
+                                weekFormatResolver.toJavaFrom(dto.getRepeatNum()) :
+                                dto.getRepeatNum()));
+                // t_todo update (at last)
             } catch (NullPointerException e) {
                 checkRepeatNumInCatch(dto.getRepeatNum());
                 // repeat delete
@@ -146,19 +165,23 @@ public class TodoService {
         return new ResVo(mapper.deleteTodo(iuser, itodo));
     }
 
+    /*
+     * ------- Extracted Methods -------
+     */
+
     private void checkRepeatTypeAndRepeatNum(String repeatType, Integer repeatNum) {
-        if (!repeatType.equalsIgnoreCase("week") &&
-                !repeatType.equalsIgnoreCase("month")) {
-            throw new BadDateInformationException("badDateInfo");
+        if (!repeatType.equalsIgnoreCase(WEEK) &&
+                !repeatType.equalsIgnoreCase(MONTH)) {
+            throw new BadDateInformationException(BAD_DATE_INFO);
         }
         if (repeatNum == null) {
-            throw new BadInformationException("badRequest");
+            throw new BadInformationException(BAD_REQUEST);
         }
     }
 
     private void checkRepeatNumInCatch(Integer repeatNum) {
         if (repeatNum != null) {
-            throw new BadInformationException("badRequest");
+            throw new BadInformationException(BAD_REQUEST);
         }
     }
 
@@ -170,14 +193,16 @@ public class TodoService {
 
     private void checkIsBefore(LocalDate endDate, LocalDate startDate) {
         if (endDate.isBefore(startDate)) {
-            throw new BadDateInformationException("bad date Info");
+            throw new BadDateInformationException(BAD_DATE_INFO);
         }
     }
 
     private void checkIsBefore(LocalTime endTime,
                                LocalTime startTime) {
         if (endTime.isBefore(startTime)) {
-            throw new BadDateInformationException("bad time Info");
+            throw new BadDateInformationException(BAD_TIME_INFO);
         }
     }
+
+
 }
