@@ -12,13 +12,13 @@
         A.iemotion_grade AS emotionGrade,A.iemotion_tag AS emotionTag,
         case when EXISTS(SELECT 1
                     FROM t_todo B
-                    WHERE B.start_date &lt;=emotionCreatedAt
+                    WHERE B.start_date <![CDATA[<=]]> emotionCreatedAt
                     AND B.end_date>=emotionCreatedAt
                     AND B.iuser=#{iuser})
         THEN 1 ELSE 0 END AS hasTodo
         FROM t_emotion A
-        WHERE A.created_at >= '#{year}-#{month}-01'
-        AND A.created_at &lt; DATE_ADD('#{year}-#{month}-01',INTERVAL 1 MONTH )
+        WHERE A.created_at >= concat(#{year},'-',#{month},'-01')
+        AND A.created_at <![CDATA[<]]> DATE_ADD(concat(#{year},'-',#{month},'-01'),INTERVAL 1 MONTH )
         AND A.iuser=#{iuser}
         ORDER BY A.created_at ASC
     </select>

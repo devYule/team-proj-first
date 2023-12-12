@@ -16,5 +16,5 @@ springdoc:
 logging:
   level:
     "[team6.project.todo.TodoService]": DEBUG
-
+    "[team6.project.emotion.EmotionMapper]": DEBUG
 
