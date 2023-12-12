@@ -7,11 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import team6.project.common.ResVo;
 import team6.project.common.exception.BadDateInformationException;
 import team6.project.common.exception.BadInformationException;
+import team6.project.common.exception.NoSuchDataException;
 import team6.project.common.utils.WeekFormatResolver;
-import team6.project.todo.model.PatchTodoDto;
-import team6.project.todo.model.TodoRegDto;
-import team6.project.todo.model.TodoSelectDto;
-import team6.project.todo.model.TodoSelectVo;
+import team6.project.todo.model.*;
 import team6.project.todo.model.proc.*;
 
 import java.time.LocalDate;
@@ -113,9 +111,7 @@ public class TodoService {
         return result;
     }
 
-    /* TODO: 12/11/23
-        @Transactional 여부 고민
-        --by Hyunmin */
+    @Transactional
     public ResVo patchTodo(PatchTodoDto dto) {
         // startDate & endDate 오류 검증
         if (dto.getStartDate() != null && dto.getEndDate() != null) {
@@ -163,12 +159,13 @@ public class TodoService {
         return new ResVo(mapper.patchTodo(new UpdateTodoDto(dto)));
     }
 
-    public ResVo deleteTodo(Integer iuser, Integer itodo) {
-        /* TODO: 12/11/23
-            iuser 혹은 itodo 가 DB 에 없는 값일때의 예외 처리
-            --by Hyunmin */
-        mapper.deleteTodoRepeat(iuser, itodo);
-        return new ResVo(mapper.deleteTodo(iuser, itodo));
+    public ResVo deleteTodo(TodoDeleteDto dto) {
+        mapper.deleteTodoRepeat(dto.getIuser(), dto.getItodo());
+        int result = mapper.deleteTodo(dto);
+        if (result == 0) {
+            throw new NoSuchDataException(NO_SUCH_DATA_EX_MESSAGE);
+        }
+        return new ResVo(result);
     }
 
     /*

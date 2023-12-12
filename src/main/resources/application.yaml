@@ -1,9 +1,9 @@
-spring:
-  datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/project
-    username: root
-    password: green502
+#spring:
+#  datasource:
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://localhost:3306/project
+#    username: root
+#    password: green502
 
 mybatis:
   mapper-locations: mappers/**/*.xml
@@ -17,4 +17,17 @@ logging:
   level:
     "[team6.project.todo.TodoService]": DEBUG
     "[team6.project.emotion.EmotionMapper]": DEBUG
+    "[team6/project/sub/emotionhyunmin/HyunEmotionService]": DEBUG
 
+
+
+
+
+
+#
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/project_temp
+    username: root
+    password: green502

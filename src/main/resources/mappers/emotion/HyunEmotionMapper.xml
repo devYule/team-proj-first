@@ -29,7 +29,7 @@
     <select id="getEmoChart">
         SELECT iemotion_grade AS emotionGrade,DATE_FORMAT(created_at,'%w') AS dayOfTheWeek
         FROM t_emotion
-        WHERE created_at >= '#{startWeek} 00:00:00' AND created_at &lt;='#{today} 23:59:59'
+        WHERE created_at >= '${startWeek} 00:00:00' AND created_at &lt;='${today} 23:59:59'
         AND iuser=#{iuser}
         ORDER BY created_at ASC
     </select>

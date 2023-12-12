@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team6.project.sub.emotionhyunmin.HyunEmotionMapper">
+
+    <select id="getHasTodoInfo">
+        SELECT start_date AS startDate, end_date AS endDate, repeat_end_date AS repeatEndDate, repeat_type AS repeatType, repeat_num AS repeatNum
+        from t_todo T LEFT JOIN t_todo_repeat R ON T.itodo = R.itodo
+        JOIN t_user U ON T.iuser = U.iuser
+        WHERE T.start_date <![CDATA[<=]]> #{lastDayOfMonth} AND T.end_date >= #{firstDayOfMonth}
+        OR R.repeat_end_date >= #{firstDayOfMonth}
+    </select>
+
+
+    <select id="getEmotionInfo">
+        SELECT created_at as createdAt, iemotion_grade as emotionGrade, iemotion_tag as emotionTag FROM t_emotion
+        WHERE created_at LIKE #{currentMonthForLike} AND iuser = #{iuser}
+    </select>
+
+</mapper>

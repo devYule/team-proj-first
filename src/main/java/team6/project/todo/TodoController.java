@@ -5,12 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team6.project.common.ResVo;
-import team6.project.todo.model.PatchTodoDto;
-import team6.project.todo.model.TodoRegDto;
-import team6.project.todo.model.TodoSelectDto;
-import team6.project.todo.model.TodoSelectVo;
+import team6.project.todo.model.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -31,25 +27,26 @@ public class TodoController {
     }
 
     @GetMapping("/{iuser}")
-    public List<TodoSelectVo> getTodo(@PathVariable Integer iuser,
-                                      @RequestParam("y") Integer year,
-                                      @RequestParam("m") Integer month,
-                                      @RequestParam("d") Integer day){
+    public List<TodoSelectVo> getTodo(@Validated TodoSelectDto dto) {
+        log.info("dto = {}", dto);
 
-        TodoSelectDto dto = new TodoSelectDto(iuser, LocalDate.of(year, month, day));
-        return service.getTodo(dto);
+        dto.setDate();
+
+        return null;
 
     }
 
     @PatchMapping
     public ResVo patchTodo(@RequestBody PatchTodoDto dto) {
-        log.debug("patchTodo's dto = {}", dto);
+        log.info("patchTodo's dto = {}", dto);
         return service.patchTodo(dto);
     }
 
     @DeleteMapping("/{iuser}/{itodo}")
-    public ResVo deleteTodo(@PathVariable Integer iuser, @PathVariable Integer itodo){
-       return service.deleteTodo(iuser, itodo);
+    public ResVo deleteTodo(TodoDeleteDto dto) {
+        log.info("dto = {}", dto);
+        return service.deleteTodo(dto);
+
     }
 
 }

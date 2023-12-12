@@ -12,7 +12,7 @@ import java.time.LocalTime;
 
 @Data
 public class TodoRegDto {
-    @NotNull(message = "필수값 입니다.")
+
     private Integer iuser;
 
     @JsonProperty("todo_content")

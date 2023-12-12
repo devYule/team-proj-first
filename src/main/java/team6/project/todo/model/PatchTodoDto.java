@@ -14,9 +14,9 @@ import java.time.LocalTime;
 @Builder
 public class PatchTodoDto {
 
-    @NotNull
+
     private Integer iuser;
-    @NotNull
+
     private Integer itodo;
     @JsonProperty("todo_content")
     private String todoContent;

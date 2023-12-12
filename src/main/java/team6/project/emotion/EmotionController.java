@@ -32,8 +32,8 @@ public class EmotionController {
         log.info("EmotionDelDto : {}",dto);
         return emotionService.delEmo(dto);
     }
-    @GetMapping
-    public EmotionSelAsChartVo getEmoChart(int iuser){
+    @GetMapping("/chart/{iuser}")
+    public EmotionSelAsChartVo getEmoChart(@PathVariable int iuser){
         log.info("iuser : {}",iuser);
         return emotionService.getEmoChart(iuser);
     }
