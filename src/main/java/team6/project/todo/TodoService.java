@@ -8,6 +8,7 @@ import team6.project.common.ResVo;
 import team6.project.common.exception.BadDateInformationException;
 import team6.project.common.exception.BadInformationException;
 import team6.project.common.exception.NoSuchDataException;
+import team6.project.common.exception.TodoIsFullException;
 import team6.project.common.utils.WeekFormatResolver;
 import team6.project.todo.model.*;
 import team6.project.todo.model.proc.*;
@@ -29,9 +30,9 @@ public class TodoService {
 
     @Transactional
     public ResVo regTodo(TodoRegDto dto) {
-        /* TODO: 12/11/23
-            아직 예외처리 X
-            --by Hyunmin */
+        if (mapper.getTodoListCount(dto.getIuser()) > 9) {
+            throw new TodoIsFullException(TODO_IS_FULL_EX_MESSAGE);
+        }
 
         // startDate & endDate 그리고 startTime & endTime 오류 검증
         checkIsBefore(dto.getEndDate(), dto.getStartDate(), dto.getEndTime(), dto.getStartTime());
@@ -108,7 +109,9 @@ public class TodoService {
                 result.add(new TodoSelectVo(todo.getItodo(), todo.getTodoContent()));
             }
         });
-        return result;
+
+        // 10개로 줄이기
+        return result.subList(TODO_SELECT_FROM_NUM, result.size() > 11 ? TODO_SELECT_TO_NUM : result.size());
     }
 
     @Transactional

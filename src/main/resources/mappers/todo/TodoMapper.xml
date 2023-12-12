@@ -40,6 +40,13 @@
         WHERE T.itodo = #{itodo} AND T.iuser = #{iuser}
     </select>
 
+    <select id="getTodoListCount">
+        SELECT COUNT(T.itodo)
+        FROM t_todo T
+        LEFT JOIN t_todo_repeat R ON T.itodo = R.itodo
+        WHERE T.iuser = #{iuser}
+    </select>
+
     <select id="selectTodo">
         select T.itodo, T.todo_content as todoContent, start_date as startDate, end_date as endDate, start_time as startTime,
         end_time as endTime, repeat_end_date as repeatEndDate, repeat_type as repeatType, repeat_num as repeatNum

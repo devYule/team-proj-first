@@ -32,7 +32,7 @@ public class TodoController {
 
         dto.setDate();
 
-        return null;
+        return service.getTodo(dto);
 
     }
 

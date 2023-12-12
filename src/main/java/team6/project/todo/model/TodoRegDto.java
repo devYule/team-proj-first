@@ -17,15 +17,15 @@ public class TodoRegDto {
 
     @JsonProperty("todo_content")
     @NotBlank
-    @Length(max=100)
+    @Length(max=100, message = "투두 내용은 100자 이내")
     private String todoContent;
 
     @JsonProperty("start_date")
-    @NotNull
+    @NotNull(message = "일정 시작일은 null 일 수 없음")
     private LocalDate startDate;
 
     @JsonProperty("end_date")
-    @NotNull
+    @NotNull(message = "일정 마감일은 null 일 수 없음")
     private LocalDate endDate;
 
     @JsonProperty("start_time")

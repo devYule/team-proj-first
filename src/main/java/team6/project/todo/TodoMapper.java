@@ -19,6 +19,7 @@ public interface TodoMapper {
 
     Integer isRepeat(@Param("iuser") Integer iuser, @Param("itodo") Integer itodo);
 
+    int getTodoListCount(Integer iuser);
     List<TodoSelectTmpResult> selectTodo(TodoSelectDto dto);
 
 //    int patchTodoAndRepeat(PatchTodoDto patchTodoDto);
