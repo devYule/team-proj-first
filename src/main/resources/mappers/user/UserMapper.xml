@@ -7,10 +7,16 @@
     insert into t_user
     set user_nick_name=#{userNickName}
     ,user_gender=#{userGender}
-
     ,user_age=#{userAge}
 
 </insert>
+
+    <select id="checkUser">
+        select user_nick_name
+        from t_user
+        where user_nick_name=#{userNickName}
+    </select>
+
     <select id="selUser">
         select user_nick_name as userNickName
         ,user_gender as userGender , user_age as userAge
