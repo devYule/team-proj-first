@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team6.project.emotion.EmotionMapper">
+    <insert id="postEmo">
+        INSERT INTO t_emotion
+        <set>
+            iuser=#{iuser},iemotion_grade=#{emoGrade},iemotion_tag=#{emoTag}
+        </set>
+    </insert>
+    <select id="getEmotions">
+        SELECT DATE_FORMAT(A.created_at, '%Y/%m/%d') AS emotionCreatedAt,
+        A.iemotion_grade AS emotionGrade,A.iemotion_tag AS emotionTag,
+        case when EXISTS(SELECT 1
+                    FROM t_todo B
+                    WHERE B.start_date <![CDATA[<=]]> emotionCreatedAt
+                    AND B.end_date>=emotionCreatedAt
+                    AND B.iuser=#{iuser})
+        THEN 1 ELSE 0 END AS hasTodo
+        FROM t_emotion A
+        WHERE A.created_at >= concat(#{year},'-',#{month},'-01')
+        AND A.created_at <![CDATA[<]]> DATE_ADD(concat(#{year},'-',#{month},'-01'),INTERVAL 1 MONTH )
+        AND A.iuser=#{iuser}
+        ORDER BY A.created_at ASC
+    </select>
+    <delete id="delEmo">
+        DELETE FROM t_emotion
+        WHERE iuser=#{iuser} AND iemotion=#{iemotion}
+    </delete>
+    <select id="getEmoChart">
+        SELECT iemotion_grade AS emotionGrade,DATE_FORMAT(created_at,'%w') AS dayOfTheWeek
+        FROM t_emotion
+        WHERE created_at >= '#{startWeek} 00:00:00' AND created_at &lt;='#{today} 23:59:59'
+        AND iuser=#{iuser}
+        ORDER BY created_at ASC
+    </select>
+</mapper>
