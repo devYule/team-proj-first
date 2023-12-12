@@ -30,6 +30,7 @@ public class TodoService {
 
     @Transactional
     public ResVo regTodo(TodoRegDto dto) {
+        // 투두 는 10개까지만 저장.
         if (mapper.getTodoListCount(dto.getIuser()) > 9) {
             throw new TodoIsFullException(TODO_IS_FULL_EX_MESSAGE);
         }
@@ -43,9 +44,10 @@ public class TodoService {
             log.debug("todo service in try");
             InsertTodoDto insertTodoDto = new InsertTodoDto(dto);
             mapper.insTodo(insertTodoDto);
-            // resolve week format from JS to JAVA
+
             InsRepeatInfoDto insRepeatInfoDto = new InsRepeatInfoDto(dto, insertTodoDto.getItodo(),
                     dto.getRepeatType().equalsIgnoreCase(WEEK) ?
+                            // resolve week format from JS to JAVA
                             weekFormatResolver.toJavaFrom(dto.getRepeatNum()) :
                             dto.getRepeatNum());
             mapper.insRepeat(insRepeatInfoDto);
@@ -62,6 +64,10 @@ public class TodoService {
     }
 
     public List<TodoSelectVo> getTodo(TodoSelectDto dto) {
+        /* TODO: 12/12/23
+            테스트 정상인지 체크하기
+            (forEach() 내부 while 문에 break; 대신 return 으로 변경 했음.)
+            --by Hyunmin */
         // 정제 전
         List<TodoSelectTmpResult> allTodos = mapper.selectTodo(dto);
 
@@ -72,26 +78,27 @@ public class TodoService {
                 // 주반복
                 if (todo.getRepeatType().equalsIgnoreCase(WEEK)) {
                     // 1: 월 ~ 7: 일 ('JAVA format') 로 DB 에 저장되어 있는것 사용.
-                    // 현재 update 는 front 로 요일정보를 넘기지 않기 때문에 WeekFormatResolver 객체 사용 하지 않음.
-                    LocalDate refDate = dto.getSelectedDate().withDayOfMonth(FIRST_DAY);
-                    while (refDate.getDayOfWeek().getValue() != todo.getRepeatNum()) {
+                    // 현재 update 는 front 로 요일정보를 넘기지 않기 때문에 WeekFormatResolver 사용 하지 않음.
+//                    LocalDate weekWalk = dto.getSelectedDate().withDayOfMonth(FIRST_DAY);
+                    LocalDate weekWalk = LocalDate.of(dto.getSelectedDate().getYear(), dto.getSelectedDate().getMonth(), FIRST_DAY);
+                    while (weekWalk.getDayOfWeek().getValue() != todo.getRepeatNum()) {
                         // 첫번째 요일
-                        refDate = refDate.plusDays(FIRST_DAY);
+                        weekWalk = weekWalk.plusDays(1);
                     }
-                    // 첫번째 요일 (자바기준 week) 획득
+                    // 첫번째 요일 (자바기준 week) 획득 - weekWalk
                     while (true) {
                         // 1주씩 추가
-                        refDate = refDate.plusWeeks(FIRST_DAY);
-                        log.debug("refDate = {}", refDate);
+                        weekWalk = weekWalk.plusWeeks(1);
+                        log.debug("weekWalk = {}", weekWalk);
                         // 요일 체크 날짜가 해당 월의 마지막날과 같거나, 마지막날 보다 크면 break;
-                        if (refDate.isEqual(dto.getSelectedDate().withDayOfMonth(dto.getSelectedDate().lengthOfMonth()))
-                                || refDate.isAfter(dto.getSelectedDate())) {
-                            break;
+                        if (weekWalk.isEqual(dto.getSelectedDate().withDayOfMonth(dto.getSelectedDate().lengthOfMonth()))
+                                || weekWalk.isAfter(dto.getSelectedDate())) {
+                            return;
                         }
                         // 요일 체크 날짜가 요청 온 날짜와 같다면 result 에 추가, break;
-                        if (refDate.isEqual(dto.getSelectedDate())) {
+                        if (weekWalk.isEqual(dto.getSelectedDate())) {
                             result.add(new TodoSelectVo(todo.getItodo(), todo.getTodoContent()));
-                            break;
+                            return;
                         }
                     }
                 }
@@ -130,9 +137,10 @@ public class TodoService {
             try {
                 checkRepeatTypeAndRepeatNum(dto.getRepeatType(), dto.getRepeatNum());
                 // repeat insert
-                // resolve week format from JS to JAVA
+
                 mapper.insRepeat(new InsRepeatInfoDto(dto,
                         dto.getRepeatType().equalsIgnoreCase(WEEK) ?
+                                // resolve week format from JS to JAVA
                                 weekFormatResolver.toJavaFrom(dto.getRepeatNum()) :
                                 dto.getRepeatNum()));
                 // t_todo update (at last)
@@ -153,19 +161,24 @@ public class TodoService {
                                 dto.getRepeatNum()));
                 // t_todo update (at last)
             } catch (NullPointerException e) {
+                // 수정사항에 repeat 정보가 없는경우 == 기존 repeat 을 제거하거나 애초에 repeat 일정이 아닌경우
+                // 두가지 경우에 관계 없이 delete query 실행.
                 checkRepeatNumInCatch(dto.getRepeatNum());
                 // repeat delete
                 mapper.deleteTodoRepeat(dto.getIuser(), dto.getItodo());
                 // t_todo update (at last)
             }
         }
+        // t_todo update !  (공통 사항)
         return new ResVo(mapper.patchTodo(new UpdateTodoDto(dto)));
     }
 
     public ResVo deleteTodo(TodoDeleteDto dto) {
+        // repeat 유무 관계 없이 delete query 실행.
         mapper.deleteTodoRepeat(dto.getIuser(), dto.getItodo());
         int result = mapper.deleteTodo(dto);
         if (result == 0) {
+            // 요청받은 iuser, itodo 로 삭제되는 일정이 없을경우 NoSuchDataException 발생.
             throw new NoSuchDataException(NO_SUCH_DATA_EX_MESSAGE);
         }
         return new ResVo(result);
@@ -203,12 +216,9 @@ public class TodoService {
         }
     }
 
-    private void checkIsBefore(LocalTime endTime,
-                               LocalTime startTime) {
+    private void checkIsBefore(LocalTime endTime, LocalTime startTime) {
         if (endTime.isBefore(startTime)) {
             throw new BadDateInformationException(BAD_TIME_INFO);
         }
     }
-
-
 }

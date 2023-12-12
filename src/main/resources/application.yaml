@@ -17,7 +17,7 @@ logging:
   level:
     "[team6.project.todo.TodoService]": DEBUG
     "[team6.project.emotion.EmotionMapper]": DEBUG
-    "[team6/project/sub/emotionhyunmin/HyunEmotionService]": DEBUG
+    "[team6.project.sub.emotionhyunmin.HyunEmotionService]": DEBUG
 
 
 server:
