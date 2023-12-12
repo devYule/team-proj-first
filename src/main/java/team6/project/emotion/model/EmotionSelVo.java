@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 public class EmotionSelVo {
+    private String emotionCreatedAt;
     private int emotionGrade;
     private int emotionTag;
-    private String emotionCreatedAt;
     private int hasTodo;
 }

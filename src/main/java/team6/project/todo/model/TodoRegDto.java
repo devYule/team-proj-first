@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 
 import java.time.LocalDate;
@@ -11,11 +12,12 @@ import java.time.LocalTime;
 
 @Data
 public class TodoRegDto {
-    @NotNull
+    @NotNull(message = "필수값 입니다.")
     private Integer iuser;
 
     @JsonProperty("todo_content")
     @NotBlank
+    @Length(max=100)
     private String todoContent;
 
     @JsonProperty("start_date")

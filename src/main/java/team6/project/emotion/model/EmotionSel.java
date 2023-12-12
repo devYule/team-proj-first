@@ -9,4 +9,5 @@ public class EmotionSel {
     private int emotionGrade;
 
     private int dayOfTheWeek;
+
 }

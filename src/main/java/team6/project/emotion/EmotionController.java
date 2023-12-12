@@ -19,8 +19,11 @@ public class EmotionController {
         log.info("EmotionInsDto : {}",dto);
         return emotionService.postEmo(dto);
     }
-    @GetMapping("/iuser")
-    public List<EmotionSelVo> getEmo(EmotionSelDto dto){
+    @GetMapping("/{iuser}")
+    public List<EmotionSelVo> getEmo(@PathVariable int iuser,
+                                     @RequestParam("y") int year,
+                                     @RequestParam("m") int month){
+        EmotionSelDto dto = new EmotionSelDto(iuser, year, month);
         log.info("EmotionSelDto : {}",dto);
         return emotionService.getEmo(dto);
     }
