@@ -149,8 +149,14 @@ public class TodoService {
 
             --------------------------------------------------------------------------------------------------------
             로직 -> start_date, end_date, start_time, end_time 중 하나라도 null 이 아니면,
-            select 문을 통해 해당 itodo 로 부터 start_date, end_date, start_time, end_time 을 가져와서,
-            LocalDate startDate; LocalDate endDate; LocalTime startTime; LocalTime endTime; 의 4가지 객체를 만들어 둔다.
+            select 문을 통해 해당 itodo 로 부터 start_date, end_date, start_time, end_time, repeat_end_date 를 가져와서,
+            LocalDate startDate;
+            LocalDate endDate;
+            LocalTime startTime;
+            LocalTime endTime;
+            LocalDate repeatEndDate;
+            의 4가지 객체를 일단 각각 만들어 둔다.
+            (repeatEndDate 가 db에서도 null 이고, 프론트에서 넘어온 값도 null 이면 repeatEndDate 는 신경쓰지 않아도 된다.)
             그후,
             프론트로부터 제공받은 start_date + start_time || end_date + end_time 으로 날짜를 만드는데,
             만약 그들중 null 인 부분이 있다면 db에서 가져온 값을 대입한다.
@@ -158,7 +164,12 @@ public class TodoService {
             만약 start_date + start_time 이 end_date + end_time 보다 1분이라도 이후라면 (isAfter) 정상로직으로,
             데이터를 update 한다.
             else 라면 예외처리한다. (제공된 날짜 정보가 잘못되었다)
-
+            +
+            repeat_end_date 도 검증해야한다.
+            만약 프론트에서 넘어온 값이 있다면 end_date + end_time 과 비교, repeat_end_date 가 더 이후인지 체크,
+            없다면 db에 저장된 repeat_end_date 가 end_date + end_time 보다 이후인지 체크해야 한다.
+            만약, 프론트에서도 repeat_end_date 가 넘어오지 않았고(null 이고), db에서 가져온 repeat_end_date 도 null 이라면
+            그냥 set을 하지 않으면 된다.
             --by Hyunmin */
 
 
