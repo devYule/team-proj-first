@@ -148,7 +148,7 @@ public class TodoService {
             --------------------------------------------------------------------------------------------------------
 
             --------------------------------------------------------------------------------------------------------
-            로직 -> start_date, end_date, start_time, end_time 중 하나라도 null 이 아니면,
+            로직 -> start_date, end_date, start_time, end_time, repeat_end_date 중 하나라도 null 이 아니면,
             select 문을 통해 해당 itodo 로 부터 start_date, end_date, start_time, end_time, repeat_end_date 를 가져와서,
             LocalDate startDate;
             LocalDate endDate;
