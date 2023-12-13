@@ -17,28 +17,54 @@ public class UserController {
     private final UserService service;
 
     @PostMapping
-    public ResVo userIns(@RequestBody UserInsDto dto) {
-        if (dto.getUserNickName()==null || dto.getUserNickName().equals("")||dto.getUserNickName().equals(" ")) {
+    public ResVo postUser(@RequestBody UserInsDto dto) {
+        // TODO 예외처리
+        if (dto.getUserNickName() == null || dto.getUserNickName().equals("") || dto.getUserNickName().equals(" ")) {
             throw new BadUserNickNameException(Const.NICK_NAME_RANGE_EX_MESSAGE);
         }
         return service.postUser(dto);
     }
 
     @GetMapping("/{iuser}")
-    public UserSelVo postUser(@PathVariable int iuser) {
+    public UserSelVo getUser(@PathVariable int iuser) {
         return service.getUser(iuser);
     }
 
     @PatchMapping
     public ResVo patchUser(@RequestBody UserUpDto dto) {
+        checkIuser(dto.getIuser());
+
+        if (dto.getUserAge() == null && dto.getUserNickName() == null && dto.getUserGender() == null) {
+            //todo 예외처리
+        }
+        if (dto.getUserNickName() != null) {
+            if (dto.getUserNickName().isEmpty() || dto.getUserNickName().length() > 10) {
+                //todo 예외처리
+                // todo isEmpty 가 null 까지 포함되는지 여부 체크
+            }
+        }if(!(dto.getUserGender()>=0 && dto.getUserGender()<=3)){
+            //todo 예외처리
+        }
+        if(!(dto.getUserAge()>=0 && dto.getUserAge()<=150)){
+            //todo 예외처리
+        }
+
         return service.upUser(dto);
     }
 
     @DeleteMapping("/{iuser}")
     public ResVo deleteUser(@PathVariable int iuser) {
+       checkIuser(iuser);
 
         return service.deleteUser(iuser);
     }
     //요청 = body , get,delete =nobody
+
+
+    private void checkIuser(int iuser){
+        if(iuser==0){
+            //todo 예외처리
+        }
+    }
 
 }

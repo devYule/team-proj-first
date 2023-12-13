@@ -3,13 +3,13 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="team6.project.user.UserMapper">
-<insert id="insUser" useGeneratedKeys="true" keyProperty="iuser">
-    insert into t_user
-    set user_nick_name=#{userNickName}
-    ,user_gender=#{userGender}
-    ,user_age=#{userAge}
+    <insert id="insUser" useGeneratedKeys="true" keyProperty="iuser">
+        insert into t_user
+        set user_nick_name=#{userNickName}
+        ,user_gender=#{userGender}
+        ,user_age=#{userAge}
 
-</insert>
+    </insert>
 
     <select id="checkUser">
         select user_nick_name
@@ -25,10 +25,22 @@
         where iuser=#{iuser}
     </select>
     <update id="upUser">
+
+        <!-- userNickName 이 null 이면 user_nick_name = #{userNickName} 자체를 출력하지 않음. -->
+        <!--        이하 동-->
+
         update t_user
-        set user_nick_name=#{userNickName},
-        user_gender=#{userGender},
-        user_age=#{userAge}
+        <set>
+            <if test="userNickName != null">
+                user_nick_name=#{userNickName},
+            </if>
+            <if test="userGender !=null">
+                user_gender=#{userGender},
+            </if>
+            <if test="userAge != null">
+                user_age=#{userAge}
+            </if>
+        </set>
         where iuser=#{iuser}
     </update>
     <delete id="delUser">
