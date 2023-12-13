@@ -1,12 +1,9 @@
 package team6.project.user;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.annotations.Mapper;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import team6.project.common.Const;
 import team6.project.common.ResVo;
-import team6.project.common.exception.BadUserNickNameException;
 import team6.project.common.exception.MyMethodArgumentNotValidException;
 import team6.project.user.model.UserInsDto;
 import team6.project.user.model.UserSelVo;
@@ -20,10 +17,10 @@ public class UserController {
 
     @PostMapping
     public ResVo postUser(@RequestBody UserInsDto dto) {
-        // TODO 예외처리
         if (dto.getUserNickName() == null || dto.getUserNickName().equals("") || dto.getUserNickName().equals(" ")) {
             throw new MyMethodArgumentNotValidException("수정할 정보가 제공되지 않음");
         }
+        checkAllRange(dto.getUserNickName(), dto.getUserGender(), dto.getUserAge());
         return service.postUser(dto);
     }
 
@@ -37,20 +34,11 @@ public class UserController {
         checkIuser(dto.getIuser());
 
         if (dto.getUserAge() == null && dto.getUserNickName() == null && dto.getUserGender() == null) {
-            //todo 예외처리
+            throw new MyMethodArgumentNotValidException("수정할 정보가 제공되지 않음");
         }
-        if (dto.getUserNickName() != null) {
-            if (dto.getUserNickName().isEmpty() || dto.getUserNickName().length() > 10) {
-                //todo 예외처리
-                // todo isEmpty 가 null 까지 포함되는지 여부 체크
-            }
-        }
-        if (!(dto.getUserGender() >= 0 && dto.getUserGender() <= 3)) {
-            //todo 예외처리
-        }
-        if (!(dto.getUserAge() >= 0 && dto.getUserAge() <= 150)) {
-            //todo 예외처리
-        }
+
+        checkAllRange(dto.getUserNickName(),dto.getUserGender(), dto.getUserAge());
+
 
         return service.upUser(dto);
     }
@@ -66,7 +54,31 @@ public class UserController {
 
     private void checkIuser(int iuser) {
         if (iuser == 0) {
-            //todo 예외처리
+            throw new MyMethodArgumentNotValidException("iuser 필수");
+        }
+
+    }
+
+    private void checkAllRange(String name, Integer gender, Integer age) {
+        StringBuilder sb = new StringBuilder();
+        if (name != null) {
+            if (name.isEmpty() || name.length() > 10) {
+                // 추가해야할 메시지:  "닉네임은 1자 이상 10자이하, "
+                sb.append("닉네임은 1자 이상 10자 이하, ");
+            }
+        }
+        if (!(gender >= 0 && gender <= 3)) {
+            // 추가해야할 메시지:  "성별은 0이상 3이하 선택, "
+            sb.append("성별은 0이상 3이하 선택, ");
+        }
+        if (!(age >= 0 && age <= 150)) {
+            // 추가해야할 메시지:  "나이는 0~150까지만 입력, "
+            sb.append("나이는 0~150까지만 입력, ");
+        }
+
+        String errorMessage = sb.toString();
+        if (StringUtils.isNotEmpty(errorMessage)) {
+            throw new MyMethodArgumentNotValidException(errorMessage.substring(0, errorMessage.length() - 2));
         }
     }
 

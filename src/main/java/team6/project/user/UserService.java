@@ -38,6 +38,7 @@ public class UserService {
 
         List<Integer> itodos = mapper.selItodo(iuser);
 
+
         if(itodos!=null && !itodos.isEmpty()){
             mapper.delToDoRepeat(itodos);
             mapper.delToDo(iuser);
