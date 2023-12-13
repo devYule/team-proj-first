@@ -27,4 +27,13 @@ public class CommonUtils {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean checkObjectIsNotNull(Object... objs) {
+        for (Object obj : objs) {
+            if (obj != null) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
