@@ -35,7 +35,7 @@
     </insert>
 
     <select id="isRepeat">
-        SELECT IF(R.itodo IS NULL, 0, 1)
+        SELECT IFNULL(count(R.itodo), 0)
         FROM t_todo T LEFT JOIN t_todo_repeat R ON T.itodo = R.itodo
         WHERE T.itodo = #{itodo} AND T.iuser = #{iuser}
     </select>

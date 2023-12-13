@@ -35,10 +35,9 @@ public class TodoRepository {
     }
 
     public boolean checkIsRepeat(Integer iuser, Integer itodo) {
-        /* TODO: 2023-12-13
-            이게 sql 에서 0 이 아닌, null 이 반환되는 이유 찾기
-            --by Hyunmin */
-        return mapper.isRepeat(iuser, itodo) == null || mapper.isRepeat(iuser, itodo) == 0;
+        boolean b = mapper.isRepeat(iuser, itodo) == 0;
+        log.debug("repository's b = {}", b);
+        return b;
     }
 
     public void updateRepeat(UpdateRepeatDto dto) {
@@ -54,7 +53,9 @@ public class TodoRepository {
     }
 
     public Integer updateTodo(UpdateTodoDto dto) {
+
         return mapper.patchTodo(dto);
+
     }
 
 }

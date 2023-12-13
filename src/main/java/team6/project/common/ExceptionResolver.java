@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import team6.project.common.exception.*;
 import team6.project.common.model.ExceptionResultVo;
 
+import java.sql.SQLSyntaxErrorException;
+
 import static team6.project.common.Const.*;
 
 @Slf4j
@@ -69,5 +71,16 @@ public class ExceptionResolver {
     public ExceptionResultVo httpMessageNotReadableException(HttpMessageNotReadableException e) {
         log.info("message = {}", e.getMessage());
         return new ExceptionResultVo("잘못된 요청 타입");
+    }
+
+    /**
+     *
+     * 만약 SQLSyntaxErrorException 발생시 해당 메소드 또는 어노테이션 주석 후 쿼리문 확인.
+     *
+     */
+    @ExceptionHandler
+    public ExceptionResultVo sqlSyntaxErrorException(SQLSyntaxErrorException e) {
+        e.printStackTrace();
+        return new ExceptionResultVo("알 수 없는 오류로 실행 불가능");
     }
 }
