@@ -81,7 +81,7 @@ public class HyunEmotionService {
 
 
             } catch (NullPointerException e) {
-//                if (firstDayOfMonth.isBefore(todo.getStartDate())) {
+//                if (firstDayOfMonth.isBefore(todo_.getStartDate())) {
                 if (todo.getStartDate().isBefore(firstDayOfMonth)) {
                     // 당월의 1일 (firstDayOfMonth) 부터 endDate 까지 모든 일을 map 에 추가
                     LocalDate dayWalk = LocalDate.of(firstDayOfMonth.getYear(), firstDayOfMonth.getMonth(),

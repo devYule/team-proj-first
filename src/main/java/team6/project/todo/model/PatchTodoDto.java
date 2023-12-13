@@ -14,9 +14,9 @@ import java.time.LocalTime;
 @Builder
 public class PatchTodoDto {
 
-
+    @NotNull(message = "유저 PK 는 필수값")
     private Integer iuser;
-
+    @NotNull(message = "투두 PK 는 필수값")
     private Integer itodo;
     @JsonProperty("todo_content")
     private String todoContent;

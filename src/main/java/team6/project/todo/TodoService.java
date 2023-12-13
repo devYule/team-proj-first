@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team6.project.common.ResVo;
-import team6.project.common.exception.BadDateInformationException;
-import team6.project.common.exception.BadInformationException;
-import team6.project.common.exception.NoSuchDataException;
-import team6.project.common.exception.TodoIsFullException;
+import team6.project.common.exception.*;
 import team6.project.common.utils.WeekFormatResolver;
 import team6.project.todo.model.*;
 import team6.project.todo.model.proc.*;
@@ -24,16 +21,19 @@ import static team6.project.common.Const.*;
 @Service
 @RequiredArgsConstructor
 public class TodoService {
-    private final TodoMapper mapper;
+
+    private final TodoRepository repository;
 
     private final WeekFormatResolver weekFormatResolver;
+
 
     @Transactional
     public ResVo regTodo(TodoRegDto dto) {
         // 투두 는 10개까지만 저장.
-        if (mapper.getTodoListCount(dto.getIuser()) > 9) {
+        if (repository.getListCountById(dto.getIuser()) > 9) {
             throw new TodoIsFullException(TODO_IS_FULL_EX_MESSAGE);
         }
+
 
         // startDate & endDate 그리고 startTime & endTime 오류 검증
         checkIsBefore(dto.getEndDate(), dto.getStartDate(), dto.getEndTime(), dto.getStartTime());
@@ -43,14 +43,19 @@ public class TodoService {
             // 반복 있을때 로직
             log.debug("todo service in try");
             InsertTodoDto insertTodoDto = new InsertTodoDto(dto);
-            mapper.insTodo(insertTodoDto);
+            if (repository.saveTodo(insertTodoDto) == 0) {
+                throw new TodoSaveException(TODO_SAVE_FAIL_EXCEPTION_MESSAGE);
+            }
 
             InsRepeatInfoDto insRepeatInfoDto = new InsRepeatInfoDto(dto, insertTodoDto.getItodo(),
                     dto.getRepeatType().equalsIgnoreCase(WEEK) ?
                             // resolve week format from JS to JAVA
                             weekFormatResolver.toJavaFrom(dto.getRepeatNum()) :
                             dto.getRepeatNum());
-            mapper.insRepeat(insRepeatInfoDto);
+            if (repository.saveRepeat(insRepeatInfoDto) == 0) {
+                throw new RepeatSaveException(REPEAT_SAVE_FAIL_EXCEPTION_MESSAGE);
+            }
+
             return new ResVo(insRepeatInfoDto.getItodo());
 
         } catch (NullPointerException e) {
@@ -58,18 +63,17 @@ public class TodoService {
             log.debug("todo service in catch");
             checkRepeatNumInCatch(dto.getRepeatNum());
             InsertTodoDto insertTodoDto = new InsertTodoDto(dto);
-            mapper.insTodo(insertTodoDto);
+            if (repository.saveTodo(insertTodoDto) == 0) {
+                throw new TodoSaveException(TODO_SAVE_FAIL_EXCEPTION_MESSAGE);
+            }
             return new ResVo(insertTodoDto.getItodo());
         }
     }
 
     public List<TodoSelectVo> getTodo(TodoSelectDto dto) {
-        /* TODO: 12/12/23
-            테스트 정상인지 체크하기
-            (forEach() 내부 while 문에 break; 대신 return 으로 변경 했음.)
-            --by Hyunmin */
+
         // 정제 전
-        List<TodoSelectTmpResult> allTodos = mapper.selectTodo(dto);
+        List<TodoSelectTmpResult> allTodos = repository.findTodoByObj(dto);
 
         // 정제
         List<TodoSelectVo> result = new ArrayList<>();
@@ -123,6 +127,11 @@ public class TodoService {
 
     @Transactional
     public ResVo patchTodo(PatchTodoDto dto) {
+        /* TODO: 2023-12-13  
+            update 시 start_date, end_date, start_time, end_time 중 일부만 수정하는 경우,
+            db에 저장된 각각의 날짜와 비교해서 오류검증 로직 추가
+            (아래의 2가지 if문은 start_date & end_date 와 start_time & end_time 이 쌍으로 null 이 아닐경우만 검증.)
+            --by Hyunmin */
         // startDate & endDate 오류 검증
         if (dto.getStartDate() != null && dto.getEndDate() != null) {
             checkIsBefore(dto.getEndDate(), dto.getStartDate());
@@ -132,17 +141,19 @@ public class TodoService {
             checkIsBefore(dto.getEndTime(), dto.getStartTime());
         }
 
-        if (mapper.isRepeat(dto.getIuser(), dto.getItodo()) == 0) {
+        if (repository.checkIsRepeat(dto.getIuser(), dto.getItodo())) {
             // 기존 일정이 repeat 이 아닌 일정일 경우
             try {
                 checkRepeatTypeAndRepeatNum(dto.getRepeatType(), dto.getRepeatNum());
                 // repeat insert
 
-                mapper.insRepeat(new InsRepeatInfoDto(dto,
+                if (repository.saveRepeat(new InsRepeatInfoDto(dto,
                         dto.getRepeatType().equalsIgnoreCase(WEEK) ?
                                 // resolve week format from JS to JAVA
                                 weekFormatResolver.toJavaFrom(dto.getRepeatNum()) :
-                                dto.getRepeatNum()));
+                                dto.getRepeatNum())) == 0) {
+                    throw new RepeatSaveException(REPEAT_SAVE_FAIL_EXCEPTION_MESSAGE);
+                }
                 // t_todo update (at last)
             } catch (NullPointerException e) {
                 checkRepeatNumInCatch(dto.getRepeatNum());
@@ -155,7 +166,7 @@ public class TodoService {
                 // repeat update
 
                 // resolve week format from JS to JAVA
-                mapper.patchRepeat(new UpdateRepeatDto(dto.getItodo(), dto.getRepeatEndDate(), dto.getRepeatType(),
+                repository.updateRepeat(new UpdateRepeatDto(dto.getItodo(), dto.getRepeatEndDate(), dto.getRepeatType(),
                         dto.getRepeatType().equalsIgnoreCase(WEEK) ?
                                 weekFormatResolver.toJavaFrom(dto.getRepeatNum()) :
                                 dto.getRepeatNum()));
@@ -165,18 +176,18 @@ public class TodoService {
                 // 두가지 경우에 관계 없이 delete query 실행.
                 checkRepeatNumInCatch(dto.getRepeatNum());
                 // repeat delete
-                mapper.deleteTodoRepeat(dto.getIuser(), dto.getItodo());
+                repository.deleteRepeat(dto.getIuser(), dto.getItodo());
                 // t_todo update (at last)
             }
         }
         // t_todo update !  (공통 사항)
-        return new ResVo(mapper.patchTodo(new UpdateTodoDto(dto)));
+        return new ResVo(repository.updateTodo(new UpdateTodoDto(dto)));
     }
 
     public ResVo deleteTodo(TodoDeleteDto dto) {
         // repeat 유무 관계 없이 delete query 실행.
-        mapper.deleteTodoRepeat(dto.getIuser(), dto.getItodo());
-        int result = mapper.deleteTodo(dto);
+        repository.deleteRepeat(dto.getIuser(), dto.getItodo());
+        int result = repository.deleteTodo(dto);
         if (result == 0) {
             // 요청받은 iuser, itodo 로 삭제되는 일정이 없을경우 NoSuchDataException 발생.
             throw new NoSuchDataException(NO_SUCH_DATA_EX_MESSAGE);

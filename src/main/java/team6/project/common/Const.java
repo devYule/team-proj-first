@@ -9,6 +9,8 @@ public interface Const {
     String BAD_TIME_INFO = "bad time Info";
     String NO_SUCH_DATA_EX_MESSAGE = "해당하는 데이터 없음";
     String TODO_IS_FULL_EX_MESSAGE = "Todo 는 10개 이상 등록할 수 없음";
+    String TODO_SAVE_FAIL_EXCEPTION_MESSAGE = "투두 저장 실패";
+    String REPEAT_SAVE_FAIL_EXCEPTION_MESSAGE = "반복정보 저장 실패";
     Integer TODO_SELECT_FROM_NUM = 0;
     Integer TODO_SELECT_TO_NUM = 10;
 }

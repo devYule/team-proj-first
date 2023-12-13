@@ -13,9 +13,9 @@ import java.util.List;
 @Mapper
 public interface TodoMapper {
 
-    void insTodo(InsertTodoDto dto);
+    Integer insTodo(InsertTodoDto dto);
 
-    void insRepeat(InsRepeatInfoDto dto);
+    Integer insRepeat(InsRepeatInfoDto dto);
 
     Integer isRepeat(@Param("iuser") Integer iuser, @Param("itodo") Integer itodo);
 
@@ -29,7 +29,7 @@ public interface TodoMapper {
     int patchRepeat(UpdateRepeatDto dto);
 
     int deleteTodo(TodoDeleteDto dto);
-    void deleteTodoRepeat(@Param("iuser") Integer iuser, @Param("itodo") Integer itodo);
+    Integer deleteTodoRepeat(@Param("iuser") Integer iuser, @Param("itodo") Integer itodo);
 
 
 }
