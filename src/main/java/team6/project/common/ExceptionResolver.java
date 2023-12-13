@@ -4,10 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import team6.project.common.exception.BadDateInformationException;
-import team6.project.common.exception.BadInformationException;
-import team6.project.common.exception.NoSuchDataException;
-import team6.project.common.exception.TodoIsFullException;
+import team6.project.common.exception.*;
 import team6.project.common.model.ExceptionResultVo;
 
 import static team6.project.common.Const.*;
@@ -50,6 +47,11 @@ public class ExceptionResolver {
             log.info("검증코드에 message 속성 추가 필수");
             return new ExceptionResultVo(BAD_REQUEST);
         }
+    }
 
+    @ExceptionHandler
+    public ExceptionResultVo myMethodArgumentNotValidException(MyMethodArgumentNotValidException e) {
+        log.info("message = {}", e.getMessage(), e);
+        return new ExceptionResultVo(e.getMessage());
     }
 }

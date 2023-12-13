@@ -2,10 +2,12 @@ package team6.project.user;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import team6.project.common.Const;
 import team6.project.common.ResVo;
 import team6.project.common.exception.BadUserNickNameException;
+import team6.project.common.exception.MyMethodArgumentNotValidException;
 import team6.project.user.model.UserInsDto;
 import team6.project.user.model.UserSelVo;
 import team6.project.user.model.UserUpDto;
@@ -20,7 +22,7 @@ public class UserController {
     public ResVo postUser(@RequestBody UserInsDto dto) {
         // TODO 예외처리
         if (dto.getUserNickName() == null || dto.getUserNickName().equals("") || dto.getUserNickName().equals(" ")) {
-            throw new BadUserNickNameException(Const.NICK_NAME_RANGE_EX_MESSAGE);
+            throw new MyMethodArgumentNotValidException("수정할 정보가 제공되지 않음");
         }
         return service.postUser(dto);
     }
@@ -42,10 +44,11 @@ public class UserController {
                 //todo 예외처리
                 // todo isEmpty 가 null 까지 포함되는지 여부 체크
             }
-        }if(!(dto.getUserGender()>=0 && dto.getUserGender()<=3)){
+        }
+        if (!(dto.getUserGender() >= 0 && dto.getUserGender() <= 3)) {
             //todo 예외처리
         }
-        if(!(dto.getUserAge()>=0 && dto.getUserAge()<=150)){
+        if (!(dto.getUserAge() >= 0 && dto.getUserAge() <= 150)) {
             //todo 예외처리
         }
 
@@ -54,15 +57,15 @@ public class UserController {
 
     @DeleteMapping("/{iuser}")
     public ResVo deleteUser(@PathVariable int iuser) {
-       checkIuser(iuser);
+        checkIuser(iuser);
 
         return service.deleteUser(iuser);
     }
     //요청 = body , get,delete =nobody
 
 
-    private void checkIuser(int iuser){
-        if(iuser==0){
+    private void checkIuser(int iuser) {
+        if (iuser == 0) {
             //todo 예외처리
         }
     }
