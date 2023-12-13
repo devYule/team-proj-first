@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import team6.project.common.Const;
 import team6.project.common.ResVo;
 import team6.project.common.exception.NotEnoughInformationException;
+import team6.project.common.utils.CommonUtils;
 import team6.project.todo.model.*;
 
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
 public class TodoController {
 
     private final TodoService service;
-
+    private final CommonUtils commonUtils;
 
     @PostMapping
     public ResVo postTodo(@Validated @RequestBody TodoRegDto dto) {
@@ -41,8 +42,12 @@ public class TodoController {
     @PatchMapping
     public ResVo patchTodo(@Validated @RequestBody PatchTodoDto dto) {
         log.info("patchTodo's dto = {}", dto);
-        checkObjectIsNull(dto.getTodoContent(), dto.getStartDate(), dto.getEndDate(), dto.getStartTime(), dto.getEndTime());
+        commonUtils.checkObjectIsNull(NotEnoughInformationException.class, Const.NOT_ENOUGH_INFO_EX_MESSAGE, dto.getTodoContent(),
+                dto.getStartDate(),
+                dto.getEndDate(),
+                dto.getStartTime(), dto.getEndTime());
         return service.patchTodo(dto);
+
     }
 
     @DeleteMapping("/{iuser}/{itodo}")
@@ -52,13 +57,5 @@ public class TodoController {
 
     }
 
-    private void checkObjectIsNull(Object... objs) {
-        for (Object obj : objs) {
-            if (obj != null) {
-                return;
-            }
-        }
-        throw new NotEnoughInformationException(Const.NOT_ENOUGH_INFO_EXCEPTION_MESSAGE);
-    }
 
 }
