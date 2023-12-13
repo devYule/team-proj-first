@@ -13,6 +13,7 @@ import java.time.LocalTime;
 
 @Getter
 @Builder
+@Schema(description = "기존데이터 필수로 제공, 변경된 사항은 변경된 데이터로 제공")
 public class PatchTodoDto {
 
     @NotNull(message = "유저 PK 는 필수값")

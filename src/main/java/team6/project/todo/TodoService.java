@@ -30,7 +30,7 @@ public class TodoService {
     @Transactional
     public ResVo regTodo(TodoRegDto dto) {
         // 투두 는 10개까지만 저장.
-        if (repository.getListCountById(dto.getIuser()) > 9) {
+        if (repository.getListCountById(dto.getIuser()) >= TODO_MAX_SIZE) {
             throw new TodoIsFullException(TODO_IS_FULL_EX_MESSAGE);
         }
 
@@ -87,13 +87,12 @@ public class TodoService {
                     LocalDate weekWalk = LocalDate.of(dto.getSelectedDate().getYear(), dto.getSelectedDate().getMonth(), FIRST_DAY);
                     while (weekWalk.getDayOfWeek().getValue() != todo.getRepeatNum()) {
                         // 첫번째 요일
-                        weekWalk = weekWalk.plusDays(1);
+                        weekWalk = weekWalk.plusDays(PLUS_ONE_MONTH_OR_WEEK_OR_DAY);
                     }
                     // 첫번째 요일 (자바기준 week) 획득 - weekWalk
                     while (true) {
                         // 1주씩 추가
-                        weekWalk = weekWalk.plusWeeks(1);
-                        log.debug("weekWalk = {}", weekWalk);
+                        weekWalk = weekWalk.plusWeeks(PLUS_ONE_MONTH_OR_WEEK_OR_DAY);
                         // 요일 체크 날짜가 해당 월의 마지막날과 같거나, 마지막날 보다 크면 break;
                         if (weekWalk.isEqual(dto.getSelectedDate().withDayOfMonth(dto.getSelectedDate().lengthOfMonth()))
                                 || weekWalk.isAfter(dto.getSelectedDate())) {
@@ -101,14 +100,16 @@ public class TodoService {
                         }
                         // 요일 체크 날짜가 요청 온 날짜와 같다면 result 에 추가, break;
                         if (weekWalk.isEqual(dto.getSelectedDate())) {
-                            result.add(new TodoSelectVo(todo.getItodo(), todo.getTodoContent()));
+                            result.add(new TodoSelectVo(todo.getItodo(), todo.getTodoContent(),
+                                    todo.getStartDate(), todo.getEndDate(), todo.getStartTime(), todo.getEndTime()));
                             return;
                         }
                     }
                 }
                 if (todo.getRepeatType().equalsIgnoreCase(MONTH)) {
                     if (todo.getRepeatNum() == dto.getSelectedDate().getDayOfMonth()) {
-                        result.add(new TodoSelectVo(todo.getItodo(), todo.getTodoContent()));
+                        result.add(new TodoSelectVo(todo.getItodo(), todo.getTodoContent(),
+                                todo.getStartDate(), todo.getEndDate(), todo.getStartTime(), todo.getEndTime()));
                     }
                 }
             } catch (NullPointerException e) {
@@ -117,21 +118,18 @@ public class TodoService {
                     (endDate 는 무조건 해당 날짜보다 같거나 이후이고, startDate 는 무조건 해당날짜와 같거나 이전임이 보장된 상황.)
                  */
 
-                result.add(new TodoSelectVo(todo.getItodo(), todo.getTodoContent()));
+                result.add(new TodoSelectVo(todo.getItodo(), todo.getTodoContent(),
+                        todo.getStartDate(), todo.getEndDate(), todo.getStartTime(), todo.getEndTime()));
             }
         });
 
         // 10개로 줄이기
-        return result.subList(TODO_SELECT_FROM_NUM, result.size() > 11 ? TODO_SELECT_TO_NUM : result.size());
+        return result.subList(TODO_SELECT_FROM_NUM, result.size() > TODO_MAX_SIZE ? TODO_SELECT_TO_NUM : result.size());
     }
 
     @Transactional
     public ResVo patchTodo(PatchTodoDto dto) {
-        /* TODO: 2023-12-13  
-            update 시 start_date, end_date, start_time, end_time 중 일부만 수정하는 경우,
-            db에 저장된 각각의 날짜와 비교해서 오류검증 로직 추가
-            (아래의 2가지 if문은 start_date & end_date 와 start_time & end_time 이 쌍으로 null 이 아닐경우만 검증.)
-            --by Hyunmin */
+
         // startDate & endDate 오류 검증
         if (dto.getStartDate() != null && dto.getEndDate() != null) {
             checkIsBefore(dto.getEndDate(), dto.getStartDate());
