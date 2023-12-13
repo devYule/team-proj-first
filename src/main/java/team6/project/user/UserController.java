@@ -18,7 +18,7 @@ public class UserController {
     @PostMapping
     public ResVo postUser(@RequestBody UserInsDto dto) {
         if (dto.getUserNickName() == null || dto.getUserNickName().equals("") || dto.getUserNickName().equals(" ")) {
-            throw new MyMethodArgumentNotValidException("수정할 정보가 제공되지 않음");
+            throw new MyMethodArgumentNotValidException("닉네임은 필수값");
         }
         checkAllRange(dto.getUserNickName(), dto.getUserGender(), dto.getUserAge());
         return service.postUser(dto);
