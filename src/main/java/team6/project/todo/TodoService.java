@@ -128,6 +128,40 @@ public class TodoService {
     @Transactional
     public ResVo patchTodo(PatchTodoDto dto) {
 
+        /* TODO: 12/13/23
+            지금처럼 모든 데이터를 무조건 받지 말고, 필요한 데이터만 받자.
+            쿼리문에는 join 해서 update 하고,
+            제공된 데이터만 set 에 동적으로 넣자.
+            추가로,
+            start_date, end_date 둘중 하나가 null 이 아니면 db에 저장되어있는 데이터를 가져와서,
+            정상적인 데이터 (end_date 가 start_date 와 같거나 이후인지) 여부 체크하자.
+            &
+            start_time, end_date 둘중 하나가 null 이 아니면 db에 저장되어있는 데이터를 가져와서,
+            정상적인 데이터 (end_date + end_time 이 start_date + start_time 보다 1초라도 이후인지) 여부 체크하자.
+            -> 데이터를 가져올때 애초에 두 경우 모두 start_date 와 start_time 을 다 가져오자.
+                그리고, 비교를 다르게 하도록 로직을 짜자.
+            &
+            repeat_end_date 가 null 이 아니면,
+            db에 저장되어있는 end_date 보다 이후인지 체크도 해야한다.
+            +
+            추가로 아래처럼 로직을 짜면 @Transactional 이 필요하지 않을 수 도 있다.
+            --------------------------------------------------------------------------------------------------------
+
+            --------------------------------------------------------------------------------------------------------
+            로직 -> start_date, end_date, start_time, end_time 중 하나라도 null 이 아니면,
+            select 문을 통해 해당 itodo 로 부터 start_date, end_date, start_time, end_time 을 가져와서,
+            LocalDate startDate; LocalDate endDate; LocalTime startTime; LocalTime endTime; 의 4가지 객체를 만들어 둔다.
+            그후,
+            프론트로부터 제공받은 start_date + start_time || end_date + end_time 으로 날짜를 만드는데,
+            만약 그들중 null 인 부분이 있다면 db에서 가져온 값을 대입한다.
+            그리고 그 두 날짜를 비교한다.
+            만약 start_date + start_time 이 end_date + end_time 보다 1분이라도 이후라면 (isAfter) 정상로직으로,
+            데이터를 update 한다.
+            else 라면 예외처리한다. (제공된 날짜 정보가 잘못되었다)
+
+            --by Hyunmin */
+
+
         // startDate & endDate 오류 검증
         if (dto.getStartDate() != null && dto.getEndDate() != null) {
             checkIsBefore(dto.getEndDate(), dto.getStartDate());
