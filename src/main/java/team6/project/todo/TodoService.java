@@ -155,7 +155,7 @@ public class TodoService {
             LocalTime startTime;
             LocalTime endTime;
             LocalDate repeatEndDate;
-            의 4가지 객체를 일단 각각 만들어 둔다.
+            의 5가지 객체를 일단 각각 만들어 둔다.
             (repeatEndDate 가 db에서도 null 이고, 프론트에서 넘어온 값도 null 이면 repeatEndDate 는 신경쓰지 않아도 된다.)
             그후,
             프론트로부터 제공받은 start_date + start_time || end_date + end_time 으로 날짜를 만드는데,
