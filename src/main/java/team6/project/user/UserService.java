@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import team6.project.common.ResVo;
+import team6.project.common.exception.MyMethodArgumentNotValidException;
 import team6.project.user.model.*;
 
 import java.util.List;
@@ -16,12 +17,12 @@ public class UserService {
     private final UserMapper mapper;
 
     public ResVo postUser(UserInsDto dto) {
-        UserInsProcDto dto1 = new UserInsProcDto(dto);
+
         if (mapper.checkUser(dto) != null) {
-            return new ResVo(0);
+            throw new MyMethodArgumentNotValidException("이미 생성된 닉네임");
         }
-        mapper.insUser(dto1);
-        ResVo vo = new ResVo(dto1.getIuser());
+        mapper.insUser(dto);
+        ResVo vo = new ResVo(dto.getIuser());
 
         return vo;
     }

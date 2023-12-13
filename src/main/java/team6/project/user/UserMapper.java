@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface UserMapper {
-    int insUser(UserInsProcDto dto);
+    int insUser(UserInsDto dto);
     String checkUser(UserInsDto dto);
     UserSelVo selUser(int iuser);
     int upUser(UserUpDto dto);
