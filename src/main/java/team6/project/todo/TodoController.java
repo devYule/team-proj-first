@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import team6.project.common.Const;
 import team6.project.common.ResVo;
+import team6.project.common.exception.NotEnoughInformationException;
 import team6.project.todo.model.*;
 
 import java.util.List;
@@ -39,6 +41,7 @@ public class TodoController {
     @PatchMapping
     public ResVo patchTodo(@Validated @RequestBody PatchTodoDto dto) {
         log.info("patchTodo's dto = {}", dto);
+        checkObjectIsNull(dto.getTodoContent(), dto.getStartDate(), dto.getEndDate(), dto.getStartTime(), dto.getEndTime());
         return service.patchTodo(dto);
     }
 
@@ -47,6 +50,15 @@ public class TodoController {
         log.info("deleteTodo's dto = {}", dto);
         return service.deleteTodo(dto);
 
+    }
+
+    private void checkObjectIsNull(Object... objs) {
+        for (Object obj : objs) {
+            if (obj != null) {
+                return;
+            }
+        }
+        throw new NotEnoughInformationException(Const.NOT_ENOUGH_INFO_EXCEPTION_MESSAGE);
     }
 
 }

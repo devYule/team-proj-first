@@ -5,6 +5,7 @@ spring:
     username: root
     password: green502
 
+
 mybatis:
   mapper-locations: mappers/**/*.xml
 
@@ -22,5 +23,4 @@ logging:
 
 server:
   port: 8088
-
 

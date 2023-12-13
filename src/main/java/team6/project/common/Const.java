@@ -11,6 +11,8 @@ public interface Const {
     String TODO_IS_FULL_EX_MESSAGE = "Todo 는 10개 이상 등록할 수 없음";
     String TODO_SAVE_FAIL_EXCEPTION_MESSAGE = "투두 저장 실패";
     String REPEAT_SAVE_FAIL_EXCEPTION_MESSAGE = "반복정보 저장 실패";
+    String NOT_ENOUGH_INFO_EXCEPTION_MESSAGE = "제공된 데이터가 충분하지 않음";
+    String BAD_REQUEST_TYPE_EXCEPTION_MESSAGE = "잘못된 요청 타입";
     Integer TODO_SELECT_FROM_NUM = 0;
     Integer TODO_SELECT_TO_NUM = 10;
     Integer PLUS_ONE_MONTH_OR_WEEK_OR_DAY = 1;
