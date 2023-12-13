@@ -13,4 +13,8 @@ public interface Const {
     String REPEAT_SAVE_FAIL_EXCEPTION_MESSAGE = "반복정보 저장 실패";
     Integer TODO_SELECT_FROM_NUM = 0;
     Integer TODO_SELECT_TO_NUM = 10;
+
+
+    // hyesun
+    String NICK_NAME_RANGE_EX_MESSAGE = "닉네임은 1자 이상 10자 이하";
 }
