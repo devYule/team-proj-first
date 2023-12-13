@@ -1,10 +1,12 @@
 package team6.project.todo.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 
 
 import java.time.LocalDate;
@@ -13,10 +15,12 @@ import java.time.LocalTime;
 @Data
 public class TodoRegDto {
 
+    @NotNull(message = "유저 PK 는 필수값")
+    @Range(min=1L, message = "유저 PK 는 1 이상")
     private Integer iuser;
 
     @JsonProperty("todo_content")
-    @NotBlank
+    @NotBlank(message = "투두 내용은 공백일 수 없음")
     @Length(max=100, message = "투두 내용은 100자 이내")
     private String todoContent;
 

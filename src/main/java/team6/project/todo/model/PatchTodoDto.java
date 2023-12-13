@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,8 +16,10 @@ import java.time.LocalTime;
 public class PatchTodoDto {
 
     @NotNull(message = "유저 PK 는 필수값")
+    @Range(min=1L, message = "유저 PK 는 1 이상")
     private Integer iuser;
     @NotNull(message = "투두 PK 는 필수값")
+    @Range(min=1L, message = "유저 PK 는 1 이상")
     private Integer itodo;
     @JsonProperty("todo_content")
     private String todoContent;

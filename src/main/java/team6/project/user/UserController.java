@@ -2,6 +2,10 @@ package team6.project.user;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.binding.BindingException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import team6.project.common.ResVo;
 import team6.project.common.exception.MyMethodArgumentNotValidException;
