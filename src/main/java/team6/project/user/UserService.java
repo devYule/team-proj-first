@@ -28,7 +28,11 @@ public class UserService {
     }
 
     public UserSelVo getUser(int iuser) {
-        return mapper.selUser(iuser);
+        UserSelVo userSelVo = mapper.selUser(iuser);
+        if (userSelVo == null) {
+            throw new MyMethodArgumentNotValidException("조회된 유저 정보가 없음");
+        }
+        return userSelVo;
     }
 
     public ResVo upUser(UserUpDto dto) {
@@ -40,13 +44,19 @@ public class UserService {
         List<Integer> itodos = mapper.selItodo(iuser);
 
 
-        if(itodos!=null && !itodos.isEmpty()){
+        if (itodos != null && !itodos.isEmpty()) {
             mapper.delToDoRepeat(itodos);
             mapper.delToDo(iuser);
 
         }
         mapper.delToEmo(iuser);
 
-        return new ResVo(mapper.delUser(iuser));
+        int effectedRow = mapper.delUser(iuser);
+        if (effectedRow == 0) {
+            throw new MyMethodArgumentNotValidException("해당 유저가 존재하지 않거나 삭제되지 않음");
+        }
+
+
+        return new ResVo(effectedRow);
     }
 }
