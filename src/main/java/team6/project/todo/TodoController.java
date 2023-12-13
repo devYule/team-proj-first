@@ -37,7 +37,7 @@ public class TodoController {
     }
 
     @PatchMapping
-    public ResVo patchTodo(@RequestBody PatchTodoDto dto) {
+    public ResVo patchTodo(@Validated @RequestBody PatchTodoDto dto) {
         log.info("patchTodo's dto = {}", dto);
         return service.patchTodo(dto);
     }
