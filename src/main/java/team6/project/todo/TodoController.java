@@ -28,7 +28,7 @@ public class TodoController {
 
     @GetMapping("/{iuser}")
     public List<TodoSelectVo> getTodo(@Validated TodoSelectDto dto) {
-        log.info("dto = {}", dto);
+        log.info("getTodo's dto = {}", dto);
 
         dto.setDate();
 
@@ -44,7 +44,7 @@ public class TodoController {
 
     @DeleteMapping("/{iuser}/{itodo}")
     public ResVo deleteTodo(TodoDeleteDto dto) {
-        log.info("dto = {}", dto);
+        log.info("deleteTodo's dto = {}", dto);
         return service.deleteTodo(dto);
 
     }

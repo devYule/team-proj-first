@@ -19,7 +19,6 @@ logging:
     "[team6.project.emotion.EmotionMapper]": DEBUG
     "[team6.project.sub.emotionhyunmin.HyunEmotionService]": DEBUG
 
-
 server:
   port: 8088
 
