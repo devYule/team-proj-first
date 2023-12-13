@@ -2,13 +2,14 @@ package team6.project.user;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import team6.project.common.ResVo;
-import team6.project.user.model.UserInsProcDto;
-import team6.project.user.model.UserInsDto;
-import team6.project.user.model.UserSelVo;
-import team6.project.user.model.UserUpDto;
+import team6.project.user.model.*;
 
+import java.util.List;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -34,6 +35,16 @@ public class UserService {
     }
 
     public ResVo deleteUser(int iuser) {
+
+        List<Integer> itodos = mapper.selItodo(iuser);
+
+        if(itodos!=null && !itodos.isEmpty()){
+            mapper.delToDoRepeat(itodos);
+            mapper.delToDo(iuser);
+
+        }
+        mapper.delToEmo(iuser);
+
         return new ResVo(mapper.delUser(iuser));
     }
 }

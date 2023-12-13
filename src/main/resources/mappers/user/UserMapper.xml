@@ -47,6 +47,27 @@
         delete from t_user
         where iuser=#{iuser}
     </delete>
+    <select id="selItodo">
+        select itodo
+        from t_todo
+        where iuser=#{iuser}
+    </select>
+    <delete id="delToDoRepeat">
+        delete from t_todo_repeat
+        where itodo in (
+        <foreach collection="itodos" item="itodo" separator=",">
+            #{itodo}
+        </foreach>
+        )
+    </delete>
+    <delete id="delToDo">
+        delete from t_todo
+        where iuser=#{iuser}
+    </delete>
+    <delete id="delToEmo">
+        delete from t_emotion
+        where iuser=#{iuser}
+    </delete>
 
 </mapper>
 

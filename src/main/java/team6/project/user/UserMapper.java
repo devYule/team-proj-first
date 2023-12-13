@@ -3,10 +3,9 @@ package team6.project.user;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import team6.project.user.model.UserInsDto;
-import team6.project.user.model.UserInsProcDto;
-import team6.project.user.model.UserSelVo;
-import team6.project.user.model.UserUpDto;
+import team6.project.user.model.*;
+
+import java.util.List;
 
 @Mapper
 public interface UserMapper {
@@ -15,4 +14,9 @@ public interface UserMapper {
     UserSelVo selUser(int iuser);
     int upUser(UserUpDto dto);
     int delUser(int iuser);
+    List<Integer> selItodo(int itodo);
+    int delToDoRepeat(List<Integer> itodos);
+    int delToDo(int iuser);
+    int delToEmo(int iuser);
+
 }
