@@ -33,6 +33,17 @@ public class EmotionService {
         List<EmotionSelVo> todoMonth=todo.stream().distinct()
                 .collect(Collectors.toList());
         List<EmotionSelVo> emotionMonth=emotionMapper.getEmotionMonth(dto);
+        List<EmotionSelVo> addlist=new ArrayList<>();
+        for (EmotionSelVo todosel:todoMonth) {
+            for (EmotionSelVo emotionsel:emotionMonth) {
+                if(todosel.getEmotionCreatedAt().equals(emotionsel.getEmotionCreatedAt())){
+                    todosel.setEmotionTag(emotionsel.getEmotionTag());
+                    todosel.setEmotionGrade(emotionsel.getEmotionGrade());
+                }else{
+                    addlist.add(emotionsel);
+                }
+            }
+        }
 
         return todoMonth;
     }
