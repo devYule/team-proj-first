@@ -19,32 +19,32 @@ public class TodoRegDto {
     @Range(min=1L, message = "유저 PK 는 1 이상")
     private Integer iuser;
 
-    @JsonProperty("todo_content")
+
     @NotBlank(message = "투두 내용은 공백일 수 없음")
     @Length(max=100, message = "투두 내용은 100자 이내")
     private String todoContent;
 
-    @JsonProperty("start_date")
+
     @NotNull(message = "일정 시작일은 null 일 수 없음")
     private LocalDate startDate;
 
-    @JsonProperty("end_date")
+
     @NotNull(message = "일정 마감일은 null 일 수 없음")
     private LocalDate endDate;
 
-    @JsonProperty("start_time")
+
     private LocalTime startTime;
 
-    @JsonProperty("end_time")
+
     private LocalTime endTime;
 
-    @JsonProperty("repeat_end_date")
+
     private LocalDate repeatEndDate;
 
-    @JsonProperty("repeat_type")
+
     private String repeatType;
 
-    @JsonProperty("repeat_num")
+
     @Range(min = 1, max = 31, message = "올바른 반복 일 이 아님")
     private Integer repeatNum;
 
