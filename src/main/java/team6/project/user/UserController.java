@@ -1,11 +1,8 @@
 package team6.project.user;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.binding.BindingException;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import team6.project.common.ResVo;
 import team6.project.common.exception.MyMethodArgumentNotValidException;
@@ -13,6 +10,7 @@ import team6.project.user.model.UserInsDto;
 import team6.project.user.model.UserSelVo;
 import team6.project.user.model.UserUpDto;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
@@ -21,11 +19,13 @@ public class UserController {
 
     @PostMapping
     public ResVo postUser(@RequestBody UserInsDto dto) {
-        if (dto.getUserNickName() == null || dto.getUserNickName().equals("") || dto.getUserNickName().equals(" ")) {
+        log.info("{}", dto);
+        if (dto.getUserNickName() == null || dto.getUserNickName().isBlank()) {
             throw new MyMethodArgumentNotValidException("닉네임은 필수값");
         }
         checkAllRange(dto.getUserNickName(), dto.getUserGender(), dto.getUserAge());
         return service.postUser(dto);
+
     }
 
     @GetMapping("/{iuser}")
@@ -41,10 +41,12 @@ public class UserController {
             throw new MyMethodArgumentNotValidException("수정할 정보가 제공되지 않음");
         }
 
-        checkAllRange(dto.getUserNickName(),dto.getUserGender(), dto.getUserAge());
+        checkAllRange(dto.getUserNickName(), dto.getUserGender(), dto.getUserAge());
 
 
-        return service.upUser(dto);
+
+
+        return service.patchUser(dto);
     }
 
     @DeleteMapping("/{iuser}")
@@ -63,6 +65,7 @@ public class UserController {
 
     }
 
+
     private void checkAllRange(String name, Integer gender, Integer age) {
         StringBuilder sb = new StringBuilder();
         if (name != null) {
@@ -70,6 +73,9 @@ public class UserController {
                 // 추가해야할 메시지:  "닉네임은 1자 이상 10자이하, "
                 sb.append("닉네임은 1자 이상 10자 이하, ");
             }
+        }
+        if (name.equals(" ")) {
+            sb.append("닉네임은 공백불가, ");
         }
         if (!(gender >= 0 && gender <= 3)) {
             // 추가해야할 메시지:  "성별은 0이상 3이하 선택, "

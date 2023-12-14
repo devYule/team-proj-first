@@ -8,9 +8,7 @@
         set user_nick_name=#{userNickName}
         ,user_gender=#{userGender}
         ,user_age=#{userAge}
-
     </insert>
-
 
     <select id="checkUser">
         select user_nick_name
@@ -26,10 +24,6 @@
         where iuser=#{iuser}
     </select>
     <update id="upUser">
-
-        <!-- userNickName 이 null 이면 user_nick_name = #{userNickName} 자체를 출력하지 않음. -->
-        <!--        이하 동-->
-
         update t_user
         <set>
             <if test="userNickName != null">
@@ -44,31 +38,56 @@
         </set>
         where iuser=#{iuser}
     </update>
+
     <delete id="delUser">
         delete from t_user
         where iuser=#{iuser}
     </delete>
-    <select id="selItodo">
-        select itodo
-        from t_todo
-        where iuser=#{iuser}
-    </select>
-    <delete id="delToDoRepeat">
-        delete from t_todo_repeat
-        where itodo in (
-        <foreach collection="itodos" item="itodo" separator=",">
-            #{itodo}
-        </foreach>
-        )
+
+    <delete id="delRepeat">
+        delete R
+        from t_todo T
+        left join t_todo_repeat R
+        on T.itodo=R.itodo
+        where R.iuser=#{iuser}
     </delete>
-    <delete id="delToDo">
-        delete from t_todo
-        where iuser=#{iuser}
+
+    <delete id="delTodoEmo">
+        delete T,E
+        from t_user U
+        left join t_todo T
+        on U.iuser=T.iuser
+        left join t_emotion E
+        on U.iuser=E.iuser
+        where U.iuser=#{iuser}
     </delete>
-    <delete id="delToEmo">
-        delete from t_emotion
-        where iuser=#{iuser}
-    </delete>
+
+    <!--    <delete id="delUser">-->
+    <!--        delete from t_user-->
+    <!--        where iuser=#{iuser}-->
+    <!--    </delete>-->
+    <!--    <select id="selItodo">-->
+    <!--        select itodo-->
+    <!--        from t_todo-->
+    <!--        where iuser=#{iuser}-->
+    <!--    </select>-->
+    <!--    <delete id="delToDoRepeat">-->
+    <!--        delete from t_todo_repeat-->
+    <!--        where itodo in (-->
+    <!--        <foreach collection="itodos" item="itodo" separator=",">-->
+    <!--            #{itodo}-->
+    <!--        </foreach>-->
+    <!--        )-->
+    <!--    </delete>-->
+    <!--    <delete id="delToDo">-->
+    <!--        delete from t_todo-->
+    <!--        where iuser=#{iuser}-->
+    <!--    </delete>-->
+    <!--    <delete id="delToEmo">-->
+    <!--        delete from t_emotion-->
+    <!--        where iuser=#{iuser}-->
+    <!--    </delete>-->
+
+
 
 </mapper>
-

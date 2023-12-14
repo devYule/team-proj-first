@@ -13,10 +13,21 @@ public interface UserMapper {
     String checkUser(UserInsDto dto);
     UserSelVo selUser(int iuser);
     int upUser(UserUpDto dto);
-    int delUser(int iuser);
     List<Integer> selItodo(int itodo);
-    int delToDoRepeat(List<Integer> itodos);
-    int delToDo(int iuser);
-    int delToEmo(int iuser);
+    int delUser(int iuser);
+    int delRepeat(int iuser);
+    int delTodoEmo(int iuser);
 
+
+
+
+
+
+//    int delToDoRepeat(List<Integer> itodos);
+//    int delToDo(int iuser);
+//    int delToEmo(int iuser);
+
+
+    //int insUser(UserInsDto dto)
+    //String checkUser(UserInsDto
 }
