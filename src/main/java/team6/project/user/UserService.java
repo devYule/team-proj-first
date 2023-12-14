@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 import team6.project.common.ResVo;
 import team6.project.common.exception.BadInformationException;
 import team6.project.common.exception.MyMethodArgumentNotValidException;
-import team6.project.user.model.*;
-
-import java.util.List;
+import team6.project.user.model.UserInsDto;
+import team6.project.user.model.UserSelVo;
+import team6.project.user.model.UserUpDto;
 
 @Slf4j
 @Service
