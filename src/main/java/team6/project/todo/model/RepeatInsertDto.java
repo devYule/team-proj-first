@@ -3,8 +3,6 @@ package team6.project.todo.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import team6.project.todo.model.PatchTodoDto;
-import team6.project.todo.model.TodoRegDto;
 
 import java.time.LocalDate;
 

@@ -225,10 +225,11 @@ public class TodoServiceV2 implements TodoServiceInter {
         return new ResVo(repository.updateTodoAndRepeatIfExists(dto));
     }
 
+    @Transactional
     public ResVo deleteTodo(TodoDeleteDto dto, Integer delOnlyRepeat) {
         // repeat 유무 관계 없이 delete query 실행.
         Integer delRepeatResult = repository.deleteRepeat(dto.getIuser(), dto.getItodo());
-        if (delOnlyRepeat == 1) {
+        if (delOnlyRepeat != null && delOnlyRepeat == 1) {
             return new ResVo(delRepeatResult);
         }
         int result = repository.deleteTodo(dto);
