@@ -1,14 +1,11 @@
 package team6.project.todo.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
-
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -48,6 +45,9 @@ public class TodoRegDto {
     @Schema(title = "반복 종류 시간", type = "String", description = "주반복: week, 월반복: month")
     private String repeatType;
 
+    /* TODO: 12/14/23  
+        주반복 식별 숫자 0~6 로 바꾸어야함. (다른 부분에도 있으면 변경 필)
+        --by Hyunmin */
     @Schema(title = "반복 식별 숫자", type = "Integer", description = "주반복일 경우: 1~7, 월반복일 경우: 1~31")
     @Range(min = 1, max = 31, message = "올바른 반복 일 이 아님")
     private Integer repeatNum;
