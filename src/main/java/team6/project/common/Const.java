@@ -7,9 +7,10 @@ public interface Const {
     /* TODO: 12/13/23
         코드로 변경, 프론트와 약속
         --by Hyunmin */
-    String BAD_REQUEST_EX_MESSAGE = "bad request";
-    String BAD_DATE_INFO_EX_MESSAGE = "bad date Info";
-    String BAD_TIME_INFO_EX_MESSAGE = "bad time Info";
+    String BAD_REQUEST_EX_MESSAGE = "잘못된 요청";
+    String BAD_INFO_EX_MESSAGE = "잘못된 요청 데이터";
+    String BAD_DATE_INFO_EX_MESSAGE = "잘못된 날짜 정보 입력";
+    String BAD_TIME_INFO_EX_MESSAGE = "잘못된 시간 정보 입력";
     String NO_SUCH_DATA_EX_MESSAGE = "해당하는 데이터 없음";
     String TODO_IS_FULL_EX_MESSAGE = "Todo 는 10개 이상 등록할 수 없음";
     String TODO_SAVE_FAIL_EX_MESSAGE = "투두 저장 실패";
