@@ -2,6 +2,7 @@ package team6.project.todo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team6.project.common.ResVo;
 import team6.project.common.exception.*;
@@ -20,9 +21,9 @@ import java.util.List;
 import static team6.project.common.Const.*;
 
 @Slf4j
-//@Service
+@Service
 @RequiredArgsConstructor
-public class TodoServiceV2 implements TodoServiceInter {
+public class TodoServiceV3 implements TodoServiceInter {
 
     private final TodoRepository repository;
     private final CommonUtils commonUtils;
@@ -176,9 +177,9 @@ public class TodoServiceV2 implements TodoServiceInter {
 
 
         // startDate & endDate 오류 검증
-        checkIsBefore(checkResultData.getEndDate(), checkResultData.getStartDate());
         // startTime & endTime 오류 검증
-        checkIsBefore(checkResultData.getEndTime(), checkResultData.getStartTime());
+        checkIsBefore(LocalDateTime.of(checkResultData.getEndDate(), checkResultData.getEndTime()),
+                LocalDateTime.of(checkResultData.getStartDate(), checkResultData.getStartTime()));
 
 
         // 데이터에는 오류가 없음이 보장됨.
@@ -192,33 +193,49 @@ public class TodoServiceV2 implements TodoServiceInter {
         다만, db에 반복 데이터가 없는데 수정 데이터에 반복 데이터가 있다면 insert 할 수는 있다.
          */
 
+        // DB 에 repeat 정보가 저장되어 있는지 여부 체크.
         boolean hasRepeatInfoInDB = selectResult.getRepeatEndDate() != null;
         try {
 
             // db에 있든, dto 에 있든 repeatEndDate 가 있다면 검증.
+
             final LocalDate repeatEndDate = checkResultData.getRepeatEndDate();
-            LocalDate endDateWalker = LocalDate.of(checkResultData.getEndDate().getYear(),
-                    checkResultData.getEndDate().getMonth(),
-                    checkResultData.getEndDate().getDayOfMonth());
+            LocalDate startDateWalker = LocalDate.of(
+                    checkResultData.getStartDate().getYear(),
+                    checkResultData.getStartDate().getMonth(),
+                    checkResultData.getStartDate().getDayOfMonth());
+            // db, dto 모두 repeat 정보가 없는 경우 NPE
+            // 병합된 데이터 기준, 따라서 repeat 정보가 db 또는 dto 중 한곳이라도 존재 한다면,
+            // 무조건 repeatEndDate, repeatType, repeatNum 모두 null 이 아님.
             if (checkResultData.getRepeatType().equalsIgnoreCase(WEEK)) {
-                endDateWalker = endDateWalker.plusWeeks(1);
+                startDateWalker = startDateWalker.plusWeeks(1);
             } else {
-                endDateWalker = endDateWalker.plusMonths(1);
+                startDateWalker = startDateWalker.plusMonths(1);
             }
 
             // 검증
-            checkIsBefore(repeatEndDate, endDateWalker);
+            checkIsBefore(
+                    LocalDateTime.of(repeatEndDate, LocalTime.of(23, 59, 59)),
+                    LocalDateTime.of(startDateWalker, checkResultData.getStartTime()));
 
             if (!hasRepeatInfoInDB) {
                 // dto에는 repeat 정보가 있고, db에는 없는 경우 (todo_repeat insert)
-                repository.saveRepeat(new RepeatInsertDto(dto.getItodo(), checkResultData.getRepeatEndDate(), checkResultData.getRepeatType(),
+                repository.saveRepeat(new RepeatInsertDto(dto.getItodo(),
+                        checkResultData.getRepeatEndDate(),
+                        checkResultData.getRepeatType(),
                         checkResultData.getRepeatNum()));
+                // 새로 insert 했으니까 update 될 필요 없기 때문에 null 로 세팅.
+                checkResultData.setRepeatEndDate(null);
+                checkResultData.setRepeatType(null);
+                checkResultData.setRepeatNum(null);
             }
 
 
         } catch (NullPointerException e) {
-            // dto 와 db 모두 repeat 정보가 없는 경우 (아무것도 하지 않으면 됨.)
-            commonUtils.checkObjectIsNotNullThrow(BadInformationException.class, NOT_ENOUGH_INFO_EX_MESSAGE, checkResultData.getRepeatEndDate(),
+            // dto 와 db 모두 repeat 정보가 없는 경우.
+            // NPE 가 터져서 catch 로 온 상황에 repeatType 과 repeatNum 둘다 null 이 아니라면 충분한 정보가 제공되지 않은것.
+            commonUtils.checkObjectIsNotNullThrow(BadInformationException.class, NOT_ENOUGH_INFO_EX_MESSAGE,
+                    checkResultData.getRepeatEndDate(),
                     checkResultData.getRepeatType(),
                     checkResultData.getRepeatNum());
 
@@ -233,6 +250,7 @@ public class TodoServiceV2 implements TodoServiceInter {
         // repeat 유무 관계 없이 delete query 실행.
         Integer delRepeatResult = repository.deleteRepeat(dto.getIuser(), dto.getItodo());
         if (delOnlyRepeat != null && delOnlyRepeat == 1) {
+            // 반복정보만 지울경우
             return new ResVo(delRepeatResult);
         }
         int result = repository.deleteTodo(dto);
@@ -260,19 +278,6 @@ public class TodoServiceV2 implements TodoServiceInter {
     private void checkRepeatNumInCatch(Integer repeatNum) {
         if (repeatNum != null) {
             throw new BadInformationException(BAD_REQUEST_EX_MESSAGE);
-        }
-    }
-
-
-
-    private void checkIsBefore(LocalDate endDate, LocalDate startDate) {
-        if (endDate.isBefore(startDate)) {
-            throw new BadDateInformationException(BAD_DATE_INFO_EX_MESSAGE);
-        }
-    }
-    private void checkIsBefore(LocalTime endTime, LocalTime startTime) {
-        if (endTime.isBefore(startTime)) {
-            throw new BadDateInformationException(BAD_DATE_INFO_EX_MESSAGE);
         }
     }
 

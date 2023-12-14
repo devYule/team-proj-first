@@ -1,11 +1,10 @@
 package team6.project.todo.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Range;
 
 import java.time.LocalDate;
@@ -13,6 +12,7 @@ import java.time.LocalTime;
 
 @Getter
 @Builder
+@ToString
 @Schema(description = "기존데이터 필수로 제공, 변경된 사항은 변경된 데이터로 제공")
 public class PatchTodoDto {
 

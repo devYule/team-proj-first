@@ -35,7 +35,6 @@ public class TodoController {
         // 3개 모두 null 일경우 아무것도 하지않음 보장.
         commonUtils.checkRepeatNumWithRepeatType(dto.getRepeatEndDate(), dto.getRepeatType(), dto.getRepeatNum());
 
-
         log.debug("postTodo's dto = {}", dto);
 
         return service.regTodo(dto);
@@ -63,10 +62,12 @@ public class TodoController {
         commonUtils.checkRepeatNumWithRepeatType(dto.getRepeatEndDate(), dto.getRepeatType(), dto.getRepeatNum());
 
         log.info("patchTodo's dto = {}", dto);
-        commonUtils.checkObjectIsNotNullThrow(NotEnoughInformationException.class, NOT_ENOUGH_INFO_EX_MESSAGE, dto.getTodoContent(),
+        commonUtils.checkObjectAnyNullThrow(NotEnoughInformationException.class, NOT_ENOUGH_INFO_EX_MESSAGE,
+                dto.getTodoContent(),
                 dto.getStartDate(),
                 dto.getEndDate(),
                 dto.getStartTime(), dto.getEndTime());
+
         return service.patchTodo(dto);
 
     }
