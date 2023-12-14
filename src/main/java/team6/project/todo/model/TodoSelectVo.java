@@ -14,7 +14,6 @@ import java.time.LocalTime;
 public class TodoSelectVo {
 
     private Integer itodo;
-    @JsonProperty("todo_content")
     private String todoContent;
     private LocalDate startDate;
     private LocalDate endDate;

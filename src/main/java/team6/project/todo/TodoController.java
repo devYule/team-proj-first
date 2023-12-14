@@ -1,9 +1,7 @@
 package team6.project.todo;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team6.project.common.ResVo;
@@ -12,10 +10,10 @@ import team6.project.common.exception.NotEnoughInformationException;
 import team6.project.common.utils.CommonUtils;
 import team6.project.todo.model.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
-import static team6.project.common.Const.*;
+import static team6.project.common.Const.BAD_INFO_EX_MESSAGE;
+import static team6.project.common.Const.NOT_ENOUGH_INFO_EX_MESSAGE;
 
 @RestController
 @Slf4j
@@ -74,20 +72,15 @@ public class TodoController {
     }
 
     @DeleteMapping("/{iuser}/{itodo}") // query string - rp(delOnlyRepeat)
-    public ResVo deleteTodo(TodoDeleteDto dto, @JsonProperty("rp") @RequestParam(required = false) Integer delOnlyRepeat) {
+    public ResVo deleteTodo(TodoDeleteDto dto,
+                            @RequestParam(required = false, value = "rp") Integer delOnlyRepeat) {
         if (delOnlyRepeat != null && delOnlyRepeat != 1) {
             throw new BadInformationException(BAD_INFO_EX_MESSAGE);
         }
         log.info("deleteTodo's dto = {}", dto);
 
         return service.deleteTodo(dto, delOnlyRepeat);
-
-
     }
-
-    /* TODO: 2023-12-14
-        _todo 에서 repeat 정보만 삭제하는 기능 구현
-        --by Hyunmin */
 
 
 }
