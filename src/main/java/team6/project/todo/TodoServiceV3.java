@@ -147,20 +147,19 @@ public class TodoServiceV3 implements TodoServiceInter {
         프론트로부터 제공받은 start_date + start_time || end_date + end_time 으로 날짜를 만드는데,
         만약 그들중 null 인 부분이 있다면 db에서 가져온 값을 대입한다.
         그리고 그 두 날짜를 비교한다.
-        만약 start_date + start_time 이 end_date + end_time 보다 1분이라도 이후라면 (isAfter) 정상로직으로,
-        데이터를 update 한다.
-        else 라면 예외처리한다. (제공된 날짜 정보가 잘못되었다)
+        만약 start_date + start_time 이 end_date + end_time 보다 1분이라도 이후라면 (isAfter) 정상로직을 수행 한다.
+        아니라면 라면 예외처리한다. (제공된 날짜 정보가 잘못되었다)
         +
         repeat_end_date 도 검증해야한다.
-        만약 프론트에서 넘어온 값이 있다면 end_date + end_time 과 비교, repeat_end_date 가 더 이후인지 체크,
-        없다면 db에 저장된 repeat_end_date 가 end_date + end_time 보다 이후인지 체크해야 한다.
+        만약 프론트에서 넘어온 값이 있다면 end_date + end_time 과 비교, repeat_end_date + 23:59:59 가 더 이후인지 체크,
+        만약 없다면 db에 저장된 repeat_end_date + 23:59:59 가 end_date + end_time 보다 이후인지 체크해야 한다.
         만약, 프론트에서도 repeat_end_date 가 넘어오지 않았고(null 이고), db에서 가져온 repeat_end_date 도 null 이라면
-        그냥 set을 하지 않으면 된다.
+        (병합본이 null 이라면) t_todo 만 update 하면 된다. - 데이터 검증은 필요.
          */
 
 
         /*
-        일단 다 가져와서 검증하는 모델 생성
+        일단 다 가져와서 검증하는 모델 생성 (병합)
         검증
         문제없으면 PatchTodoDto 를 <if> 이용하여 update
          */
