@@ -1,5 +1,6 @@
 package team6.project.todo;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -19,13 +20,13 @@ import static team6.project.common.Const.NOT_ENOUGH_INFO_EX_MESSAGE;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/todo")
-
 public class TodoController {
 
     private final TodoServiceInter service;
     private final CommonUtils commonUtils;
 
     @PostMapping
+    @Operation(summary = "투두 등록", description = "투두 정보 등록")
     public ResVo postTodo(@Validated @RequestBody TodoRegDto dto) {
 
         // repeatType, repeatNum 둘중 하나만 값 있는 경우 체크
@@ -42,6 +43,7 @@ public class TodoController {
 
 
     @GetMapping("/{iuser}")
+    @Operation(summary = "투두 조회", description = "투두 정보 조회")
     public List<TodoSelectVo> getTodo(@Validated TodoSelectDto dto) {
         log.info("getTodo's dto = {}", dto);
 
@@ -52,6 +54,7 @@ public class TodoController {
     }
 
     @PatchMapping
+    @Operation(summary = "투두 정보 수정", description = "투두 정보 수정")
     public ResVo patchTodo(@Validated @RequestBody PatchTodoDto dto) {
 
         // repeatType, repeatNum 둘중 하나만 값 있는 경우 체크
@@ -73,6 +76,7 @@ public class TodoController {
     }
 
     @DeleteMapping("/{iuser}/{itodo}") // query string - rp(delOnlyRepeat)
+    @Operation(summary = "투두 삭제", description = "투두 정보 삭제")
     public ResVo deleteTodo(TodoDeleteDto dto,
                             @RequestParam(required = false, value = "rp") Integer delOnlyRepeat) {
         if (delOnlyRepeat != null && delOnlyRepeat != 1) {

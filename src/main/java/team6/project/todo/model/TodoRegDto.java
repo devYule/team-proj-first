@@ -29,27 +29,24 @@ public class TodoRegDto {
     private LocalDate startDate;
 
 
-    @Schema(title = "일정 종료일", type = "날짜", description = "필수값", format = "yyyy-MM-dd")
+    @Schema(title = "일정 종료일", type = "날짜", description = "필수값")
     @NotNull(message = "일정 종료일은 null 일 수 없음")
     private LocalDate endDate;
 
-    @Schema(title = "일정 시작 시간", type = "시간", format = "HH:mm:ss")
+    @Schema(title = "일정 시작 시간", type = "시간", description = "nano 는 무시 가능")
     private LocalTime startTime;
 
-    @Schema(title = "일정 종료 시간", type = "시간", format = "HH:mm:ss")
+    @Schema(title = "일정 종료 시간", type = "시간", description = "nano 는 무시 가능")
     private LocalTime endTime;
 
-    @Schema(title = "반복 종료 시간", type = "날짜", format = "yyyy-MM-dd")
+    @Schema(title = "반복 종료 시간", type = "날짜")
     private LocalDate repeatEndDate;
 
-    @Schema(title = "반복 종류 시간", type = "String", description = "주반복: week, 월반복: month")
+    @Schema(title = "반복 종류 식별", type = "String", description = "주반복: week, 월반복: month")
     private String repeatType;
 
-    /* TODO: 12/14/23  
-        주반복 식별 숫자 0~6 로 바꾸어야함. (다른 부분에도 있으면 변경 필)
-        --by Hyunmin */
-    @Schema(title = "반복 식별 숫자", type = "Integer", description = "주반복일 경우: 1~7, 월반복일 경우: 1~31")
-    @Range(min = 1, max = 31, message = "올바른 반복 일 이 아님")
+    @Range(min = 0, max = 31, message = "올바른 반복 일 이 아님")
+    @Schema(title = "반복일 식별 숫자", type = "Integer", description = "주반복일 경우: 0~6 (0금 ~ 6목), 월반복일 경우: 1~31")
     private Integer repeatNum;
 
     public TodoRegDto() {
