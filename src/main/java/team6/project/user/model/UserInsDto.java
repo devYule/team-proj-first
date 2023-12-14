@@ -9,11 +9,9 @@ import lombok.Data;
 public class UserInsDto {
     @JsonIgnore
     private int iuser;
-    @JsonProperty("user_nick_name")
     private String userNickName;
-    @JsonProperty("user_gender")
     private int userGender;
-    @JsonProperty("user_age")
     private int userAge;
 
 }
+
