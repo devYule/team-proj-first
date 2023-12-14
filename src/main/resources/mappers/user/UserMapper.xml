@@ -49,7 +49,7 @@
         from t_todo T
         left join t_todo_repeat R
         on T.itodo=R.itodo
-        where R.iuser=#{iuser}
+        where T.iuser=#{iuser}
     </delete>
 
     <delete id="delTodoEmo">

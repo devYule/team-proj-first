@@ -13,7 +13,7 @@ public interface UserMapper {
     String checkUser(UserInsDto dto);
     UserSelVo selUser(int iuser);
     int upUser(UserUpDto dto);
-    List<Integer> selItodo(int itodo);
+
     int delUser(int iuser);
     int delRepeat(int iuser);
     int delTodoEmo(int iuser);
@@ -21,7 +21,7 @@ public interface UserMapper {
 
 
 
-
+//    List<Integer> selItodo(int itodo);
 
 //    int delToDoRepeat(List<Integer> itodos);
 //    int delToDo(int iuser);

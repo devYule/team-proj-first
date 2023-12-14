@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import team6.project.common.ResVo;
 import team6.project.common.exception.BadInformationException;
 import team6.project.common.exception.MyMethodArgumentNotValidException;
+import team6.project.common.exception.NoSuchException;
 import team6.project.user.model.UserInsDto;
 import team6.project.user.model.UserSelVo;
 import team6.project.user.model.UserUpDto;
@@ -50,7 +51,10 @@ public class UserService {
 
             mapper.delRepeat(iuser);
             mapper.delTodoEmo(iuser);
-            mapper.delUser(iuser);
+            if(mapper.delUser(iuser)==0){
+                throw new NoSuchException("존재하지 않는 pk");
+            }
+            mapper.delUser(iuser);//pk 없을시
             return new ResVo(iuser);
         }
 
@@ -73,7 +77,7 @@ public class UserService {
 //
 //        return new ResVo(effectedRow);
 //    }
-
+//
 
 
 }

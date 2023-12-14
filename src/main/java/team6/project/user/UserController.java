@@ -59,7 +59,7 @@ public class UserController {
 
 
     private void checkIuser(int iuser) {
-        if (iuser == 0) {
+        if (iuser<1) {
             throw new MyMethodArgumentNotValidException("iuser 필수");
         }
 
