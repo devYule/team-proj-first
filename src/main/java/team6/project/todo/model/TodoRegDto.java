@@ -45,6 +45,7 @@ public class TodoRegDto {
     private String repeatType;
 
     @JsonProperty("repeat_num")
+    @Range(min = 1, max = 31, message = "올바른 반복 일 이 아님")
     private Integer repeatNum;
 
     public TodoRegDto() {

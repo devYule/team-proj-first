@@ -8,12 +8,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Range;
+import team6.project.todo.model.ref.TodoSelectDtoRef;
 
 import java.time.LocalDate;
 
 
 @ToString
-public class TodoSelectDto {
+public class TodoSelectDto extends TodoSelectDtoRef {
 
 
     @Getter

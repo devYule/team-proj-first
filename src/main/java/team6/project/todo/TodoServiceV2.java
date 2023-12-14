@@ -9,6 +9,7 @@ import team6.project.common.exception.*;
 import team6.project.common.utils.CommonUtils;
 import team6.project.todo.model.*;
 import team6.project.todo.model.proc.*;
+import team6.project.todo.model.RepeatInsertDto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,7 +21,7 @@ import static team6.project.common.Const.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class TodoService {
+public class TodoServiceV2 implements TodoServiceInter {
 
     private final TodoRepository repository;
     private final CommonUtils commonUtils;
@@ -46,7 +47,7 @@ public class TodoService {
                 throw new TodoSaveException(TODO_SAVE_FAIL_EX_MESSAGE);
             }
 
-            InsRepeatInfoDto insRepeatInfoDto = new InsRepeatInfoDto(dto, insertTodoDto.getItodo(),
+            RepeatInsertDto insRepeatInfoDto = new RepeatInsertDto(dto, insertTodoDto.getItodo(),
                     dto.getRepeatType().equalsIgnoreCase(WEEK) ?
                             // resolve week format from JS to JAVA
                             commonUtils.toJavaFrom(dto.getRepeatNum()) :
@@ -72,7 +73,7 @@ public class TodoService {
     public List<TodoSelectVo> getTodo(TodoSelectDto dto) {
 
         // 정제 전
-        List<TodoSelectTmpResult> allTodos = repository.findTodoByObj(dto);
+        List<TodoSelectTmpResult> allTodos = repository.findTodoAndRepeatBy(dto);
 
         // 정제
         List<TodoSelectVo> result = new ArrayList<>();
@@ -173,58 +174,74 @@ public class TodoService {
             --by Hyunmin */
 
 
+        /*
+        일단 다 가져와서 검증하는 모델 생성
+        검증
+        문제없으면 PatchTodoDto 를 <if> 이용하여 update
+         */
+
+        TodoSelectTmpResult selectResult = repository.findTodoAndRepeatBy(
+                new TodoSelectDtoForUpdate(dto.getIuser(), dto.getItodo())).get(0);
+        // DB에 해당 _TODO 가 있는지 여부 체크 (수정이므로 있음이 보장되어야 함)
+        if (selectResult == null) {
+            throw new NoSuchDataException(NO_SUCH_DATA_EX_MESSAGE);
+        }
+
+        // 두 데이터 병합 (넘어온 수정 데이터에서 null 인 부분은 DB에서 가져온 데이터로 채움)
+        CheckTodoAndRepeatDto checkResultData = checkTodoData(dto, selectResult);
 
 
         // startDate & endDate 오류 검증
-        if (dto.getStartDate() != null && dto.getEndDate() != null) {
-            checkIsBefore(dto.getEndDate(), dto.getStartDate());
-        }
+        checkIsBefore(checkResultData.getEndDate(), checkResultData.getStartDate());
         // startTime & endTime 오류 검증
-        if (dto.getStartTime() != null && dto.getEndTime() != null) {
-            checkIsBefore(dto.getEndTime(), dto.getStartTime());
+        checkIsBefore(checkResultData.getEndTime(), checkResultData.getStartTime());
+
+
+        // 데이터에는 오류가 없음이 보장됨.
+
+        /*
+        수정에서는 진짜 수정만 하자.
+        repeat 데이터의 삭제는 delete 로 따로 만들자.
+        수정페이지에서 삭제버튼을 누르면 해당 repeat 의 delete 로 요청하면 되는 부분이다.
+        이유 : 수정 데이터에서 repeat 정보가 null 이 들어올 경우,
+        이게 삭제를 위한 null 인지, 아무수정도 하지 않아서 null 인지 알 수가 없다.
+        다만, db에 반복 데이터가 없는데 수정 데이터에 반복 데이터가 있다면 insert 할 수는 있다.
+         */
+
+        boolean hasRepeatInfoInDB = selectResult.getRepeatEndDate() != null;
+        try {
+
+            // db에 있든, dto 에 있든 repeatEndDate 가 있다면 검증.
+            final LocalDate repeatEndDate = checkResultData.getRepeatEndDate();
+            LocalDate endDateWalker = LocalDate.of(checkResultData.getEndDate().getYear(),
+                    checkResultData.getEndDate().getMonth(),
+                    checkResultData.getEndDate().getDayOfMonth());
+            if (checkResultData.getRepeatType().equalsIgnoreCase(WEEK)) {
+                endDateWalker = endDateWalker.plusWeeks(1);
+            } else {
+                endDateWalker = endDateWalker.plusMonths(1);
+            }
+
+            // 검증
+            checkIsBefore(repeatEndDate, endDateWalker);
+
+            if (!hasRepeatInfoInDB) {
+                // dto에는 repeat 정보가 있고, db에는 없는 경우 (todo_repeat insert)
+                repository.saveRepeat(new RepeatInsertDto(dto.getItodo(), checkResultData.getRepeatEndDate(), checkResultData.getRepeatType(),
+                        checkResultData.getRepeatNum()));
+            }
+
+
+        } catch (NullPointerException e) {
+            // dto 와 db 모두 repeat 정보가 없는 경우 (아무것도 하지 않으면 됨.)
+            commonUtils.checkObjectIsNotNullThrow(BadInformationException.class, NOT_ENOUGH_INFO_EX_MESSAGE, checkResultData.getRepeatEndDate(),
+                    checkResultData.getRepeatType(),
+                    checkResultData.getRepeatNum());
+
         }
 
-        if (repository.checkIsRepeat(dto.getIuser(), dto.getItodo())) {
-            // 기존 일정이 repeat 이 아닌 일정일 경우
-            try {
-                checkRepeatTypeAndRepeatNum(dto.getRepeatType(), dto.getRepeatNum());
-                // repeat insert
-
-                if (repository.saveRepeat(new InsRepeatInfoDto(dto,
-                        dto.getRepeatType().equalsIgnoreCase(WEEK) ?
-                                // resolve week format from JS to JAVA
-                                commonUtils.toJavaFrom(dto.getRepeatNum()) :
-                                dto.getRepeatNum())) == 0) {
-                    throw new RepeatSaveException(REPEAT_SAVE_FAIL_EX_MESSAGE);
-                }
-                // t_todo update (at last)
-            } catch (NullPointerException e) {
-                checkRepeatNumInCatch(dto.getRepeatNum());
-                // t_todo update (at last)
-            }
-        } else {
-            // 기존 일정이 repeat 인 일정일 경우
-            try {
-                checkRepeatTypeAndRepeatNum(dto.getRepeatType(), dto.getRepeatNum());
-                // repeat update
-
-                // resolve week format from JS to JAVA
-                repository.updateRepeat(new UpdateRepeatDto(dto.getItodo(), dto.getRepeatEndDate(), dto.getRepeatType(),
-                        dto.getRepeatType().equalsIgnoreCase(WEEK) ?
-                                commonUtils.toJavaFrom(dto.getRepeatNum()) :
-                                dto.getRepeatNum()));
-                // t_todo update (at last)
-            } catch (NullPointerException e) {
-                // 수정사항에 repeat 정보가 없는경우 == 기존 repeat 을 제거하거나 애초에 repeat 일정이 아닌경우
-                // 두가지 경우에 관계 없이 delete query 실행.
-                checkRepeatNumInCatch(dto.getRepeatNum());
-                // repeat delete
-                repository.deleteRepeat(dto.getIuser(), dto.getItodo());
-                // t_todo update (at last)
-            }
-        }
-        // t_todo update !  (공통 사항)
-        return new ResVo(repository.updateTodo(new UpdateTodoDto(dto)));
+        // t_todo update !  (공통 사항) - repeat 도 <if> 로 다 작성.
+        return new ResVo(repository.updateTodoAndRepeatIfExists(dto));
     }
 
     public ResVo deleteTodo(TodoDeleteDto dto) {
@@ -274,5 +291,19 @@ public class TodoService {
         if (endTime.isBefore(startTime)) {
             throw new BadDateInformationException(BAD_TIME_INFO_EX_MESSAGE);
         }
+    }
+
+
+    private CheckTodoAndRepeatDto checkTodoData(PatchTodoDto dto, TodoSelectTmpResult selectResult) {
+        return CheckTodoAndRepeatDto.builder()
+                .todoContent(dto.getTodoContent() == null ? selectResult.getTodoContent() : dto.getTodoContent())
+                .startDate(dto.getStartDate() == null ? selectResult.getStartDate() : dto.getStartDate())
+                .endDate(dto.getEndDate() == null ? selectResult.getEndDate() : dto.getEndDate())
+                .startTime(dto.getStartTime() == null ? selectResult.getStartTime() : dto.getStartTime())
+                .endTime(dto.getEndTime() == null ? selectResult.getEndTime() : dto.getEndTime())
+                .repeatEndDate(dto.getRepeatEndDate() == null ? selectResult.getRepeatEndDate() : dto.getRepeatEndDate())
+                .repeatType(dto.getRepeatType() == null ? selectResult.getRepeatType() : dto.getRepeatType())
+                .repeatNum(dto.getRepeatNum() == null ? selectResult.getRepeatNum() : dto.getRepeatNum())
+                .build();
     }
 }

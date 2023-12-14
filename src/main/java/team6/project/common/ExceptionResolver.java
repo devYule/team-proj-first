@@ -18,25 +18,25 @@ public class ExceptionResolver {
     @ExceptionHandler
     public ExceptionResultVo noSuchDataException(NoSuchDataException e) {
         log.info("message = {}", e.getMessage(), e);
-        return new ExceptionResultVo(NO_SUCH_DATA_EX_MESSAGE);
+        return new ExceptionResultVo(e.getMessage());
     }
 
     @ExceptionHandler
     public ExceptionResultVo badDateInformationException(BadDateInformationException e) {
         log.info("message = {}", e.getMessage(), e);
-        return new ExceptionResultVo(BAD_DATE_INFO_EX_MESSAGE);
+        return new ExceptionResultVo(e.getMessage());
     }
 
     @ExceptionHandler
     public ExceptionResultVo badInformationException(BadInformationException e) {
         log.info("message = {}", e.getMessage(), e);
-        return new ExceptionResultVo(BAD_REQUEST_EX_MESSAGE);
+        return new ExceptionResultVo(e.getMessage());
     }
 
     @ExceptionHandler
     public ExceptionResultVo todoIsFullException(TodoIsFullException e) {
         log.info("message = {}", e.getMessage(), e);
-        return new ExceptionResultVo(TODO_IS_FULL_EX_MESSAGE);
+        return new ExceptionResultVo(e.getMessage());
     }
 
     @ExceptionHandler
@@ -63,13 +63,13 @@ public class ExceptionResolver {
     @ExceptionHandler
     public ExceptionResultVo httpMessageNotReadableException(HttpMessageNotReadableException e) {
         log.info("message = {}", e.getMessage(), e);
-        return new ExceptionResultVo(BAD_REQUEST_TYPE_EX_MESSAGE);
+        return new ExceptionResultVo(e.getMessage());
     }
 
     @ExceptionHandler
     public ExceptionResultVo notEnoughInformationException(NotEnoughInformationException e) {
         log.info("message = {}", e.getMessage(), e);
-        return new ExceptionResultVo(NOT_ENOUGH_INFO_EX_MESSAGE);
+        return new ExceptionResultVo(e.getMessage());
     }
 
 
@@ -77,6 +77,6 @@ public class ExceptionResolver {
     @ExceptionHandler
     public ExceptionResultVo runtimeException(RuntimeException e) {
         log.info("message = {}", e.getMessage(), e);
-        return new ExceptionResultVo(RUNTIME_EX_MESSAGE);
+        return new ExceptionResultVo(e.getMessage());
     }
 }

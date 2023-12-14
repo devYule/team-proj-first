@@ -7,11 +7,9 @@ import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
-public class UpdateRepeatDto {
+public class RepeatUpdateDto {
     private Integer itodo;
     private LocalDate repeatEndDate;
     private String repeatType;
     private Integer repeatNum;
-
-
 }

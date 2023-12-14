@@ -3,9 +3,11 @@ package team6.project.todo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import team6.project.todo.model.PatchTodoDto;
+import team6.project.todo.model.RepeatInsertDto;
 import team6.project.todo.model.TodoDeleteDto;
-import team6.project.todo.model.TodoSelectDto;
 import team6.project.todo.model.proc.*;
+import team6.project.todo.model.ref.TodoSelectDtoRef;
 
 import java.util.List;
 
@@ -26,13 +28,15 @@ public class TodoRepository {
     }
 
 
-    public Integer saveRepeat(InsRepeatInfoDto dto) {
+    public Integer saveRepeat(RepeatInsertDto dto) {
         return mapper.insRepeat(dto);
     }
 
-    public List<TodoSelectTmpResult> findTodoByObj(TodoSelectDto dto) {
+    public List<TodoSelectTmpResult> findTodoAndRepeatBy(TodoSelectDtoRef dto) {
         return mapper.selectTodo(dto);
     }
+
+
 
     public boolean checkIsRepeat(Integer iuser, Integer itodo) {
         boolean b = mapper.isRepeat(iuser, itodo) == 0;
@@ -40,9 +44,7 @@ public class TodoRepository {
         return b;
     }
 
-    public void updateRepeat(UpdateRepeatDto dto) {
-        mapper.patchRepeat(dto);
-    }
+
 
     public Integer deleteRepeat(Integer iuser, Integer itodo) {
         return mapper.deleteTodoRepeat(iuser, itodo);
@@ -52,10 +54,12 @@ public class TodoRepository {
         return mapper.deleteTodo(dto);
     }
 
-    public Integer updateTodo(UpdateTodoDto dto) {
+    public Integer updateTodoAndRepeatIfExists(PatchTodoDto dto) {
 
-        return mapper.patchTodo(dto);
+        return mapper.patchTodoAndRepeatIfExists(dto) == 0 ? 0 : 1;
 
     }
+
+
 
 }

@@ -14,7 +14,7 @@ public class CommonUtils {
         return target + 5 > 7 ? target + 5 - 7 : target + 5;
     }
 
-    public void checkObjectIsNull(Class<? extends RuntimeException> ex, String message, Object... objs) {
+    public void checkObjectIsNullThrow(Class<? extends RuntimeException> ex, String message, Object... objs) {
         // 제공된 모든 객체가 모두 null 이면 ex에 제공한 예외에 message 를 담아서 throw
         for (Object obj : objs) {
             if (obj != null) {
@@ -27,6 +27,20 @@ public class CommonUtils {
             throw new RuntimeException(e);
         }
     }
+    public void checkObjectIsNotNullThrow(Class<? extends RuntimeException> ex, String message, Object... objs) {
+        // 제공된 모든 객체가 모두 null 이면 ex에 제공한 예외에 message 를 담아서 throw
+        for (Object obj : objs) {
+            if (obj != null) {
+                try {
+                    throw ex.getDeclaredConstructor(String.class).newInstance(message);
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+    }
+
 
     public boolean checkObjectIsNotNull(Object... objs) {
         for (Object obj : objs) {

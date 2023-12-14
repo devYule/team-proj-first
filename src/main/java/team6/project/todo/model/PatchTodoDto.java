@@ -39,6 +39,7 @@ public class PatchTodoDto {
     @Schema(description = "기존 일정에 반복정보가 있고, 수정시 반복정보를 수정하지 않더라도 해당 수정보의 값들을 모두 담아서 보내야함.")
     private String repeatType;
     @JsonProperty("repeat_num")
+    @Range(min = 1, max = 31, message = "올바른 반복 일 이 아님")
     @Schema(description = "기존 일정에 반복정보가 있고, 수정시 반복정보를 수정하지 않더라도 해당 수정보의 값들을 모두 담아서 보내야함.")
     private Integer repeatNum;
 }

@@ -48,44 +48,60 @@
     </select>
 
     <select id="selectTodo">
+        <!--        select T.itodo, T.todo_content as todoContent, start_date as startDate, end_date as endDate, start_time as startTime,-->
+        <!--        end_time as endTime, repeat_end_date as repeatEndDate, repeat_type as repeatType, repeat_num as repeatNum-->
+        <!--        from t_todo T-->
+        <!--        left join t_todo_repeat R ON T.itodo = R.itodo-->
+        <!--        WHERE T.iuser = #{iuser} AND (T.start_date <![CDATA[<=]]> #{selectedDate} AND T.end_date >= #{selectedDate}-->
+        <!--        OR R.repeat_end_date >= #{selectedDate})-->
         select T.itodo, T.todo_content as todoContent, start_date as startDate, end_date as endDate, start_time as startTime,
         end_time as endTime, repeat_end_date as repeatEndDate, repeat_type as repeatType, repeat_num as repeatNum
         from t_todo T
         left join t_todo_repeat R ON T.itodo = R.itodo
-        WHERE T.iuser = #{iuser} AND (T.start_date <![CDATA[<=]]> #{selectedDate} AND T.end_date >= #{selectedDate}
-        OR R.repeat_end_date >= #{selectedDate})
+        <where>
+            T.iuser = #{iuser}
+            <if test="itodo != null">
+                and T.itodo = #{itodo}
+            </if>
+            <if test="selectedDate != null">
+                AND (T.start_date <![CDATA[<=]]> #{selectedDate}
+                AND T.end_date >= #{selectedDate}
+                OR R.repeat_end_date >= #{selectedDate})
+            </if>
+        </where>
+
     </select>
 
-<!--    <update id="patchTodoAndRepeat">-->
-<!--        UPDATE t_todo T LEFT JOIN t_todo_repeat R ON T.itodo = R.itodo-->
-<!--        <set>-->
-<!--            <if test="todoContent != null">-->
-<!--                todo_content = #{todoContent},-->
-<!--            </if>-->
-<!--            <if test="startDate != null">-->
-<!--                start_date = #{startDate},-->
-<!--            </if>-->
-<!--            <if test="endDate != null">-->
-<!--                end_date = #{endDate},-->
-<!--            </if>-->
-<!--            <if test="startTime != null">-->
-<!--                start_time = #{startTime},-->
-<!--            </if>-->
-<!--            <if test="endTime != null">-->
-<!--                end_time = #{endTime},-->
-<!--            </if>-->
-<!--            <if test="repeatEndDate != null">-->
-<!--                repeat_end_date = #{repeatEndDate},-->
-<!--            </if>-->
-<!--            <if test="repeatType != null">-->
-<!--                repeat_type = #{repeatType},-->
-<!--            </if>-->
-<!--            <if test="repeatNum != null">-->
-<!--                repeat_num = #{repeatNum},-->
-<!--            </if>-->
-<!--        </set>-->
-<!--        WHERE T.itodo = #{itodo} AND T.iuser = #{iuser}-->
-<!--    </update>-->
+    <!--    <update id="patchTodoAndRepeat">-->
+    <!--        UPDATE t_todo T LEFT JOIN t_todo_repeat R ON T.itodo = R.itodo-->
+    <!--        <set>-->
+    <!--            <if test="todoContent != null">-->
+    <!--                todo_content = #{todoContent},-->
+    <!--            </if>-->
+    <!--            <if test="startDate != null">-->
+    <!--                start_date = #{startDate},-->
+    <!--            </if>-->
+    <!--            <if test="endDate != null">-->
+    <!--                end_date = #{endDate},-->
+    <!--            </if>-->
+    <!--            <if test="startTime != null">-->
+    <!--                start_time = #{startTime},-->
+    <!--            </if>-->
+    <!--            <if test="endTime != null">-->
+    <!--                end_time = #{endTime},-->
+    <!--            </if>-->
+    <!--            <if test="repeatEndDate != null">-->
+    <!--                repeat_end_date = #{repeatEndDate},-->
+    <!--            </if>-->
+    <!--            <if test="repeatType != null">-->
+    <!--                repeat_type = #{repeatType},-->
+    <!--            </if>-->
+    <!--            <if test="repeatNum != null">-->
+    <!--                repeat_num = #{repeatNum},-->
+    <!--            </if>-->
+    <!--        </set>-->
+    <!--        WHERE T.itodo = #{itodo} AND T.iuser = #{iuser}-->
+    <!--    </update>-->
 
     <update id="patchRepeat">
         update t_todo_repeat
@@ -98,8 +114,10 @@
         </set>
         where itodo = #{itodo}
     </update>
-    <update id="patchTodo">
-        update t_todo
+    <update id="patchTodoAndRepeatIfExists">
+        update t_todo T
+        left join t_todo_repeat R
+        on T.itodo = R.itodo
         <set>
             <if test="todoContent != null">
                 todo_content = #{todoContent},
@@ -116,8 +134,18 @@
             <if test="endTime != null">
                 end_time = #{endTime},
             </if>
+            <if test="repeatEndDate != null">
+                repeat_end_date = #{repeatEndDate},
+            </if>
+            <if test="repeatType != null">
+                repeat_type = #{repeatType},
+            </if>
+            <if test="repeatNum != null">
+                repeat_num = #{repeatNum}
+            </if>
         </set>
-        where itodo = #{itodo} and iuser = #{iuser}
+        where T.itodo = #{itodo} and T.iuser = #{iuser}
+
     </update>
 
     <delete id="deleteTodoRepeat">
