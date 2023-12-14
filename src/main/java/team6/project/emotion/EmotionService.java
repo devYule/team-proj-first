@@ -7,7 +7,7 @@ import team6.project.common.ResVo;
 import team6.project.emotion.model.*;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 
@@ -26,8 +26,14 @@ public class EmotionService {
     //현재까지 작성한 이모션단계,이모션태그를 월별로 출력
     //이모션을 작성한 날에 Todo가 있으면 hasTodo 1, 없으면 0.
     public List<EmotionSelVo> getEmo(EmotionSelDto dto) {
-        List<EmotionSelVo> emotionSelVos = emotionMapper.getEmotions(dto);
-        return emotionSelVos;
+        Set<EmotionSelVo> toDo= new HashSet<>();
+        toDo.addAll(emotionMapper.getTodoMonth(dto));
+        List<EmotionSelVo> monthTodo=new ArrayList<>(toDo);
+        monthTodo.addAll(emotionMapper.getRepeatTodoMonth(dto));
+        List<EmotionSelVo> monthEmotion=emotionMapper.getEmotionMonth(dto);
+        List<EmotionSelVo> newlist=new ArrayList<EmotionSelVo>(new HashSet<EmotionSelVo>(monthTodo));
+
+        return newlist;
     }
 
     // 해당 날의 이모션들 삭제 //

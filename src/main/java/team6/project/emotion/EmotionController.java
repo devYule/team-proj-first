@@ -25,6 +25,7 @@ public class EmotionController {
                                      @RequestParam("m") int month){
         EmotionSelDto dto = new EmotionSelDto(iuser, year, month);
         log.info("EmotionSelDto : {}",dto);
+
         return emotionService.getEmo(dto);
     }
     @DeleteMapping

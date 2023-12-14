@@ -7,20 +7,56 @@
             iuser=#{iuser},iemotion_grade=#{emoGrade},iemotion_tag=#{emoTag}
         </set>
     </insert>
-    <select id="getEmotions">
-        SELECT DATE_FORMAT(A.created_at, '%Y/%m/%d') AS emotionCreatedAt,
-        A.iemotion_grade AS emotionGrade,A.iemotion_tag AS emotionTag,
-        case when EXISTS(SELECT 1
-                    FROM t_todo B
-                    WHERE B.start_date <![CDATA[<=]]> emotionCreatedAt
-                    AND B.end_date>=emotionCreatedAt
-                    AND B.iuser=#{iuser})
-        THEN 1 ELSE 0 END AS hasTodo
+    <select id="getTodoMonth">
+            WITH RECURSIVE T AS(
+            SELECT LAST_DAY (concat(#{year},'-',#{month},'-01') - INTERVAL 1 MONTH) + INTERVAL 1 DAY AS startDate
+            UNION ALL
+            SELECT startDate + INTERVAL 1 DAY
+            FROM T
+            WHERE startDate &lt;LAST_DAY (concat(#{year},'-',#{month},'-01'))
+            )
+        SELECT T.startDate AS emotionCreatedAt, 1 AS hasTodo
+        FROM t_todo A
+        LEFT JOIN t_todo_repeat B
+        ON A.itodo = B.itodo
+        JOIN T
+        ON T.startDate BETWEEN A.start_date AND A.end_date AND A.iuser=#{iuser}
+        WHERE B.itodo IS NULL
+    </select>
+    <select id="getEmotionMonth">
+        SELECT DATE_FORMAT(A.created_at,'%Y-%m-%d') AS emotionCreatedAt
+        , A.iemotion_grade AS emotionGrade, A.iemotion_tag AS emotionTag
         FROM t_emotion A
-        WHERE A.created_at >= concat(#{year},'-',#{month},'-01')
-        AND A.created_at <![CDATA[<]]> DATE_ADD(concat(#{year},'-',#{month},'-01'),INTERVAL 1 MONTH )
-        AND A.iuser=#{iuser}
-        ORDER BY A.created_at ASC
+        WHERE A.iuser=#{iuser} AND DATE_FORMAT(A.created_at,'%Y-%m')=concat(#{year},'-',#{month})
+        ORDER BY A.created_at
+    </select>
+    <select id="getRepeatTodoMonth">
+            WITH RECURSIVE T AS(
+            SELECT LAST_DAY(concat(#{year},'-',#{month},'-01')- INTERVAL 1 MONTH) + INTERVAL 1 DAY AS startDate
+            UNION ALL
+            SELECT startDate + INTERVAL 1 DAY
+            FROM T
+            WHERE startDate &lt;LAST_DAY(concat(#{year},'-',#{month},'-01'))
+            )
+        SELECT DISTINCT T.startDate AS emotionCreatedAt,1 AS hasTodo
+        FROM T
+        JOIN t_todo_repeat A
+        ON case when DAYOFWEEK(T.startDate)=1 then 7
+        when DAYOFWEEK(T.startDate)=2 then 1
+        when DAYOFWEEK(T.startDate)=3 then 2
+        when DAYOFWEEK(T.startDate)=4 then 3
+        when DAYOFWEEK(T.startDate)=5 then 4
+        when DAYOFWEEK(T.startDate)=6 then 5
+        when DAYOFWEEK(T.startDate)=7 then 6
+        END =case when A.repeat_type='week'
+        then A.repeat_num
+        END OR case when A.repeat_type='month'
+        then A.repeat_num
+        END = DATE_FORMAT(T.startDate,'%d')
+        JOIN t_todo B
+        ON A.itodo=B.itodo
+        WHERE (T.startDate>=B.start_date AND T.startDate&lt;=B.end_date)
+        ORDER BY T.startDate
     </select>
     <delete id="delEmo">
         DELETE FROM t_emotion
