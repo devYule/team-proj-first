@@ -13,7 +13,6 @@ import team6.project.common.exception.BadInformationException;
 import team6.project.common.utils.CommonUtils;
 import team6.project.todo.model.*;
 import team6.project.todo.model.proc.TodoSelectDto;
-import team6.project.todo.model.TodoSelectTransDto;
 
 import java.util.List;
 

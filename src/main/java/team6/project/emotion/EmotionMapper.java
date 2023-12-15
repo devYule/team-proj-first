@@ -16,5 +16,5 @@ public interface EmotionMapper {
     //이번달 반복하는 투두 날짜, hasTodo 가져옴.
     List<EmotionSelVo> getRepeatTodoMonth(EmotionSelDto dto);
     int delEmo(EmotionDelDto dto);
-    List<EmotionSel> getEmoChart(EmotionSelAsChartDto dto);
+    List<EmotionSel> getEmoChart(EmotionSelAsChartDto dto);//
 }

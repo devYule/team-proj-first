@@ -37,5 +37,6 @@ public class EmotionController {
     public EmotionSelAsChartVo getEmoChart(@PathVariable int iuser){
         log.info("iuser : {}",iuser);
         return emotionService.getEmoChart(iuser);
+        //
     }
 }
