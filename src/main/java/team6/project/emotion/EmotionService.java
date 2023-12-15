@@ -58,10 +58,16 @@ public class EmotionService {
                 }
             }
         }
+
         List<EmotionSelVo> anotherList=new ArrayList<>();
         for (EmotionSelVo emotionSelVo:emotionMonth) {
-//            if (emotionSelVo)
+            if (list!=emotionSelVo){
+                anotherList.add(emotionSelVo);
+
+            }
         }
+
+
 
         Comparator<EmotionSelVo> byDay = Comparator.comparing(EmotionSelVo::getEmotionCreatedAt);
         Collections.sort(emotionMonth, byDay);
@@ -120,5 +126,5 @@ public class EmotionService {
         }
         return selAsChartVo;
     }
-//
+
 }
