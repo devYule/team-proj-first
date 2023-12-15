@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import team6.project.common.ResVo;
 import team6.project.emotion.model.*;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,27 +43,31 @@ public class EmotionService {
         List<EmotionSelVo> list=new ArrayList<>();
 
         for (EmotionSelVo todosel:todoMonth) {
-
-            emotionMonth.add(todosel);
-
             for (EmotionSelVo emotionsel : emotionMonth) {
-
-                //Todo가 적혀진 날들의 리스트와 이모션이 적혀진 날들의 리스트를 탐색.
-                //날짜가 같으면 리스트에다 이모션이 적혀진 날,이모션태그,이모션단계,Todo 1을 집어넣음.
-                //만약에 같지 않으면?? => 어느 한쪽은 날짜,이모션태그,이모션단계가 있고 Todo가 0,
+                //_Todo가 적혀진 날들의 리스트와 이모션이 적혀진 날들의 리스트를 탐색.
+                //날짜가 같으면 리스트에다 이모션이 적혀진 날,이모션태그,이모션단계,_Todo 1을 집어넣음.
+                //만약에 같지 않으면?? => 어느 한쪽은 날짜,이모션태그,이모션단계가 있고 _Todo가 0,
                 // 다른 쪽은 날짜,Todo가 있는데 이모션태그,이모션단계가 없음.
                 if(emotionsel.getEmotionCreatedAt().equals(todosel.getEmotionCreatedAt())){
-                    emotionsel.setHasTodo(1);//겹치는 구간이 있으면 이모션 태그 날짜에 toDo 1을 설정해줌.
-
+                    emotionsel.setHasTodo(1);//겹치는 구간이 있으면 이모션 태그 날짜에 _toDo 1을 설정해줌.
+                    //투두,이모션 겹치는 날짜 & 이모션 등록한 날짜만 나옴.
+                    todosel.setEmotionTag(emotionsel.getEmotionTag());
+                    todosel.setEmotionGrade(emotionsel.getEmotionGrade());
+                    list.add(todosel);
                     break;
                 }
             }
-
         }
+        List<EmotionSelVo> anotherList=new ArrayList<>();
+        for (EmotionSelVo emotionSelVo:emotionMonth) {
+//            if (emotionSelVo)
+        }
+
         Comparator<EmotionSelVo> byDay = Comparator.comparing(EmotionSelVo::getEmotionCreatedAt);
         Collections.sort(emotionMonth, byDay);
 
-        return emotionMonth;
+        return anotherList;
+
     }
 
     // 해당 날의 이모션들 삭제 //
@@ -96,7 +99,7 @@ public class EmotionService {
         //Dto값넣어줌.
         List<EmotionSel> emotionSelList = emotionMapper.getEmoChart(emoDto);
         EmotionSel emotionSel = emotionSelList.get(0);
-        /* TODO: 2023-12-12
+        /* _TODO: 2023-12-12
             문자 -> 숫자 (Monday: 1, ... Sunday = 7)
             --by Hyunmin for 승준 */
         //iuser, startWeek,endWeek
