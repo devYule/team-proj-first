@@ -1,8 +1,8 @@
-//package team6.project.todo.model.proc;
+//package team6.project._todo.model.proc;
 //
-//import team6.project.todo.model.PatchTodoDto;
-//import team6.project.todo.model.TodoRegDto;
-//import team6.project.todo.model.ref.RepeatDtoRef;
+//import team6.project._todo.model.PatchTodoDto;
+//import team6.project._todo.model.TodoRegDto;
+//import team6.project._todo.model.ref.RepeatDtoRef;
 //
 //
 //public class RepeatInsertDto extends RepeatDtoRef {

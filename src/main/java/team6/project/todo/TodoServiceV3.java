@@ -24,13 +24,6 @@ import static team6.project.common.Const.*;
 @RequiredArgsConstructor
 public class TodoServiceV3 implements TodoServiceInter {
 
-    /* TODO: 12/14/23
-        0~6 으로 들어오는 요일 (repeatNum) 을 1~7 으로 바꾸는 로직 전부 있는지 검사.
-        --by Hyunmin */
-/* TODO: 2023-12-15  
-    0~6 으로 들어오는 요일 (repeatNum) 을 1~7 으로 바꾸는 로직 전부 있는지 검사.
-    --by Hyunmin */
-
     private final TodoRepository repository;
     private final CommonUtils commonUtils;
 
