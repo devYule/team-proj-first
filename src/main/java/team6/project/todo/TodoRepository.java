@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import team6.project.todo.model.PatchTodoDto;
-import team6.project.todo.model.RepeatInsertDto;
 import team6.project.todo.model.TodoDeleteDto;
-import team6.project.todo.model.proc.*;
+import team6.project.todo.model.proc.InsertTodoDto;
+import team6.project.todo.model.proc.TodoSelectTmpResultRef;
+import team6.project.todo.model.proc.RepeatInsertDto;
 import team6.project.todo.model.ref.TodoSelectDtoRef;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class TodoRepository {
         return mapper.insRepeat(dto);
     }
 
-    public List<TodoSelectTmpResult> findTodoAndRepeatBy(TodoSelectDtoRef dto) {
+    public List<TodoSelectTmpResultRef> findTodoAndRepeatBy(TodoSelectDtoRef dto) {
         return mapper.selectTodo(dto);
     }
 

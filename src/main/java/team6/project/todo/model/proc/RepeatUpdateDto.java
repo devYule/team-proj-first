@@ -1,15 +1,13 @@
-package team6.project.todo.model.proc;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-import java.time.LocalDate;
-
-@Data
-@AllArgsConstructor
-public class RepeatUpdateDto {
-    private Integer itodo;
-    private LocalDate repeatEndDate;
-    private String repeatType;
-    private Integer repeatNum;
-}
+//package team6.project.todo.model.proc;
+//
+//import team6.project.todo.model.ref.RepeatDtoRef;
+//
+//import java.time.LocalDate;
+//
+//
+//public class RepeatUpdateDto  extends RepeatDtoRef {
+//    private Integer itodo;
+//    private LocalDate repeatEndDate;
+//    private String repeatType;
+//    private Integer repeatNum;
+//}

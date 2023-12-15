@@ -1,25 +1,25 @@
-package team6.project.todo.model.proc;
+package team6.project.todo.model.ref;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Getter
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
-public class UpdateTodoAndRepeatIfExistsDto {
-    private Integer itodo;
-    private Integer iuser;
+public class TodoInfosRef {
+    // _Todo Info
     private String todoContent;
     private LocalDate startDate;
     private LocalDate endDate;
     private LocalTime startTime;
     private LocalTime endTime;
 
-    // repeat
+    // Repeat Info
     private LocalDate repeatEndDate;
     private String repeatType;
     private Integer repeatNum;
-
 }

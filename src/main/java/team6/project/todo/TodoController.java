@@ -12,6 +12,8 @@ import team6.project.common.ResVo;
 import team6.project.common.exception.BadInformationException;
 import team6.project.common.utils.CommonUtils;
 import team6.project.todo.model.*;
+import team6.project.todo.model.proc.TodoSelectDto;
+import team6.project.todo.model.TodoSelectTransDto;
 
 import java.util.List;
 
@@ -23,10 +25,6 @@ import static team6.project.common.Const.BAD_INFO_EX_MESSAGE;
 @RequestMapping("/api/todo")
 @Tag(name = "투두", description = "투두 등록, 조회, 수정, 삭제")
 public class TodoController {
-
-    /* TODO: 2023-12-15
-        model 들 전부 정리
-        --by Hyunmin */
     private final TodoServiceInter service;
     private final CommonUtils commonUtils;
 
@@ -61,10 +59,10 @@ public class TodoController {
     })
     public List<TodoSelectVo> getTodo(@Validated TodoSelectDto dto) {
         log.info("getTodo's dto = {}", dto);
-
-        dto.setDate();
-
-        return service.getTodo(dto);
+        TodoSelectTransDto transDto = new TodoSelectTransDto();
+        transDto.setSelectedDate(dto.getY(), dto.getM(), dto.getD());
+        transDto.setItodo(dto.getIuser());
+        return service.getTodo(transDto);
 
     }
 

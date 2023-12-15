@@ -7,9 +7,8 @@ import team6.project.common.ResVo;
 import team6.project.common.exception.*;
 import team6.project.common.utils.CommonUtils;
 import team6.project.todo.model.*;
-import team6.project.todo.model.proc.CheckTodoAndRepeatDto;
-import team6.project.todo.model.proc.InsertTodoDto;
-import team6.project.todo.model.proc.TodoSelectTmpResult;
+import team6.project.todo.model.proc.*;
+import team6.project.todo.model.proc.RepeatInsertDto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -73,10 +72,10 @@ public class TodoServiceV2 implements TodoServiceInter {
         }
     }
 
-    public List<TodoSelectVo> getTodo(TodoSelectDto dto) {
+    public List<TodoSelectVo> getTodo(TodoSelectTransDto dto) {
 
         // 정제 전
-        List<TodoSelectTmpResult> allTodos = repository.findTodoAndRepeatBy(dto);
+        List<TodoSelectTmpResultRef> allTodos = repository.findTodoAndRepeatBy(dto);
 
         // 정제
         List<TodoSelectVo> result = new ArrayList<>();
@@ -164,7 +163,7 @@ public class TodoServiceV2 implements TodoServiceInter {
         문제없으면 PatchTodoDto 를 <if> 이용하여 update
          */
 
-        TodoSelectTmpResult selectResult = repository.findTodoAndRepeatBy(
+        TodoSelectTmpResultRef selectResult = repository.findTodoAndRepeatBy(
                 new TodoSelectDtoForUpdate(dto.getIuser(), dto.getItodo())).get(0);
         // DB에 해당 _TODO 가 있는지 여부 체크 (수정이므로 있음이 보장되어야 함)
         if (selectResult == null) {
@@ -172,7 +171,7 @@ public class TodoServiceV2 implements TodoServiceInter {
         }
 
         // 두 데이터 병합 (넘어온 수정 데이터에서 null 인 부분은 DB에서 가져온 데이터로 채움)
-        CheckTodoAndRepeatDto checkResultData = checkTodoData(dto, selectResult);
+        CheckRefTodoAndRepeatDto checkResultData = checkTodoData(dto, selectResult);
 
 
         // startDate & endDate 오류 검증
@@ -211,8 +210,8 @@ public class TodoServiceV2 implements TodoServiceInter {
 
             if (!hasRepeatInfoInDB) {
                 // dto에는 repeat 정보가 있고, db에는 없는 경우 (todo_repeat insert)
-                repository.saveRepeat(new RepeatInsertDto(dto.getItodo(), checkResultData.getRepeatEndDate(), checkResultData.getRepeatType(),
-                        checkResultData.getRepeatNum()));
+//                repository.saveRepeat(new RepeatInsertDto(dto.getItodo(), checkResultData.getRepeatEndDate(), checkResultData.getRepeatType(),
+//                        checkResultData.getRepeatNum()));
             }
 
 
@@ -283,16 +282,26 @@ public class TodoServiceV2 implements TodoServiceInter {
     }
 
 
-    private CheckTodoAndRepeatDto checkTodoData(PatchTodoDto dto, TodoSelectTmpResult selectResult) {
-        return CheckTodoAndRepeatDto.builder()
-                .todoContent(dto.getTodoContent() == null ? selectResult.getTodoContent() : dto.getTodoContent())
-                .startDate(dto.getStartDate() == null ? selectResult.getStartDate() : dto.getStartDate())
-                .endDate(dto.getEndDate() == null ? selectResult.getEndDate() : dto.getEndDate())
-                .startTime(dto.getStartTime() == null ? selectResult.getStartTime() : dto.getStartTime())
-                .endTime(dto.getEndTime() == null ? selectResult.getEndTime() : dto.getEndTime())
-                .repeatEndDate(dto.getRepeatEndDate() == null ? selectResult.getRepeatEndDate() : dto.getRepeatEndDate())
-                .repeatType(dto.getRepeatType() == null ? selectResult.getRepeatType() : dto.getRepeatType())
-                .repeatNum(dto.getRepeatNum() == null ? selectResult.getRepeatNum() : dto.getRepeatNum())
-                .build();
+    private CheckRefTodoAndRepeatDto checkTodoData(PatchTodoDto dto, TodoSelectTmpResultRef selectResult) {
+//        return CheckTodoAndRepeatDto.builder()
+//                .todoContent(dto.getTodoContent() == null ? selectResult.getTodoContent() : dto.getTodoContent())
+//                .startDate(dto.getStartDate() == null ? selectResult.getStartDate() : dto.getStartDate())
+//                .endDate(dto.getEndDate() == null ? selectResult.getEndDate() : dto.getEndDate())
+//                .startTime(dto.getStartTime() == null ? selectResult.getStartTime() : dto.getStartTime())
+//                .endTime(dto.getEndTime() == null ? selectResult.getEndTime() : dto.getEndTime())
+//                .repeatEndDate(dto.getRepeatEndDate() == null ? selectResult.getRepeatEndDate() : dto.getRepeatEndDate())
+//                .repeatType(dto.getRepeatType() == null ? selectResult.getRepeatType() : dto.getRepeatType())
+//                .repeatNum(dto.getRepeatNum() == null ? selectResult.getRepeatNum() : dto.getRepeatNum())
+//                .build();
+        return new CheckRefTodoAndRepeatDto(
+                dto.getTodoContent() == null ? selectResult.getTodoContent() : dto.getTodoContent(),
+                dto.getStartDate() == null ? selectResult.getStartDate() : dto.getStartDate(),
+                dto.getEndDate() == null ? selectResult.getEndDate() : dto.getEndDate(),
+                dto.getStartTime() == null ? selectResult.getStartTime() : dto.getStartTime(),
+                dto.getEndTime() == null ? selectResult.getEndTime() : dto.getEndTime(),
+                dto.getRepeatEndDate() == null ? selectResult.getRepeatEndDate() : dto.getRepeatEndDate(),
+                dto.getRepeatType() == null ? selectResult.getRepeatType() : dto.getRepeatType(),
+                dto.getRepeatNum() == null ? selectResult.getRepeatNum() : dto.getRepeatNum()
+        );
     }
 }
