@@ -10,14 +10,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team6.project.common.ResVo;
 import team6.project.common.exception.BadInformationException;
-import team6.project.common.exception.NotEnoughInformationException;
 import team6.project.common.utils.CommonUtils;
 import team6.project.todo.model.*;
 
 import java.util.List;
 
 import static team6.project.common.Const.BAD_INFO_EX_MESSAGE;
-import static team6.project.common.Const.NOT_ENOUGH_INFO_EX_MESSAGE;
 
 @RestController
 @Slf4j
@@ -87,11 +85,11 @@ public class TodoController {
         commonUtils.checkRepeatNumWithRepeatType(dto.getRepeatEndDate(), dto.getRepeatType(), dto.getRepeatNum());
 
         log.info("patchTodo's dto = {}", dto);
-        commonUtils.checkObjectAnyNullThrow(NotEnoughInformationException.class, NOT_ENOUGH_INFO_EX_MESSAGE,
-                dto.getTodoContent(),
-                dto.getStartDate(),
-                dto.getEndDate(),
-                dto.getStartTime(), dto.getEndTime());
+//        commonUtils.checkObjectAnyNullThrow(NotEnoughInformationException.class, NOT_ENOUGH_INFO_EX_MESSAGE,
+//                dto.getTodoContent(),
+//                dto.getStartDate(),
+//                dto.getEndDate(),
+//                dto.getStartTime(), dto.getEndTime());
 
         return service.patchTodo(dto);
 

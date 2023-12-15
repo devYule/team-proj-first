@@ -29,7 +29,6 @@ public class EmotionController {
         return emotionService.getEmo(dto);
     }
     @DeleteMapping
-
     public ResVo deleteEmo(EmotionDelDto dto){
         log.info("EmotionDelDto : {}",dto);
         return emotionService.delEmo(dto);

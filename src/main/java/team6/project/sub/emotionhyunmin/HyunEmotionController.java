@@ -1,5 +1,6 @@
 package team6.project.sub.emotionhyunmin;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +12,11 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/api/emo/hyunmin")
 @RequiredArgsConstructor
+
 public class HyunEmotionController {
 
     private final HyunEmotionService service;
-
+    @Operation(hidden = true)
     @GetMapping("/{iuser}")
     public List<SubEmotionSelVo> getEmo(@PathVariable int iuser,
                                         @RequestParam("y") int year,

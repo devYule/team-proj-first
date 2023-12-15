@@ -111,7 +111,8 @@ public class TodoServiceV3 implements TodoServiceInter {
                         // 요일 체크 날짜가 요청 온 날짜와 같다면 result 에 추가, break;
                         if (weekWalk.isEqual(dto.getSelectedDate())) {
                             result.add(new TodoSelectVo(todo.getItodo(), todo.getTodoContent(),
-                                    todo.getStartDate(), todo.getEndDate(), todo.getStartTime(), todo.getEndTime()));
+                                    todo.getStartDate(), todo.getEndDate(), todo.getStartTime(), todo.getEndTime(),
+                                    todo.getRepeatEndDate(), todo.getRepeatType(), todo.getRepeatNum()));
                             return;
                         }
                     }
@@ -204,7 +205,6 @@ public class TodoServiceV3 implements TodoServiceInter {
         try {
 
             // db에 있든, dto 에 있든 repeatEndDate 가 있다면 검증.
-
             final LocalDate repeatEndDate = checkResultData.getRepeatEndDate();
             LocalDate startDateWalker = LocalDate.of(
                     checkResultData.getStartDate().getYear(),
@@ -229,7 +229,7 @@ public class TodoServiceV3 implements TodoServiceInter {
                 repository.saveRepeat(new RepeatInsertDto(dto.getItodo(),
                         checkResultData.getRepeatEndDate(),
                         checkResultData.getRepeatType(),
-                        checkResultData.getRepeatNum()));
+                        commonUtils.toJavaFrom(checkResultData.getRepeatNum())));
                 // 새로 insert 했으니까 update 될 필요 없기 때문에 null 로 세팅.
                 checkResultData.setRepeatEndDate(null);
                 checkResultData.setRepeatType(null);
