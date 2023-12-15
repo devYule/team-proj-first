@@ -1,5 +1,8 @@
 package team6.project.user;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +21,13 @@ public class UserController {
     private final UserService service;
 
     @PostMapping
+    @Operation(summary = "유저 등록", description = "유저 정보 등록")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "요청 오류"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+
     public ResVo postUser(@RequestBody UserInsDto dto) {
         log.info("{}", dto);
         if (dto.getUserNickName() == null || dto.getUserNickName().isBlank()) {
@@ -29,11 +39,23 @@ public class UserController {
     }
 
     @GetMapping("/{iuser}")
+    @Operation(summary = "유저 조회", description = "유저 정보 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "요청 오류"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     public UserSelVo getUser(@PathVariable int iuser) {
         return service.getUser(iuser);
     }
 
     @PatchMapping
+    @Operation(summary = "유저 정보 수정", description = "유저 정보 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "요청 오류"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     public ResVo patchUser(@RequestBody UserUpDto dto) {
         checkIuser(dto.getIuser());
 
@@ -50,6 +72,12 @@ public class UserController {
     }
 
     @DeleteMapping("/{iuser}")
+    @Operation(summary = "유저 삭제", description = "유저 정보 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "요청 오류"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     public ResVo deleteUser(@PathVariable int iuser) {
         checkIuser(iuser);
 
