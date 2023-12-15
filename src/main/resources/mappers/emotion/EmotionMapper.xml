@@ -8,13 +8,13 @@
         </set>
     </insert>
     <select id="getTodoMonth">
-            WITH RECURSIVE T AS(
-            SELECT LAST_DAY (concat(#{year},'-',#{month},'-01') - INTERVAL 1 MONTH) + INTERVAL 1 DAY AS startDate
-            UNION ALL
-            SELECT startDate + INTERVAL 1 DAY
-            FROM T
-            WHERE startDate &lt;LAST_DAY (concat(#{year},'-',#{month},'-01'))
-            )
+        WITH RECURSIVE T AS(
+        SELECT LAST_DAY (concat(#{year},'-',#{month},'-01') - INTERVAL 1 MONTH) + INTERVAL 1 DAY AS startDate
+        UNION ALL
+        SELECT startDate + INTERVAL 1 DAY
+        FROM T
+        WHERE startDate &lt;LAST_DAY (concat(#{year},'-',#{month},'-01'))
+        )
         SELECT T.startDate AS emotionCreatedAt, 1 AS hasTodo
         FROM t_todo A
         LEFT JOIN t_todo_repeat B
@@ -31,13 +31,13 @@
         ORDER BY A.created_at
     </select>
     <select id="getRepeatTodoMonth">
-            WITH RECURSIVE T AS(
-            SELECT LAST_DAY(concat(#{year},'-',#{month},'-01')- INTERVAL 1 MONTH) + INTERVAL 1 DAY AS startDate
-            UNION ALL
-            SELECT startDate + INTERVAL 1 DAY
-            FROM T
-            WHERE startDate &lt;LAST_DAY(concat(#{year},'-',#{month},'-01'))
-            )
+        WITH RECURSIVE T AS(
+        SELECT LAST_DAY(concat(#{year},'-',#{month},'-01')- INTERVAL 1 MONTH) + INTERVAL 1 DAY AS startDate
+        UNION ALL
+        SELECT startDate + INTERVAL 1 DAY
+        FROM T
+        WHERE startDate &lt;LAST_DAY(concat(#{year},'-',#{month},'-01'))
+        )
         SELECT DISTINCT T.startDate AS emotionCreatedAt,1 AS hasTodo
         FROM T
         JOIN t_todo_repeat A
