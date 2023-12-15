@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Schema(name = "요청 결과")
 public class ResVo {
-    @Schema(title = "요청 결과", type = "Integer", description = "성공시 1 리턴")
+    @Schema(title = "요청 결과", type = "Integer", description = "성공시 1 리턴", defaultValue = "1")
     private int result;
 }
