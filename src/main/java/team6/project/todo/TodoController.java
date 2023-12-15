@@ -1,6 +1,9 @@
 package team6.project.todo;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -20,13 +23,22 @@ import static team6.project.common.Const.NOT_ENOUGH_INFO_EX_MESSAGE;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/todo")
+@Tag(name = "투두", description = "투두 등록, 조회, 수정, 삭제")
 public class TodoController {
 
+    /* TODO: 2023-12-15
+        model 들 전부 정리
+        --by Hyunmin */
     private final TodoServiceInter service;
     private final CommonUtils commonUtils;
 
     @PostMapping
     @Operation(summary = "투두 등록", description = "투두 정보 등록")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "요청 오류"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     public ResVo postTodo(@Validated @RequestBody TodoRegDto dto) {
 
         // repeatType, repeatNum 둘중 하나만 값 있는 경우 체크
@@ -44,6 +56,11 @@ public class TodoController {
 
     @GetMapping("/{iuser}")
     @Operation(summary = "투두 조회", description = "투두 정보 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "요청 오류"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     public List<TodoSelectVo> getTodo(@Validated TodoSelectDto dto) {
         log.info("getTodo's dto = {}", dto);
 
@@ -55,6 +72,11 @@ public class TodoController {
 
     @PatchMapping
     @Operation(summary = "투두 정보 수정", description = "투두 정보 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "요청 오류"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     public ResVo patchTodo(@Validated @RequestBody PatchTodoDto dto) {
 
         // repeatType, repeatNum 둘중 하나만 값 있는 경우 체크
@@ -77,6 +99,11 @@ public class TodoController {
 
     @DeleteMapping("/{iuser}/{itodo}") // query string - rp(delOnlyRepeat)
     @Operation(summary = "투두 삭제", description = "투두 정보 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "요청 오류"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     public ResVo deleteTodo(TodoDeleteDto dto,
                             @RequestParam(required = false, value = "rp") Integer delOnlyRepeat) {
         if (delOnlyRepeat != null && delOnlyRepeat != 1) {

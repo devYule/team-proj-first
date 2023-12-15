@@ -4,12 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import team6.project.common.ResVo;
+import team6.project.common.utils.CommonUtils;
 import team6.project.emotion.model.*;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 
@@ -18,6 +19,7 @@ import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 @RequiredArgsConstructor
 public class EmotionService {
     public final EmotionMapper emotionMapper;
+    private final CommonUtils utils;
 
     //(일 별)이모션 단계,이모션태그 insert//
     public ResVo postEmo(EmotionInsDto dto) {
@@ -28,18 +30,18 @@ public class EmotionService {
     //현재까지 작성한 이모션단계,이모션태그를 월별로 출력
     //이모션을 작성한 날에 Todo가 있으면 hasTodo 1, 없으면 0.
     public List<EmotionSelVo> getEmo(EmotionSelDto dto) {
-        List<EmotionSelVo> todo=emotionMapper.getTodoMonth(dto);
+        List<EmotionSelVo> todo = emotionMapper.getTodoMonth(dto);
         todo.addAll(emotionMapper.getRepeatTodoMonth(dto));
-        List<EmotionSelVo> todoMonth=todo.stream().distinct()
+        List<EmotionSelVo> todoMonth = todo.stream().distinct()
                 .collect(Collectors.toList());
-        List<EmotionSelVo> emotionMonth=emotionMapper.getEmotionMonth(dto);
-        List<EmotionSelVo> addlist=new ArrayList<>();
-        for (EmotionSelVo todosel:todoMonth) {
-            for (EmotionSelVo emotionsel:emotionMonth) {
-                if(todosel.getEmotionCreatedAt().equals(emotionsel.getEmotionCreatedAt())){
+        List<EmotionSelVo> emotionMonth = emotionMapper.getEmotionMonth(dto);
+        List<EmotionSelVo> addlist = new ArrayList<>();
+        for (EmotionSelVo todosel : todoMonth) {
+            for (EmotionSelVo emotionsel : emotionMonth) {
+                if (todosel.getEmotionCreatedAt().equals(emotionsel.getEmotionCreatedAt())) {
                     todosel.setEmotionTag(emotionsel.getEmotionTag());
                     todosel.setEmotionGrade(emotionsel.getEmotionGrade());
-                }else{
+                } else {
                     addlist.add(emotionsel);
                 }
             }
@@ -61,29 +63,26 @@ public class EmotionService {
         LocalDate today = LocalDate.now();
         //오늘이 일주일의 몇번째 인지 월요일=1,화요일=2,수요일=3
         //목요일=4,금요일=5,토요일=6,일요일=7.
-        int day = today.get(DAY_OF_WEEK);
+        int day = today.get(DAY_OF_WEEK) - 1;
         if (day == 7) {
             day = 0;
         }
         //"오늘 날짜"에서 "오늘이 일주일의 몇번째"를 빼면 요번주의 시작일이 나온다.
         //예를 들어 "2022.9.8 목요일" 이라면 "목요일=4" [9.8 - 4일 = 9월4일 일요일]
         LocalDate start = today.minusDays(day);
-        LocalDate todayDate = start.plusDays(6);
         EmotionSelAsChartDto emoDto = new EmotionSelAsChartDto();
         //Dto 값넣기
         emoDto.setIuser(iuser);
         emoDto.setStartWeek(String.valueOf(start));
-        emoDto.setToday(String.valueOf(todayDate));
+        emoDto.setToday(String.valueOf(today));
         //Dto값넣어줌.
         List<EmotionSel> emotionSelList = emotionMapper.getEmoChart(emoDto);
-        EmotionSel emotionSel = emotionSelList.get(0);
-        /* TODO: 2023-12-12
-            문자 -> 숫자 (Monday: 1, ... Sunday = 7)
-            --by Hyunmin for 승준 */
+
         //iuser, startWeek,endWeek
         EmotionSelAsChartVo selAsChartVo = new EmotionSelAsChartVo();
         selAsChartVo.setEmoChart(emotionSelList);
         for (EmotionSel emo : emotionSelList) {
+            emo.setDayOfTheWeek(utils.fromJavaTo(emo.getDayOfTheWeek()));
             switch (emo.getEmotionGrade()) {
                 case 1, 2:
                     selAsChartVo.setGood(selAsChartVo.getGood() + 1);
