@@ -58,22 +58,19 @@ public class EmotionService {
                 }
             }
         }
-
+        int i=0;
         List<EmotionSelVo> anotherList=new ArrayList<>();
         for (EmotionSelVo emotionSelVo:emotionMonth) {
-            if (list!=emotionSelVo){
+            i=emotionSelVo.getHasTodo();
+            if(i==0){
                 anotherList.add(emotionSelVo);
-
             }
         }
-
-
+        todoMonth.addAll(anotherList);
 
         Comparator<EmotionSelVo> byDay = Comparator.comparing(EmotionSelVo::getEmotionCreatedAt);
-        Collections.sort(emotionMonth, byDay);
-
-        return anotherList;
-
+        Collections.sort(todoMonth , byDay);
+        return todoMonth;
     }
 
     // 해당 날의 이모션들 삭제 //
