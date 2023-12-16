@@ -136,7 +136,12 @@ public class EmotionServiceRefByHyunmin {
         List<EmotionSel> emotionSelList = emotionMapper.getEmoChart(emoDto);
         EmotionSel emotionSel = emotionSelList.get(0);
         /* _TODO: 2023-12-12
-            문자 -> 숫자 (Monday: 1, ... Sunday = 7)
+            문자 -> 숫자 (Monday: 1, ... Sunday = 7) -> CommonUtils DI 받아서 (24번줄 참고),
+            utils.fromJavaTo(...);
+            혹은
+            utils.ToJavaFrom(...);
+            사용
+            기능은 CommonUtils 내의 메소드 참고.
             --by Hyunmin for 승준 */
         //iuser, startWeek,endWeek
         EmotionSelAsChartVo selAsChartVo = new EmotionSelAsChartVo();
