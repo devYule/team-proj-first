@@ -29,9 +29,7 @@ public class EmotionService {
     //현재까지 작성한 이모션단계,이모션태그를 월별로 출력
     //이모션을 작성한 날에 Todo가 있으면 hasTodo 1, 없으면 0.
 
-    /* TODO: 12/15/23
-        hasTodo 가 일정이 존재 하지 않더라도 무조건 해당 월의 모든 날짜에 1 로 설정되어 뜸.
-        --by Hyunmin for 승준 */
+
 
     public List<EmotionSelVo> getEmo(EmotionSelDto dto) {
         // 반복안되는 날에 할 일이 있으면 그 날 가져오고,hasTodo도 가져옴.
