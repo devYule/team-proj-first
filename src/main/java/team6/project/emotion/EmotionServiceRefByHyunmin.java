@@ -135,7 +135,7 @@ public class EmotionServiceRefByHyunmin {
         //Dto값넣어줌.
         List<EmotionSel> emotionSelList = emotionMapper.getEmoChart(emoDto);
         EmotionSel emotionSel = emotionSelList.get(0);
-        /* _TODO: 2023-12-12
+        /* TODO: 2023-12-12
             문자 -> 숫자 (Monday: 1, ... Sunday = 7) -> CommonUtils DI 받아서 (24번줄 참고),
             utils.fromJavaTo(...);
             혹은
