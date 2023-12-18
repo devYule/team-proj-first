@@ -35,10 +35,7 @@ public class EmotionServiceRefByHyunmin {
     //현재까지 작성한 이모션단계,이모션태그를 월별로 출력
     //이모션을 작성한 날에 Todo가 있으면 hasTodo 1, 없으면 0.
 
-    /* TODO: 12/16/23
-        1. repeat_end_date 가 2025년 1월 임에도 2024년 1월 을 조회하면 아무것도 조회되지 않음.
-        2. emotionCreatedAt -> day 로 변경 요망.
-        --by Hyunmin */
+
 
     public List<EmotionSelVo> getEmo(EmotionSelDto dto) {
         // 반복안되는 날에 할 일이 있으면 그 날 가져오고,hasTodo도 가져옴.

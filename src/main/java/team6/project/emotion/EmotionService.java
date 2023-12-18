@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import team6.project.common.ResVo;
+import team6.project.common.utils.CommonUtils;
 import team6.project.emotion.model.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 public class EmotionService {
     public final EmotionMapper emotionMapper;
 
+    private final CommonUtils utils;
     //(일 별)이모션 단계,이모션태그 insert//
     public ResVo postEmo(EmotionInsDto dto) {
         int result = emotionMapper.postEmo(dto);
@@ -118,7 +120,7 @@ public class EmotionService {
         emoDto.setToday(String.valueOf(todayDate));
         //Dto값넣어줌.
         List<EmotionSel> emotionSelList = emotionMapper.getEmoChart(emoDto);
-        EmotionSel emotionSel = emotionSelList.get(0);
+
         /* _TODO: 2023-12-12
             문자 -> 숫자 (Monday: 1, ... Sunday = 7)
             --by Hyunmin for 승준 */
@@ -126,6 +128,7 @@ public class EmotionService {
         EmotionSelAsChartVo selAsChartVo = new EmotionSelAsChartVo();
         selAsChartVo.setEmoChart(emotionSelList);
         for (EmotionSel emo : emotionSelList) {
+            emo.setDayOfTheWeek(utils.fromJavaTo(emo.getDayOfTheWeek()));
             switch (emo.getEmotionGrade()) {
                 case 1, 2:
                     selAsChartVo.setGood(selAsChartVo.getGood() + 1);
