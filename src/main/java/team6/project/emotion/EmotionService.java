@@ -124,7 +124,7 @@ public class EmotionService {
         LocalDate today = LocalDate.now();
         //오늘이 일주일의 몇번째 인지 월요일=1,화요일=2,수요일=3
         //목요일=4,금요일=5,토요일=6,일요일=7.
-        int day = today.get(DAY_OF_WEEK);
+        int day = today.get(DAY_OF_WEEK)-1;
         if (day == 7) {
             day = 0;
         }
@@ -139,19 +139,28 @@ public class EmotionService {
         emoDto.setToday(String.valueOf(todayDate));
         //Dto값넣어줌.
         List<EmotionSel> emotionSelList = emotionMapper.getEmoChart(emoDto);
-
+        List<Integer> weeks = new ArrayList<>();
+        for (EmotionSel emotionSel : emotionSelList) {
+            weeks.add(emotionSel.getDayOfTheWeek());
+        }
         /* _TODO: 2023-12-12
             문자 -> 숫자 (Monday: 1, ... Sunday = 7)
             --by Hyunmin for 승준 */
         //iuser, startWeek,endWeek
         EmotionSelAsChartVo selAsChartVo = new EmotionSelAsChartVo();
-        selAsChartVo.setEmoChart(emotionSelList);
+        for (int i = 1; i < 8; i++) {
+            if(weeks.contains(i)){
+                continue;
+            }
+            EmotionSel emotionSel = new EmotionSel();
+            emotionSel.setEmotionGrade(3);
+            emotionSel.setDayOfTheWeek(i);
+            emotionSelList.add(emotionSel);
 
-        if(selAsChartVo.getEmoChart().size()<7){
-            //for (:) {
-            
-            // }
         }
+
+
+        selAsChartVo.setEmoChart(emotionSelList);
         for (EmotionSel emo : emotionSelList) {
             emo.setDayOfTheWeek(utils.fromJavaTo(emo.getDayOfTheWeek()));
             switch (emo.getEmotionGrade()) {
@@ -166,6 +175,7 @@ public class EmotionService {
                     break;
             }
         }
+        emotionSelList.sort(Comparator.comparing((EmotionSel::getDayOfTheWeek)));
 
         return selAsChartVo;
     }

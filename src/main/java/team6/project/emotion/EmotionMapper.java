@@ -23,4 +23,5 @@ public interface EmotionMapper {
     List<EmotionSel> getEmoChart(EmotionSelAsChartDto dto);
     //유저 있는지 확인.
     int checkIuser(int iuser);
+
 }
