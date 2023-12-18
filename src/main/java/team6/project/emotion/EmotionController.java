@@ -59,6 +59,7 @@ public class EmotionController {
             @ApiResponse(responseCode = "400", description = "요청 오류"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
+    @Operation(summary = "이모션 삭제",description = "유저PK,이모션PK를 받아와 해당하는 날에 등록된 이모션 삭제")
     public ResVo deleteEmo(EmotionDelDto dto){
         log.info("EmotionDelDto : {}",dto);
         return emotionService.delEmo(dto);
