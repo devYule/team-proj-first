@@ -23,12 +23,13 @@ public interface TodoRepositoryRef {
 
     EmotionSelectTmpResult findEmotionAndEmotionTagBy(TodoSelectTransVo dto);
 
-    boolean checkIsRepeat(Integer iuser, Integer itodo);
 
-    Integer deleteRepeat(Integer iuser, Integer itodo);
+    Integer deleteRepeat(TodoDeleteDto dto);
 
     Integer deleteTodo(TodoDeleteDto dto);
 
     Integer updateTodoAndRepeatIfExists(PatchTodoDto dto);
+
+    RepeatInsertDto findRepeatBy(Integer itodo);
 }
 

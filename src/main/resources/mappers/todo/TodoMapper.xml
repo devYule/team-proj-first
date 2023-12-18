@@ -84,6 +84,12 @@
         limit 0, 10
     </select>
 
+    <select id="selectOnlyRepeat">
+        select itodo, repeat_end_date as repeatEndDate, repeat_type as repeatType, repeat_num as repeatNum
+        from t_todo_repeat
+        where itodo = #{itodo}
+    </select>
+
     <select id="selectEmotion">
         SELECT E.iemotion_grade as emotion, T.emotion_tag as emotionTag FROM t_emotion E JOIN t_emotion_tag T ON E.iemotion_tag =
         T.iemotion_tag

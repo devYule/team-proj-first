@@ -271,8 +271,10 @@ public class TodoServiceV3 implements TodoServiceRef {
     }
 
     public ResVo deleteTodo(TodoDeleteDto dto, Integer delOnlyRepeat) {
+        // 예외를 위한 백업
+        RepeatInsertDto backUpRepeat = repository.findRepeatBy(dto.getItodo());
         // repeat 유무 관계 없이 repeat 정보를 지우는 delete query 실행.
-        Integer delRepeatResult = repository.deleteRepeat(dto.getIuser(), dto.getItodo());
+        Integer delRepeatResult = repository.deleteRepeat(dto);
         if (delOnlyRepeat != null && delOnlyRepeat == 1) {
             // 요청받은 iuser, itodo 로 삭제되는 repeat 이 없을경우 NoSuchDataException 발생.
             // ㄴ> 반복정보가 없는 일정일수도 있고, iuser, itodo 로 조회되는 데이터가 없을수도 있음.
@@ -281,10 +283,13 @@ public class TodoServiceV3 implements TodoServiceRef {
             return new ResVo(delRepeatResult);
         }
 
+        // 백업한 데이터 활용할 수 있는 예외발생
+        dto.setIuser(1000);
+
         // 투두까지 전부 지우는 경우 추가 로직
-        int result = repository.deleteTodo(dto);
+        Integer result = repository.deleteTodo(dto);
         // 요청받은 iuser, itodo 로 삭제되는 일정이 없을경우 NoSuchDataException 발생.
-        checkResultIfNullOrZeroThrow(result);
+        checkResultIfNullOrZeroThrow(result, backUpRepeat);
 
         return new ResVo(result);
     }
@@ -295,6 +300,16 @@ public class TodoServiceV3 implements TodoServiceRef {
 
     private void checkResultIfNullOrZeroThrow(Integer result) {
         if (result == null || result == 0) {
+            throw new NoSuchDataException(NO_SUCH_DATA_EX_MESSAGE);
+        }
+    }
+
+    private void checkResultIfNullOrZeroThrow(Integer result, RepeatInsertDto backUpRepeat) {
+
+        if (result == null || result == 0) {
+            if (backUpRepeat != null) {
+                repository.saveRepeat(backUpRepeat);
+            }
             throw new NoSuchDataException(NO_SUCH_DATA_EX_MESSAGE);
         }
     }

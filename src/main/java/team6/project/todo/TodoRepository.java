@@ -42,14 +42,9 @@ public class TodoRepository implements TodoRepositoryRef {
         return mapper.selectEmotion(dto);
     }
 
-    public boolean checkIsRepeat(Integer iuser, Integer itodo) {
-        boolean b = mapper.isRepeat(iuser, itodo) == 0;
-        log.debug("repository's b = {}", b);
-        return b;
-    }
 
-    public Integer deleteRepeat(Integer iuser, Integer itodo) {
-        return mapper.deleteTodoRepeat(iuser, itodo);
+    public Integer deleteRepeat(TodoDeleteDto dto) {
+        return mapper.deleteTodoRepeat(dto);
     }
 
     public Integer deleteTodo(TodoDeleteDto dto) {
@@ -60,6 +55,11 @@ public class TodoRepository implements TodoRepositoryRef {
 
         return mapper.patchTodoAndRepeatIfExists(dto) == 0 ? 0 : 1;
 
+    }
+
+
+    public RepeatInsertDto findRepeatBy(Integer itodo) {
+        return mapper.selectOnlyRepeat(itodo);
     }
 
 }

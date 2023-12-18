@@ -20,7 +20,6 @@ public interface TodoMapper {
 
     Integer insRepeat(RepeatInsertDto dto);
 
-    Integer isRepeat(@Param("iuser") Integer iuser, @Param("itodo") Integer itodo);
 
     int getTodoListCount(Integer iuser);
     
@@ -32,7 +31,7 @@ public interface TodoMapper {
 
     int deleteTodo(TodoDeleteDto dto);
 
-    Integer deleteTodoRepeat(@Param("iuser") Integer iuser, @Param("itodo") Integer itodo);
+    Integer deleteTodoRepeat(TodoDeleteDto dto);
 
-
+    RepeatInsertDto selectOnlyRepeat(Integer itodo);
 }
