@@ -84,6 +84,12 @@
         limit 0, 10
     </select>
 
+    <select id="selectEmotion">
+        SELECT E.iemotion_grade as emotion, T.emotion_tag as emotionTag FROM t_emotion E JOIN t_emotion_tag T ON E.iemotion_tag =
+        T.iemotion_tag
+        WHERE E.iuser = #{iuser} AND DATE(E.created_at) = #{selectedDate}
+    </select>
+
     <update id="patchRepeat">
         update t_todo_repeat
         <set>

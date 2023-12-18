@@ -33,7 +33,8 @@ springdoc:
 
 logging:
   level:
-    "[team6.project.todo.TodoServiceV1]": DEBUG
+    "[team6.project.todo.TodoServiceV3]": DEBUG
+    "[team6.project.todo.TodoController]": DEBUG
     "[team6.project.emotion.EmotionMapper]": DEBUG
     "[team6.project.sub.emotionhyunmin.HyunEmotionService]": DEBUG
     "[team6.project.todo.TodoRepository]": DEBUG

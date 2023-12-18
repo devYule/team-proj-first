@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import team6.project.todo.model.PatchTodoDto;
 import team6.project.todo.model.TodoDeleteDto;
+import team6.project.todo.model.TodoSelectTransVo;
+import team6.project.todo.model.proc.EmotionSelectTmpResult;
 import team6.project.todo.model.proc.InsertTodoDto;
 import team6.project.todo.model.proc.TodoSelectTmpResult;
 import team6.project.todo.model.proc.RepeatInsertDto;
@@ -34,6 +36,10 @@ public class TodoRepository implements TodoRepositoryRef {
 
     public List<TodoSelectTmpResult> findTodoAndRepeatBy(TodoSelectVoRef dto) {
         return mapper.selectTodo(dto);
+    }
+
+    public EmotionSelectTmpResult findEmotionAndEmotionTagBy(TodoSelectTransVo dto){
+        return mapper.selectEmotion(dto);
     }
 
     public boolean checkIsRepeat(Integer iuser, Integer itodo) {

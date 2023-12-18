@@ -11,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team6.project.common.ResVo;
 import team6.project.common.exception.BadInformationException;
-import team6.project.common.utils.CommonUtils;
 import team6.project.todo.model.*;
 import team6.project.todo.model.TodoSelectDto;
 
@@ -40,6 +39,7 @@ public class TodoController {
         log.debug("postTodo's dto = {}", dto);
 
         return service.regTodo(dto);
+
     }
 
 
@@ -50,7 +50,7 @@ public class TodoController {
             @ApiResponse(responseCode = "400", description = "요청 오류"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public List<TodoSelectVo> getTodo(@Validated TodoSelectDto dto) {
+    public TodoSelectVo getTodo(@Validated TodoSelectDto dto) {
         log.info("getTodo's dto = {}", dto);
         TodoSelectTransVo transDto = new TodoSelectTransVo(dto.getIuser(), dto.getY(), dto.getM(), dto.getD());
         return service.getTodo(transDto);

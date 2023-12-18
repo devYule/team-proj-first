@@ -29,10 +29,10 @@ public class PatchTodoDto {
     @Schema(title = "투두 제목", maximum = "100", type = "String", defaultValue = "todoContent")
     private String todoContent;
 
-    @Schema(title = "일정 시작일", type = "String", defaultValue = "2023-12-12")
+    @Schema(title = "일정 시작일", type = "String", defaultValue = "2023-12-12", hidden = true)
     private LocalDate startDate;
 
-    @Schema(title = "일정 종료일", type = "String", defaultValue = "2023-12-13")
+    @Schema(title = "일정 종료일", type = "String", defaultValue = "2023-12-13", hidden = true)
     private LocalDate endDate;
 
     @Schema(title = "일정 시작 시간", type = "String", description = "nano 는 무시 가능", defaultValue = "00:00:00", hidden = true)
@@ -50,4 +50,5 @@ public class PatchTodoDto {
     @Range(min = 0, max = 31, message = "올바른 반복 일 이 아님")
     @Schema(title = "반복일 식별 숫자", type = "Integer", description = "주반복일 경우: 0~6 (0금 ~ 6목), 월반복일 경우: 1~31", defaultValue = "3", hidden = true)
     private Integer repeatNum;
+
 }

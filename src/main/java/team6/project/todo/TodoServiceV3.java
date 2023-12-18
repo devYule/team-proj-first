@@ -93,15 +93,22 @@ public class TodoServiceV3 implements TodoServiceRef {
         }
     }
 
-    public List<TodoSelectVo> getTodo(TodoSelectTransVo dto) {
+    public TodoSelectVo getTodo(TodoSelectTransVo dto) {
 
         // 정제 전
         // 10개만 가져옴 (LIMIT 0, 10 in QUERY)
         List<TodoSelectTmpResult> allTodos = repository.findTodoAndRepeatBy(dto);
+        // 해당 날의 감정, 감정태그 가져오기
+        EmotionSelectTmpResult emotionSelectTmpResult = repository.findEmotionAndEmotionTagBy(dto);
+        TodoSelectVo todoSelectVo = new TodoSelectVo();
+        if (emotionSelectTmpResult != null) {
+            todoSelectVo.setEmotion(emotionSelectTmpResult.getEmotion());
+            todoSelectVo.setEmotionTag(emotionSelectTmpResult.getEmotionTag());
+        }
         log.debug("allTodos size = {}", allTodos.size());
         log.debug("allTodos = {}", allTodos);
         // 정제
-        List<TodoSelectVo> result = new ArrayList<>();
+        List<TodoInfo> result = new ArrayList<>();
 
         allTodos.forEach(todo -> {
             try {
@@ -125,7 +132,7 @@ public class TodoServiceV3 implements TodoServiceRef {
                         }
                         // 요일 체크 날짜가 요청 온 날짜와 같다면 result 에 추가, break;
                         if (weekWalker.isEqual(dto.getSelectedDate())) {
-                            result.add(new TodoSelectVo(todo.getItodo(), todo.getTodoContent(),
+                            result.add(new TodoInfo(todo.getItodo(), todo.getTodoContent(),
                                     todo.getStartDate(), todo.getEndDate(), todo.getStartTime(), todo.getEndTime(),
                                     todo.getRepeatEndDate(), todo.getRepeatType(), todo.getRepeatNum()));
                             return;
@@ -136,7 +143,7 @@ public class TodoServiceV3 implements TodoServiceRef {
                 }
                 if (todo.getRepeatType().equalsIgnoreCase(MONTH)) {
                     if (todo.getRepeatNum() == dto.getSelectedDate().getDayOfMonth()) {
-                        result.add(new TodoSelectVo(todo.getItodo(), todo.getTodoContent(),
+                        result.add(new TodoInfo(todo.getItodo(), todo.getTodoContent(),
                                 todo.getStartDate(), todo.getEndDate(), todo.getStartTime(), todo.getEndTime()));
                     }
                 }
@@ -146,12 +153,13 @@ public class TodoServiceV3 implements TodoServiceRef {
                     (endDate 는 무조건 해당 날짜보다 같거나 이후이고, startDate 는 무조건 해당날짜와 같거나 이전임이 보장된 상황.)
                  */
 
-                result.add(new TodoSelectVo(todo.getItodo(), todo.getTodoContent(),
+                result.add(new TodoInfo(todo.getItodo(), todo.getTodoContent(),
                         todo.getStartDate(), todo.getEndDate(), todo.getStartTime(), todo.getEndTime()));
             }
         });
         log.debug("result size = {}", result.size());
-        return result;
+        todoSelectVo.setTodos(result);
+        return todoSelectVo;
     }
 
     @Transactional
@@ -246,9 +254,6 @@ public class TodoServiceV3 implements TodoServiceRef {
         } catch (NullPointerException e) {
             // startDate & endDate 오류 검증
             // startTime & endTime 오류 검증
-            /* TODO: 2023-12-18
-                여기 체크 필
-                --by Hyunmin */
             commonUtils.checkIsBefore(LocalDateTime.of(mergedTodoAndRepeat.getEndDate(), mergedTodoAndRepeat.getEndTime()),
                     LocalDateTime.of(mergedTodoAndRepeat.getStartDate(), mergedTodoAndRepeat.getStartTime()));
             // 로직 - repeat 데이터가 없는 경우
@@ -318,7 +323,7 @@ public class TodoServiceV3 implements TodoServiceRef {
                 dto.getRepeatNum() == null ? selectResult.getRepeatNum() : dto.getRepeatNum()
 
         );
-        if (mergedTodoAndRepeatDto.getRepeatType().equalsIgnoreCase(WEEK) && dto.getRepeatNum() != null) {
+        if (mergedTodoAndRepeatDto.getRepeatType() != null && mergedTodoAndRepeatDto.getRepeatType().equalsIgnoreCase(WEEK) && dto.getRepeatNum() != null) {
             mergedTodoAndRepeatDto.setRepeatNum(commonUtils.toJavaFrom(mergedTodoAndRepeatDto.getRepeatNum()));
         }
         return mergedTodoAndRepeatDto;

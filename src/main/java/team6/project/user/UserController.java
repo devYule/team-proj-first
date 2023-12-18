@@ -29,7 +29,6 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "요청 오류"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-
     public ResVo postUser(@RequestBody UserInsDto dto) {
         log.info("{}", dto);
         if (dto.getUserNickName() == null || dto.getUserNickName().isBlank()) {
@@ -41,7 +40,7 @@ public class UserController {
     }
 
     @GetMapping("/{iuser}")
-    @Operation(summary = "유저 조회", description = "유저 정보 조회")
+    @Operation(summary = "유저 조회", description = "유저 정보 조회", hidden = true)
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "요청 오류"),
@@ -52,7 +51,7 @@ public class UserController {
     }
 
     @PatchMapping
-    @Operation(summary = "유저 정보 수정", description = "유저 정보 수정")
+    @Operation(summary = "유저 정보 수정", description = "유저 정보 수정", hidden = true)
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "요청 오류"),
@@ -74,7 +73,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{iuser}")
-    @Operation(summary = "유저 삭제", description = "유저 정보 삭제")
+    @Operation(summary = "유저 삭제", description = "유저 정보 삭제", hidden = true)
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "요청 오류"),
