@@ -284,7 +284,7 @@ public class TodoServiceV3 implements TodoServiceRef {
         }
 
         // 백업한 데이터 활용할 수 있는 예외발생
-        dto.setIuser(1000);
+//        dto.setIuser(1000);
 
         // 투두까지 전부 지우는 경우 추가 로직
         Integer result = repository.deleteTodo(dto);
