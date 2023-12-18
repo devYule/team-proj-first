@@ -35,19 +35,19 @@ public class PatchTodoDto {
     @Schema(title = "일정 종료일", type = "String", defaultValue = "2023-12-13")
     private LocalDate endDate;
 
-    @Schema(title = "일정 시작 시간", type = "String", description = "nano 는 무시 가능", defaultValue = "00:00:00")
+    @Schema(title = "일정 시작 시간", type = "String", description = "nano 는 무시 가능", defaultValue = "00:00:00", hidden = true)
     private LocalTime startTime;
 
-    @Schema(title = "일정 종료 시간", type = "String", description = "nano 는 무시 가능", defaultValue = "23:59:59")
+    @Schema(title = "일정 종료 시간", type = "String", description = "nano 는 무시 가능", defaultValue = "23:59:59", hidden = true)
     private LocalTime endTime;
 
-    @Schema(title = "반복 종료일", type = "String", defaultValue = "2024-12-12")
+    @Schema(title = "반복 종료일", type = "String", defaultValue = "2024-12-12", hidden = true)
     private LocalDate repeatEndDate;
 
-    @Schema(title = "반복 종류 식별", type = "String", description = "주반복: week, 월반복: month", defaultValue = "week")
+    @Schema(title = "반복 종류 식별", type = "String", description = "주반복: week, 월반복: month", defaultValue = "week", hidden = true)
     private String repeatType;
 
     @Range(min = 0, max = 31, message = "올바른 반복 일 이 아님")
-    @Schema(title = "반복일 식별 숫자", type = "Integer", description = "주반복일 경우: 0~6 (0금 ~ 6목), 월반복일 경우: 1~31", defaultValue = "3")
+    @Schema(title = "반복일 식별 숫자", type = "Integer", description = "주반복일 경우: 0~6 (0금 ~ 6목), 월반복일 경우: 1~31", defaultValue = "3", hidden = true)
     private Integer repeatNum;
 }
