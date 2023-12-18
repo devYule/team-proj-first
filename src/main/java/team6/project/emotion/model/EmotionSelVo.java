@@ -7,9 +7,10 @@ import lombok.Data;
 public class EmotionSelVo {
     @Schema(title = "날짜", minimum = "1", maximum = "31",type = "String")
     private String day;
-    @Schema(title = "이모션 단계", minimum = "1", maximum = "31",type = "Integer")
+    @Schema(title = "이모션 단계", minimum = "1", maximum = "5",type = "int")
     private int emotionGrade;
+    @Schema(title = "이모션 태그", minimum = "1", maximum = "28",type = "int")
     private int emotionTag;
+    @Schema(title = "일정", minimum = "0", maximum = "1",type = "int",description = "1이면 일정O,0이면 일정X")
     private int hasTodo;
-
 }
