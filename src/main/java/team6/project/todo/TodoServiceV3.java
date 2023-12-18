@@ -180,13 +180,6 @@ public class TodoServiceV3 implements TodoServiceRef {
         // 두 데이터 병합 (넘어온 수정 데이터에서 null 인 부분은 DB에서 가져온 데이터로 채움)
         MergedTodoAndRepeatDto mergedTodoAndRepeat = mkTodoObject(dto, selectResult);
 
-//        // startDate & endDate 오류 검증
-//        // startTime & endTime 오류 검증
-//        commonUtils.checkIsBefore(LocalDateTime.of(mergedTodoAndRepeat.getEndDate(), mergedTodoAndRepeat.getEndTime()),
-//                LocalDateTime.of(mergedTodoAndRepeat.getStartDate(), mergedTodoAndRepeat.getStartTime()));
-
-        // 데이터에는 오류가 없음이 보장됨.
-
         /*
         수정에서는 진짜 수정만 한다.
         repeat 데이터의 삭제는 delete 에 따로 존재한다.
@@ -197,10 +190,6 @@ public class TodoServiceV3 implements TodoServiceRef {
 
         // DB 에 repeat 정보가 저장되어 있는지 여부 체크.
         boolean hasRepeatInfoInDB = selectResult.getRepeatEndDate() != null;
-
-        // db에 있든, dto 에 있든 repeatEndDate 가 있다면 검증.
-        final LocalDate repeatEndDate = mergedTodoAndRepeat.getRepeatEndDate();
-
 
         // 따라서 병합된 데이터 기준, repeat 정보가 존재 한다면,
         // 무조건 repeatEndDate, repeatType, repeatNum 모두 null 이 아님. (db에 저장할때 전부 값이 세팅된 상태)
@@ -218,6 +207,8 @@ public class TodoServiceV3 implements TodoServiceRef {
             }
 
             // 검증
+            // db에 있든, dto 에 있든 repeatEndDate 가 있다면 검증용 LocalDate 생성.
+            final LocalDate repeatEndDate = mergedTodoAndRepeat.getRepeatEndDate();
 
             // repeatType, repeatNum 둘중 하나만 값 있는 경우 체크
             // repeatEndDate != null 인데, repeatType 이나 repeatNum 이 null 인 경우 체크
