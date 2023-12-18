@@ -17,7 +17,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static team6.project.common.Const.*;
@@ -31,7 +30,6 @@ public class TodoServiceV3 implements TodoServiceRef {
     private final CommonUtils commonUtils;
 
 
-    @Transactional
     public ResVo regTodo(TodoRegDto dto) {
         // 투두 는 10개까지만 저장.
         if (repository.getListCountById(dto.getIuser()) >= TODO_MAX_SIZE) {
@@ -87,6 +85,7 @@ public class TodoServiceV3 implements TodoServiceRef {
                             dto.getStartTime() == null ? LocalTime.of(0, 0, 0) : dto.getStartTime()));
 
             InsertTodoDto insertTodoDto = new InsertTodoDto(dto);
+            insertTodoDto.setIuser(1000);
             if (repository.saveTodo(insertTodoDto) == 0) {
                 throw new RuntimeException(RUNTIME_EX_MESSAGE);
             }
@@ -163,7 +162,6 @@ public class TodoServiceV3 implements TodoServiceRef {
         return todoSelectVo;
     }
 
-    @Transactional
     public ResVo patchTodo(PatchTodoDto dto) {
         /*
         일단 다 가져와서 검증하는 모델 생성 (병합)
@@ -272,14 +270,13 @@ public class TodoServiceV3 implements TodoServiceRef {
         return new ResVo(repository.updateTodoAndRepeatIfExists(dto));
     }
 
-    @Transactional
     public ResVo deleteTodo(TodoDeleteDto dto, Integer delOnlyRepeat) {
         // repeat 유무 관계 없이 repeat 정보를 지우는 delete query 실행.
         Integer delRepeatResult = repository.deleteRepeat(dto.getIuser(), dto.getItodo());
         if (delOnlyRepeat != null && delOnlyRepeat == 1) {
             // 요청받은 iuser, itodo 로 삭제되는 repeat 이 없을경우 NoSuchDataException 발생.
             // ㄴ> 반복정보가 없는 일정일수도 있고, iuser, itodo 로 조회되는 데이터가 없을수도 있음.
-            checkResultIfZeroThrow(delRepeatResult);
+            checkResultIfNullOrZeroThrow(delRepeatResult);
             // 반복정보만 지울경우 바로 리턴.
             return new ResVo(delRepeatResult);
         }
@@ -287,7 +284,7 @@ public class TodoServiceV3 implements TodoServiceRef {
         // 투두까지 전부 지우는 경우 추가 로직
         int result = repository.deleteTodo(dto);
         // 요청받은 iuser, itodo 로 삭제되는 일정이 없을경우 NoSuchDataException 발생.
-        checkResultIfZeroThrow(result);
+        checkResultIfNullOrZeroThrow(result);
 
         return new ResVo(result);
     }
@@ -296,8 +293,8 @@ public class TodoServiceV3 implements TodoServiceRef {
      * ------- Extracted Methods -------
      */
 
-    private void checkResultIfZeroThrow(Integer result) {
-        if (result == 0) {
+    private void checkResultIfNullOrZeroThrow(Integer result) {
+        if (result == null || result == 0) {
             throw new NoSuchDataException(NO_SUCH_DATA_EX_MESSAGE);
         }
     }
