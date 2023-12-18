@@ -264,7 +264,7 @@ public class TodoServiceV3 implements TodoServiceRef {
             // 로직 - repeat 데이터가 없는 경우
 
             // dto 와 db 모두 repeat 정보가 없는 경우.
-            // NPE 가 터져서 catch 로 온 상황에 repeatType 과 repeatNum 둘다 null 이 아니라면 충분한 정보가 제공되지 않은것.
+            // NPE 가 터져서 catch 로 온 상황에 repeat 정보중 하나라도 null 이 아니라면 충분한 정보가 제공되지 않은것. (dto 에서)
             commonUtils.checkObjectAnyNotNullThrow(
                     BadInformationException.class,
                     NOT_ENOUGH_INFO_EX_MESSAGE,
