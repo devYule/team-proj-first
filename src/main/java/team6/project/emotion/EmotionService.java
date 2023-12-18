@@ -31,7 +31,9 @@ public class EmotionService {
 
     /* TODO: 12/16/23  
         1. repeat_end_date 가 2025년 1월 임에도 2024년 1월 을 조회하면 아무것도 조회되지 않음.
+        //수정했는데 확인부탁.
         2. emotionCreatedAt -> day 로 변경 요망.
+        //수정완.
         --by Hyunmin */
 
     public List<EmotionSelVo> getEmo(EmotionSelDto dto) {
@@ -41,42 +43,51 @@ public class EmotionService {
         todo.addAll(emotionMapper.getRepeatTodoMonth(dto));
 
         // 중복제거.
-        List<EmotionSelVo> todoMonth=todo.stream().distinct()
+        List<EmotionSelVo> asMonth=todo.stream().distinct()
                 .collect(Collectors.toList());
 
         // 감정 등록한 날들의 날짜와, emotionTag, emotionGrade 가져옴.
         List<EmotionSelVo> emotionMonth=emotionMapper.getEmotionMonth(dto);
-        List<EmotionSelVo> list=new ArrayList<>();
 
-        for (EmotionSelVo todosel:todoMonth) {
+        for (EmotionSelVo todosel:asMonth) {
             for (EmotionSelVo emotionsel : emotionMonth) {
                 //_Todo가 적혀진 날들의 리스트와 이모션이 적혀진 날들의 리스트를 탐색.
                 //날짜가 같으면 리스트에다 이모션이 적혀진 날,이모션태그,이모션단계,_Todo 1을 집어넣음.
                 //만약에 같지 않으면?? => 어느 한쪽은 날짜,이모션태그,이모션단계가 있고 _Todo가 0,
                 // 다른 쪽은 날짜,Todo가 있는데 이모션태그,이모션단계가 없음.
-                if(emotionsel.getEmotionCreatedAt().equals(todosel.getEmotionCreatedAt())){
-                    emotionsel.setHasTodo(1);//겹치는 구간이 있으면 이모션 태그 날짜에 _toDo 1을 설정해줌.
-                    //투두,이모션 겹치는 날짜 & 이모션 등록한 날짜만 나옴.
+
+                if(emotionsel.getDay().equals(todosel.getDay())){
+                    //emotionsel 의 날짜와 _todosel의 날짜가 같으면
+                    emotionsel.setHasTodo(1);//이모션 태그 날짜에 _toDo 1을 설정해줌.
+                    //emotionsel 에는 이모션이 등록된 날짜와, 그에 겹치는 _todo가 있는 날짜가 나옴.
+
+                    //_todo 에 이모션을 설정해줌.
                     todosel.setEmotionTag(emotionsel.getEmotionTag());
                     todosel.setEmotionGrade(emotionsel.getEmotionGrade());
-                    list.add(todosel);
+                    //_todoMonth 에는 _todo의 날짜와 그에 겹치는 날짜의 emotion 이 들어있음.
                     break;
                 }
             }
         }
         int i=0;
         List<EmotionSelVo> anotherList=new ArrayList<>();
+        //다른 리스트 생성.
         for (EmotionSelVo emotionSelVo:emotionMonth) {
+            //이모션이 등록되 날짜만큼 반복.
             i=emotionSelVo.getHasTodo();
+            //만약 emotionMonth 에 있는 날짜의 hasTodo 가 0이면 => emotion는 있는데 _todo 가 없음.
+            //즉 _todo가 없는 emotion만 등록된 날짜만 가져옴.
             if(i==0){
+                //다른리스트에 그 날을 넣어줌.
                 anotherList.add(emotionSelVo);
+                //anotherList에는 emotion과 emotion이 등록된 날짜와 곂치는 날이 들어있음(_hasTodo 1)
             }
         }
-        todoMonth.addAll(anotherList);
+        asMonth.addAll(anotherList); // _todoMonth 에 anotherList 를 넣어줌.
 
-        Comparator<EmotionSelVo> byDay = Comparator.comparing(EmotionSelVo::getEmotionCreatedAt);
-        Collections.sort(todoMonth , byDay);
-        return todoMonth;
+        Comparator<EmotionSelVo> byDay = Comparator.comparing(EmotionSelVo::getDay);
+        Collections.sort(asMonth , byDay);
+        return asMonth;
     }
 
     // 해당 날의 이모션들 삭제 //
