@@ -29,7 +29,6 @@ public class TodoServiceV3 implements TodoServiceRef {
     private final TodoRepositoryRef repository;
     private final CommonUtils commonUtils;
 
-
     public ResVo regTodo(TodoRegDto dto) {
         // 투두 는 10개까지만 저장.
         if (repository.getListCountById(dto.getIuser()) >= TODO_MAX_SIZE) {
