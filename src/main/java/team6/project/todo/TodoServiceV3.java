@@ -80,7 +80,7 @@ public class TodoServiceV3 implements TodoServiceRef {
         } catch (NullPointerException e) {
             // 반복 없을때 로직
             log.debug("todo service in catch");
-            // startDate & endDate 그리고 startTime & endTime 오류 검증 -> stardDate & endDate 는 무조건 null 이 아님이 Controller 에서 검증됨.
+            // startDate & endDate 그리고 startTime & endTime 오류 검증 -> startDate & endDate 는 무조건 null 이 아님이 Controller 에서 검증됨.
             // (@Validated)
             commonUtils.checkIsBefore(
                     LocalDateTime.of(dto.getEndDate(),
