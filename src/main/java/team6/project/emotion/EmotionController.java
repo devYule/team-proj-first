@@ -3,6 +3,7 @@ package team6.project.emotion;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/api/emo")
+@Tag(name = "이모션, 태그", description = "이모션, 태그 등록, 조회, 수정, 삭제")
 public class EmotionController {
     public final EmotionService emotionService;
     private void checkIuser(int iuser) {
@@ -53,7 +55,7 @@ public class EmotionController {
 
         return emotionService.getEmo(dto);
     }
-    @DeleteMapping
+    @DeleteMapping("/{iuser}/{iemo}")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "요청 오류"),
@@ -61,6 +63,7 @@ public class EmotionController {
     })
     @Operation(summary = "이모션 삭제",description = "유저PK,이모션PK를 받아와 해당하는 날에 등록된 이모션 삭제")
     public ResVo deleteEmo(EmotionDelDto dto){
+
         log.info("EmotionDelDto : {}",dto);
         return emotionService.delEmo(dto);
     }

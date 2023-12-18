@@ -22,4 +22,5 @@ public class TodoInfosRef {
     private LocalDate repeatEndDate;
     private String repeatType;
     private Integer repeatNum;
+    
 }

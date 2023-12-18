@@ -5,11 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team6.project.common.ResVo;
-import team6.project.common.exception.*;
+import team6.project.common.exception.BadInformationException;
+import team6.project.common.exception.NoSuchDataException;
+import team6.project.common.exception.NotEnoughInformationException;
+import team6.project.common.exception.TodoIsFullException;
 import team6.project.common.utils.CommonUtils;
 import team6.project.todo.model.*;
 import team6.project.todo.model.proc.*;
-import team6.project.todo.model.proc.RepeatInsertDto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,19 +45,19 @@ public class TodoServiceV3 implements TodoServiceRef {
             // repeatType == month && repeatNum >= 1 && repeatNum <= 31 여부 체크
             // NPE 유발
             commonUtils.checkRepeatNumWithRepeatType(dto.getRepeatType(), commonUtils.toJavaFrom(dto.getRepeatNum()));
+            // 반복 있을때 로직
+            log.debug("todo service in try");
             commonUtils.checkRepeatInfo(dto.getRepeatEndDate(), dto.getRepeatType(), dto.getRepeatNum());
 
             // 검증 (주반복일때는 주정보일치, 월반복일때는 일정보 일치 여부 , endDate + endTime 이 startDate + startTime 보다 같거나 이후인지 여부 체크)
             // 주 반복일경우 startDateTime 이 주 반복 숫자와 동일한 숫자인지 체크,
             // 월 반복일경우 startDateTime 이 월 반복 숫자(일) 와 동일한 숫자인지 체크.
-            commonUtils.checkIsBefore(LocalDateTime.of(dto.getEndDate(), dto.getEndTime() == null ?
-                            LocalTime.of(23, 59, 59) : dto.getEndTime()),
-                    LocalDateTime.of(dto.getStartDate(), dto.getStartTime() == null ?
-                            LocalTime.of(0, 0, 0) : dto.getStartTime()),
+            commonUtils.checkIsBefore(LocalDateTime.of(dto.getEndDate(),
+                            dto.getEndTime() == null ? LocalTime.of(23, 59, 59) : dto.getEndTime()),
+                    LocalDateTime.of(dto.getStartDate(),
+                            dto.getStartTime() == null ? LocalTime.of(0, 0, 0) : dto.getStartTime()),
                     dto.getRepeatType(),
                     commonUtils.toJavaFrom(dto.getRepeatNum()));
-            // 반복 있을때 로직
-            log.debug("todo service in try");
 
             InsertTodoDto insertTodoDto = new InsertTodoDto(dto);
             if (repository.saveTodo(insertTodoDto) == 0) {
@@ -76,11 +78,13 @@ public class TodoServiceV3 implements TodoServiceRef {
         } catch (NullPointerException e) {
             // 반복 없을때 로직
             log.debug("todo service in catch");
-            // startDate & endDate 그리고 startTime & endTime 오류 검증 -> 해당 데이터들은 무조건 null 이 아님이 Controller 에서 검증됨.
-            commonUtils.checkIsBefore(LocalDateTime.of(dto.getEndDate(), dto.getEndTime() == null ?
-                            LocalTime.of(23, 59, 59) : dto.getEndTime()),
-                    LocalDateTime.of(dto.getStartDate(), dto.getStartTime() == null ? LocalTime.of(0, 0, 0) :
-                            dto.getStartTime()));
+            // startDate & endDate 그리고 startTime & endTime 오류 검증 -> stardDate & endDate 는 무조건 null 이 아님이 Controller 에서 검증됨.
+            // (@Validated)
+            commonUtils.checkIsBefore(LocalDateTime.of(dto.getEndDate(),
+                            dto.getEndTime() == null ? LocalTime.of(23, 59, 59) : dto.getEndTime()),
+                    LocalDateTime.of(dto.getStartDate(),
+                            dto.getStartTime() == null ? LocalTime.of(0, 0, 0) : dto.getStartTime()));
+
             InsertTodoDto insertTodoDto = new InsertTodoDto(dto);
             if (repository.saveTodo(insertTodoDto) == 0) {
                 throw new RuntimeException(RUNTIME_EX_MESSAGE);
@@ -98,7 +102,6 @@ public class TodoServiceV3 implements TodoServiceRef {
         log.debug("allTodos = {}", allTodos);
         // 정제
         List<TodoSelectVo> result = new ArrayList<>();
-
 
         allTodos.forEach(todo -> {
             try {
@@ -153,7 +156,6 @@ public class TodoServiceV3 implements TodoServiceRef {
 
     @Transactional
     public ResVo patchTodo(PatchTodoDto dto) {
-
         /*
         일단 다 가져와서 검증하는 모델 생성 (병합)
         검증
@@ -171,12 +173,10 @@ public class TodoServiceV3 implements TodoServiceRef {
         // 두 데이터 병합 (넘어온 수정 데이터에서 null 인 부분은 DB에서 가져온 데이터로 채움)
         MergedTodoAndRepeatDto mergedTodoAndRepeat = mkTodoObject(dto, selectResult);
 
-
-        // startDate & endDate 오류 검증
-        // startTime & endTime 오류 검증
-        commonUtils.checkIsBefore(LocalDateTime.of(mergedTodoAndRepeat.getEndDate(), mergedTodoAndRepeat.getEndTime()),
-                LocalDateTime.of(mergedTodoAndRepeat.getStartDate(), mergedTodoAndRepeat.getStartTime()));
-
+//        // startDate & endDate 오류 검증
+//        // startTime & endTime 오류 검증
+//        commonUtils.checkIsBefore(LocalDateTime.of(mergedTodoAndRepeat.getEndDate(), mergedTodoAndRepeat.getEndTime()),
+//                LocalDateTime.of(mergedTodoAndRepeat.getStartDate(), mergedTodoAndRepeat.getStartTime()));
 
         // 데이터에는 오류가 없음이 보장됨.
 
@@ -191,21 +191,19 @@ public class TodoServiceV3 implements TodoServiceRef {
         // DB 에 repeat 정보가 저장되어 있는지 여부 체크.
         boolean hasRepeatInfoInDB = selectResult.getRepeatEndDate() != null;
 
+        // db에 있든, dto 에 있든 repeatEndDate 가 있다면 검증.
+        final LocalDate repeatEndDate = mergedTodoAndRepeat.getRepeatEndDate();
+
+
+        // 따라서 병합된 데이터 기준, repeat 정보가 존재 한다면,
+        // 무조건 repeatEndDate, repeatType, repeatNum 모두 null 이 아님. (db에 저장할때 전부 값이 세팅된 상태)
+        // 다만 db에는 없고, dto 에서는 repeatType 혹은 repeatNum 둘중 하나만 들어올 경우에 대한 예외 처리는 아래 검증부분에서 수행.
+        LocalDate startDateWalker = LocalDate.of(
+                mergedTodoAndRepeat.getStartDate().getYear(),
+                mergedTodoAndRepeat.getStartDate().getMonth(),
+                mergedTodoAndRepeat.getStartDate().getDayOfMonth());
         try {
-
-            // db에 있든, dto 에 있든 repeatEndDate 가 있다면 검증.
-            final LocalDate repeatEndDate = mergedTodoAndRepeat.getRepeatEndDate();
-
             // db, dto 모두 repeat 정보가 없는 경우 NPE
-            // 따라서 병합된 데이터 기준, repeat 정보가 존재 한다면,
-            // 무조건 repeatEndDate, repeatType, repeatNum 모두 null 이 아님. (db에 저장할때 전부 값이 세팅된 상태)
-            // 다만 db에는 없고, dto 에서는 repeatType 혹은 repeatNum 둘중 하나만 들어올 경우에 대한 예외 처리는 아래 검증부분에서 수행.
-            LocalDate startDateWalker = LocalDate.of(
-                    mergedTodoAndRepeat.getStartDate().getYear(),
-                    mergedTodoAndRepeat.getStartDate().getMonth(),
-                    mergedTodoAndRepeat.getStartDate().getDayOfMonth());
-            // 로직 - repeat 데이터가 있는 경우
-
             if (mergedTodoAndRepeat.getRepeatType().equalsIgnoreCase(WEEK)) {
                 startDateWalker = startDateWalker.plusWeeks(1);
             } else {
@@ -225,7 +223,15 @@ public class TodoServiceV3 implements TodoServiceRef {
             commonUtils.checkIsBefore(
                     LocalDateTime.of(repeatEndDate, LocalTime.of(23, 59, 59)),
                     LocalDateTime.of(startDateWalker, mergedTodoAndRepeat.getStartTime()));
-
+            // 검증 (주반복일때는 주정보일치, 월반복일때는 일정보 일치 여부 , endDate + endTime 이 startDate + startTime 보다 같거나 이후인지 여부 체크)
+            // 주 반복일경우 startDateTime 이 주 반복 숫자와 동일한 숫자인지 체크,
+            // 월 반복일경우 startDateTime 이 월 반복 숫자(일) 와 동일한 숫자인지 체크.
+            commonUtils.checkIsBefore(LocalDateTime.of(mergedTodoAndRepeat.getEndDate(),
+                            mergedTodoAndRepeat.getEndTime() == null ? LocalTime.of(23, 59, 59) : mergedTodoAndRepeat.getEndTime()),
+                    LocalDateTime.of(mergedTodoAndRepeat.getStartDate(),
+                            mergedTodoAndRepeat.getStartTime() == null ? LocalTime.of(0, 0, 0) : mergedTodoAndRepeat.getStartTime()),
+                    mergedTodoAndRepeat.getRepeatType(),
+                    mergedTodoAndRepeat.getRepeatNum());
             // 로직 - repeat 데이터가 dto 에만 있는 경우 - repeat 데이터를 insert
             if (!hasRepeatInfoInDB) {
                 repository.saveRepeat(new RepeatInsertDto(dto,
@@ -238,6 +244,13 @@ public class TodoServiceV3 implements TodoServiceRef {
 
             // repeat 데이터가 db에 이미 있고, dto 에도 들어온 경우는 catch 아래에서 _todo update 와 함께 한번에 처리
         } catch (NullPointerException e) {
+            // startDate & endDate 오류 검증
+            // startTime & endTime 오류 검증
+            /* TODO: 2023-12-18
+                여기 체크 필
+                --by Hyunmin */
+            commonUtils.checkIsBefore(LocalDateTime.of(mergedTodoAndRepeat.getEndDate(), mergedTodoAndRepeat.getEndTime()),
+                    LocalDateTime.of(mergedTodoAndRepeat.getStartDate(), mergedTodoAndRepeat.getStartTime()));
             // 로직 - repeat 데이터가 없는 경우
 
             // dto 와 db 모두 repeat 정보가 없는 경우.
@@ -294,7 +307,7 @@ public class TodoServiceV3 implements TodoServiceRef {
 
 
     private MergedTodoAndRepeatDto mkTodoObject(PatchTodoDto dto, TodoSelectTmpResult selectResult) {
-        return new MergedTodoAndRepeatDto(
+        MergedTodoAndRepeatDto mergedTodoAndRepeatDto = new MergedTodoAndRepeatDto(
                 dto.getTodoContent() == null ? selectResult.getTodoContent() : dto.getTodoContent(),
                 dto.getStartDate() == null ? selectResult.getStartDate() : dto.getStartDate(),
                 dto.getEndDate() == null ? selectResult.getEndDate() : dto.getEndDate(),
@@ -303,7 +316,12 @@ public class TodoServiceV3 implements TodoServiceRef {
                 dto.getRepeatEndDate() == null ? selectResult.getRepeatEndDate() : dto.getRepeatEndDate(),
                 dto.getRepeatType() == null ? selectResult.getRepeatType() : dto.getRepeatType(),
                 dto.getRepeatNum() == null ? selectResult.getRepeatNum() : dto.getRepeatNum()
+
         );
+        if (mergedTodoAndRepeatDto.getRepeatType().equalsIgnoreCase(WEEK) && dto.getRepeatNum() != null) {
+            mergedTodoAndRepeatDto.setRepeatNum(commonUtils.toJavaFrom(mergedTodoAndRepeatDto.getRepeatNum()));
+        }
+        return mergedTodoAndRepeatDto;
 
     }
 }
