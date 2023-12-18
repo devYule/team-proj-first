@@ -67,7 +67,7 @@ public class EmotionServiceRefByHyunmin {
                 //날짜가 같으면 리스트에다 이모션이 적혀진 날,이모션태그,이모션단계,_Todo 1을 집어넣음.
                 //만약에 같지 않으면?? => 어느 한쪽은 날짜,이모션태그,이모션단계가 있고 _Todo가 0,
                 // 다른 쪽은 날짜,Todo가 있는데 이모션태그,이모션단계가 없음.
-                if (emotionsel.getEmotionCreatedAt().equals(todosel.getEmotionCreatedAt())) {
+                if (emotionsel.getDay().equals(todosel.getDay())) {
                     emotionsel.setHasTodo(1);//겹치는 구간이 있으면 이모션 태그 날짜에 _toDo 1을 설정해줌.
                     //투두,이모션 겹치는 날짜 & 이모션 등록한 날짜만 나옴.
                     todosel.setEmotionTag(emotionsel.getEmotionTag());
@@ -93,7 +93,7 @@ public class EmotionServiceRefByHyunmin {
         }
         todoMonth.addAll(anotherList);
 
-        Comparator<EmotionSelVo> byDay = Comparator.comparing(EmotionSelVo::getEmotionCreatedAt);
+        Comparator<EmotionSelVo> byDay = Comparator.comparing(EmotionSelVo::getDay);
         Collections.sort(todoMonth, byDay);
         /* TODO: 12/16/23
             Collections.sort(todoMonth, byDay);
