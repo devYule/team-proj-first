@@ -9,7 +9,9 @@
     <insert id="postEmo">
         INSERT INTO t_emotion
         <set>
-            iuser=#{iuser},iemotion_grade=#{emoGrade},iemotion_tag=#{emoTagInt}
+            iuser=#{iuser}
+            ,   iemotion_grade=#{emoGrade}
+            ,   iemotion_tag=#{emoTagInt}
         </set>
     </insert>
     <select id="getTodoMonth">
@@ -25,14 +27,15 @@
         LEFT JOIN t_todo_repeat B
         ON A.itodo = B.itodo
         JOIN T
-        ON T.startDate BETWEEN A.start_date AND A.end_date AND A.iuser=#{iuser}
-        WHERE B.itodo IS NULL
+        ON T.startDate BETWEEN A.start_date AND A.end_date
+        WHERE B.itodo IS NULL AND A.iuser=#{iuser}
     </select>
     <select id="getEmotionMonth">
         SELECT DATE_FORMAT(A.created_at,'%Y-%m-%d') AS day
         , A.iemotion_grade AS emotionGrade, A.iemotion_tag AS emotionTag
         FROM t_emotion A
-        WHERE A.iuser=#{iuser} AND DATE_FORMAT(A.created_at,'%Y-%m')=concat(#{y},'-',#{m})
+        WHERE A.iuser=#{iuser}
+        AND DATE_FORMAT(A.created_at,'%Y-%m')=concat(#{y},'-',#{m})
         ORDER BY A.created_at
     </select>
     <select id="getRepeatTodoMonth">
@@ -61,6 +64,7 @@
         JOIN t_todo B
         ON A.itodo=B.itodo
         WHERE (T.startDate>=B.start_date AND T.startDate&lt;=A.repeat_end_date)
+        AND B.iuser=#{iuser}
         ORDER BY T.startDate
     </select>
     <delete id="delEmo">

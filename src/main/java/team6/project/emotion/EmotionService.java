@@ -103,6 +103,7 @@ public class EmotionService {
 
         Comparator<EmotionSelVo> byDay = Comparator.comparing(EmotionSelVo::getDay);
         Collections.sort(asMonth , byDay);
+
         return asMonth;
     }
 
