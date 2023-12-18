@@ -21,7 +21,7 @@ import static team6.project.common.Const.*;
 @Slf4j
 //@Service
 @RequiredArgsConstructor
-public class TodoServiceV2 implements TodoServiceInter {
+public class TodoServiceV2 implements TodoServiceRef {
 
     private final TodoRepository repository;
     private final CommonUtils commonUtils;
@@ -72,10 +72,10 @@ public class TodoServiceV2 implements TodoServiceInter {
         }
     }
 
-    public List<TodoSelectVo> getTodo(TodoSelectTransDto dto) {
+    public List<TodoSelectVo> getTodo(TodoSelectTransVo dto) {
 
         // 정제 전
-        List<TodoSelectTmpResultRef> allTodos = repository.findTodoAndRepeatBy(dto);
+        List<TodoSelectTmpResult> allTodos = repository.findTodoAndRepeatBy(dto);
 
         // 정제
         List<TodoSelectVo> result = new ArrayList<>();
@@ -163,15 +163,15 @@ public class TodoServiceV2 implements TodoServiceInter {
         문제없으면 PatchTodoDto 를 <if> 이용하여 update
          */
 
-        TodoSelectTmpResultRef selectResult = repository.findTodoAndRepeatBy(
-                new TodoSelectDtoForUpdate(dto.getIuser(), dto.getItodo())).get(0);
+        TodoSelectTmpResult selectResult = repository.findTodoAndRepeatBy(
+                new TodoSelectVoForUpdate(dto.getIuser(), dto.getItodo())).get(0);
         // DB에 해당 _TODO 가 있는지 여부 체크 (수정이므로 있음이 보장되어야 함)
         if (selectResult == null) {
             throw new NoSuchDataException(NO_SUCH_DATA_EX_MESSAGE);
         }
 
         // 두 데이터 병합 (넘어온 수정 데이터에서 null 인 부분은 DB에서 가져온 데이터로 채움)
-        CheckRefTodoAndRepeatDto checkResultData = checkTodoData(dto, selectResult);
+        MergedTodoAndRepeatDto checkResultData = checkTodoData(dto, selectResult);
 
 
         // startDate & endDate 오류 검증
@@ -217,7 +217,7 @@ public class TodoServiceV2 implements TodoServiceInter {
 
         } catch (NullPointerException e) {
             // dto 와 db 모두 repeat 정보가 없는 경우 (아무것도 하지 않으면 됨.)
-            commonUtils.checkObjectIsNotNullThrow(BadInformationException.class, NOT_ENOUGH_INFO_EX_MESSAGE, checkResultData.getRepeatEndDate(),
+            commonUtils.checkObjectAnyNotNullThrow(BadInformationException.class, NOT_ENOUGH_INFO_EX_MESSAGE, checkResultData.getRepeatEndDate(),
                     checkResultData.getRepeatType(),
                     checkResultData.getRepeatNum());
 
@@ -282,7 +282,7 @@ public class TodoServiceV2 implements TodoServiceInter {
     }
 
 
-    private CheckRefTodoAndRepeatDto checkTodoData(PatchTodoDto dto, TodoSelectTmpResultRef selectResult) {
+    private MergedTodoAndRepeatDto checkTodoData(PatchTodoDto dto, TodoSelectTmpResult selectResult) {
 //        return CheckTodoAndRepeatDto.builder()
 //                .todoContent(dto.getTodoContent() == null ? selectResult.getTodoContent() : dto.getTodoContent())
 //                .startDate(dto.getStartDate() == null ? selectResult.getStartDate() : dto.getStartDate())
@@ -293,7 +293,7 @@ public class TodoServiceV2 implements TodoServiceInter {
 //                .repeatType(dto.getRepeatType() == null ? selectResult.getRepeatType() : dto.getRepeatType())
 //                .repeatNum(dto.getRepeatNum() == null ? selectResult.getRepeatNum() : dto.getRepeatNum())
 //                .build();
-        return new CheckRefTodoAndRepeatDto(
+        return new MergedTodoAndRepeatDto(
                 dto.getTodoContent() == null ? selectResult.getTodoContent() : dto.getTodoContent(),
                 dto.getStartDate() == null ? selectResult.getStartDate() : dto.getStartDate(),
                 dto.getEndDate() == null ? selectResult.getEndDate() : dto.getEndDate(),

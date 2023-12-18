@@ -92,7 +92,6 @@ public class UserController {
         if (iuser<1) {
             throw new MyMethodArgumentNotValidException("iuser 필수");
         }
-
     }
 
 

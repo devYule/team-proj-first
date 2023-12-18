@@ -6,16 +6,16 @@ import org.springframework.stereotype.Repository;
 import team6.project.todo.model.PatchTodoDto;
 import team6.project.todo.model.TodoDeleteDto;
 import team6.project.todo.model.proc.InsertTodoDto;
-import team6.project.todo.model.proc.TodoSelectTmpResultRef;
+import team6.project.todo.model.proc.TodoSelectTmpResult;
 import team6.project.todo.model.proc.RepeatInsertDto;
-import team6.project.todo.model.ref.TodoSelectDtoRef;
+import team6.project.todo.model.ref.TodoSelectVoRef;
 
 import java.util.List;
 
 @Repository
 @Slf4j
 @RequiredArgsConstructor
-public class TodoRepository {
+public class TodoRepository implements TodoRepositoryRef {
 
     private final TodoMapper mapper;
 
@@ -28,24 +28,19 @@ public class TodoRepository {
         return mapper.insTodo(dto);
     }
 
-
     public Integer saveRepeat(RepeatInsertDto dto) {
         return mapper.insRepeat(dto);
     }
 
-    public List<TodoSelectTmpResultRef> findTodoAndRepeatBy(TodoSelectDtoRef dto) {
+    public List<TodoSelectTmpResult> findTodoAndRepeatBy(TodoSelectVoRef dto) {
         return mapper.selectTodo(dto);
     }
-
-
 
     public boolean checkIsRepeat(Integer iuser, Integer itodo) {
         boolean b = mapper.isRepeat(iuser, itodo) == 0;
         log.debug("repository's b = {}", b);
         return b;
     }
-
-
 
     public Integer deleteRepeat(Integer iuser, Integer itodo) {
         return mapper.deleteTodoRepeat(iuser, itodo);
@@ -60,7 +55,5 @@ public class TodoRepository {
         return mapper.patchTodoAndRepeatIfExists(dto) == 0 ? 0 : 1;
 
     }
-
-
 
 }

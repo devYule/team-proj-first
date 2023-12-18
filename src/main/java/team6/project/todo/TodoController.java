@@ -12,7 +12,7 @@ import team6.project.common.ResVo;
 import team6.project.common.exception.BadInformationException;
 import team6.project.common.utils.CommonUtils;
 import team6.project.todo.model.*;
-import team6.project.todo.model.proc.TodoSelectDto;
+import team6.project.todo.model.TodoSelectDto;
 
 import java.util.List;
 
@@ -24,25 +24,18 @@ import static team6.project.common.Const.BAD_INFO_EX_MESSAGE;
 @RequestMapping("/api/todo")
 @Tag(name = "투두", description = "투두 등록, 조회, 수정, 삭제")
 public class TodoController {
-    private final TodoServiceInter service;
-    private final CommonUtils commonUtils;
+
+    private final TodoServiceRef service;
 
     @PostMapping
-    @Operation(summary = "투두 등록", description = "투두 정보 등록")
+    @Operation(summary = "투두 등록", description = "투두 정보 등록<br><br>반복 설정시 startDate, endDate 는 동일해야함 & startTime 은 endTime 이전이어야 " +
+            "함.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "요청 오류"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResVo postTodo(@Validated @RequestBody TodoRegDto dto) {
-
-        // repeatType, repeatNum 둘중 하나만 값 있는 경우 체크
-        // repeatEndDate != null 인데, repeatType 이나 repeatNum 이 null 인 경우 체크
-        // repeatType == week && repeatNum >= 1 && repeatNum <= 7 과,
-        // repeatType == month && repeatNum >= 1 && repeatNum <= 31 여부 체크
-        // 3개 모두 null 일경우 아무것도 하지않음 보장.
-        commonUtils.checkRepeatNumWithRepeatType(dto.getRepeatEndDate(), dto.getRepeatType(), dto.getRepeatNum());
-
         log.debug("postTodo's dto = {}", dto);
 
         return service.regTodo(dto);
@@ -58,9 +51,7 @@ public class TodoController {
     })
     public List<TodoSelectVo> getTodo(@Validated TodoSelectDto dto) {
         log.info("getTodo's dto = {}", dto);
-        TodoSelectTransDto transDto = new TodoSelectTransDto();
-        transDto.setSelectedDate(dto.getY(), dto.getM(), dto.getD());
-        transDto.setItodo(dto.getIuser());
+        TodoSelectTransVo transDto = new TodoSelectTransVo(dto.getIuser(), dto.getY(), dto.getM(), dto.getD());
         return service.getTodo(transDto);
 
     }
@@ -73,20 +64,7 @@ public class TodoController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResVo patchTodo(@Validated @RequestBody PatchTodoDto dto) {
-
-        // repeatType, repeatNum 둘중 하나만 값 있는 경우 체크
-        // repeatEndDate != null 인데, repeatType 이나 repeatNum 이 null 인 경우 체크
-        // repeatType == week && repeatNum >= 1 && repeatNum <= 7 과,
-        // repeatType == month && repeatNum >= 1 && repeatNum <= 31 여부 체크
-        // 3개 모두 null 일경우 아무것도 하지않음 보장.
-        commonUtils.checkRepeatNumWithRepeatType(dto.getRepeatEndDate(), dto.getRepeatType(), dto.getRepeatNum());
-
         log.info("patchTodo's dto = {}", dto);
-//        commonUtils.checkObjectAnyNullThrow(NotEnoughInformationException.class, NOT_ENOUGH_INFO_EX_MESSAGE,
-//                dto.getTodoContent(),
-//                dto.getStartDate(),
-//                dto.getEndDate(),
-//                dto.getStartTime(), dto.getEndTime());
 
         return service.patchTodo(dto);
 
@@ -108,6 +86,5 @@ public class TodoController {
 
         return service.deleteTodo(dto, delOnlyRepeat);
     }
-
 
 }

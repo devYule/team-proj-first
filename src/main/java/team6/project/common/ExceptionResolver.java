@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import team6.project.common.exception.*;
 import team6.project.common.model.ExceptionResultVo;
 
+import static team6.project.common.Const.BAD_REQUEST_TYPE_EX_MESSAGE;
+
 @Slf4j
 @RestControllerAdvice
 public class ExceptionResolver {
@@ -42,10 +44,12 @@ public class ExceptionResolver {
         return new ExceptionResultVo(e.getMessage());
     }
 
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResultVo methodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.info("message = {}", e.getMessage(), e);
+
         StringBuilder sb = new StringBuilder();
         String separator = ", ";
 
@@ -60,27 +64,25 @@ public class ExceptionResolver {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionResultVo myMethodArgumentNotValidException(MyMethodArgumentNotValidException e) {
+    public ExceptionResultVo notEnoughInformationException(NotEnoughInformationException e) {
         log.info("message = {}", e.getMessage(), e);
         return new ExceptionResultVo(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionResultVo myMethodArgumentNotValidException(MyMethodArgumentNotValidException e) {
+        log.info("message = {}", e.getMessage(), e);
+        return new ExceptionResultVo(BAD_REQUEST_TYPE_EX_MESSAGE);
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResultVo httpMessageNotReadableException(HttpMessageNotReadableException e) {
         log.info("message = {}", e.getMessage(), e);
-        return new ExceptionResultVo(e.getMessage());
+        return new ExceptionResultVo(BAD_REQUEST_TYPE_EX_MESSAGE);
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionResultVo notEnoughInformationException(NotEnoughInformationException e) {
-        log.info("message = {}", e.getMessage(), e);
-        return new ExceptionResultVo(e.getMessage());
-    }
-
-
-    //
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionResultVo runtimeException(RuntimeException e) {

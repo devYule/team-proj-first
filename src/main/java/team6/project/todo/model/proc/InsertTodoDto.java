@@ -1,5 +1,6 @@
 package team6.project.todo.model.proc;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import team6.project.todo.model.TodoRegDto;
@@ -9,6 +10,7 @@ import java.time.LocalTime;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class InsertTodoDto {
     private Integer itodo;
     private Integer iuser;

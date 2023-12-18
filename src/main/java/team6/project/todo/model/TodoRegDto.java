@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -24,22 +25,24 @@ public class TodoRegDto {
     @Length(max=100, message = "투두 내용은 100자 이내")
     private String todoContent;
 
-    @Schema(title = "일정 시작일", type = "날짜", description = "필수값", format = "yyyy-MM-dd", defaultValue = "2023-12-12")
+    @Schema(title = "일정 시작일", type = "String", description = "필수값", format = "yyyy-MM-dd", defaultValue = "2023-12-12")
     @NotNull(message = "일정 시작일은 null 일 수 없음")
     private LocalDate startDate;
 
 
-    @Schema(title = "일정 종료일", type = "날짜", description = "필수값", defaultValue = "2023-12-13")
+    @Schema(title = "일정 종료일", type = "String", description = "필수값", defaultValue = "2023-12-13")
     @NotNull(message = "일정 종료일은 null 일 수 없음")
     private LocalDate endDate;
 
-    @Schema(title = "일정 시작 시간", type = "시간", description = "nano 는 무시 가능")
+    @Schema(title = "일정 시작 시간", type = "String", defaultValue = "00:00:00",  format = "HH:mm:ss")
+//    @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime startTime;
 
-    @Schema(title = "일정 종료 시간", type = "시간", description = "nano 는 무시 가능")
+    @Schema(title = "일정 종료 시간", type = "String", defaultValue = "23:59:59",  format = "HH:mm:ss")
+//    @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime endTime;
 
-    @Schema(title = "반복 종료 시간", type = "날짜")
+    @Schema(title = "반복 종료 시간", type = "String")
     private LocalDate repeatEndDate;
 
     @Schema(title = "반복 종류 식별", type = "String", description = "주반복: week, 월반복: month", defaultValue = "week")
