@@ -12,9 +12,6 @@ spring:
     username: root
     password: green502
 
-
-
-
 ## mysql 설정
 #spring:
 #  datasource:
@@ -41,5 +38,3 @@ logging:
 
 server:
   port: 8082
-
-
