@@ -13,5 +13,5 @@ public class EmotionSelAsChartDto {
     @Schema(title = "해당하는 주",description = "주단위로 이모션을 조회하기위한 주")
     private String startWeek;
     @Schema(title = "오늘 날짜",description = "주단위로 이모션을 조회하기위해 필요한 오늘의 날짜")
-    private String today;
+    private String endWeek;
 }
