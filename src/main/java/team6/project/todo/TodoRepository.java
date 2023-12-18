@@ -53,6 +53,8 @@ public class TodoRepository implements TodoRepositoryRef {
 
     public Integer updateTodoAndRepeatIfExists(PatchTodoDto dto) {
 
+        // join 해서 update 라 2가 나올수도 있음.
+        // 그에 관계없이 성공하면 항상 1, 실패하면 항상 1 을 리턴하기 위한부분 추가.
         return mapper.patchTodoAndRepeatIfExists(dto) == 0 ? 0 : 1;
 
     }
