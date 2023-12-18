@@ -1,5 +1,6 @@
 package team6.project.emotion;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -34,7 +35,7 @@ public class EmotionController {
     })
     public ResVo postEmo(@RequestBody EmotionInsDto dto){
         int getIuser=dto.getIuser();
-        
+        checkIuser(getIuser);
         log.info("EmotionInsDto : {}",dto);
         return emotionService.postEmo(dto);
     }
@@ -49,12 +50,12 @@ public class EmotionController {
                                      @RequestParam("y") int year,
                                      @RequestParam("m") int month){
         checkIuser(iuser);
-
         EmotionSelDto dto = new EmotionSelDto(iuser, year, month);
         log.info("EmotionSelDto : {}",dto);
 
         return emotionService.getEmo(dto);
     }
+    @Hidden
     @DeleteMapping("/{iuser}/{iemo}")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
@@ -63,7 +64,7 @@ public class EmotionController {
     })
     @Operation(summary = "이모션 삭제",description = "유저PK,이모션PK를 받아와 해당하는 날에 등록된 이모션 삭제")
     public ResVo deleteEmo(EmotionDelDto dto){
-
+        checkIuser(dto.getIuser());
         log.info("EmotionDelDto : {}",dto);
         return emotionService.delEmo(dto);
     }
@@ -76,6 +77,7 @@ public class EmotionController {
     })
     public EmotionSelAsChartVo getEmoChart(@PathVariable int iuser){
         log.info("iuser : {}",iuser);
+        checkIuser(iuser);
         return emotionService.getEmoChart(iuser);
     }
 }

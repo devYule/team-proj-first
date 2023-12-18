@@ -7,6 +7,8 @@ import java.util.List;
 
 @Mapper
 public interface EmotionMapper {
+    //이모션 태그 가져옴
+    int tagConvertInteger(String emoTag);
     //이모션 등록
     int postEmo(EmotionInsDto dto);
     //이번달 반복하지 않는 투두 날짜, hasTodo 가져옴.
@@ -15,6 +17,10 @@ public interface EmotionMapper {
     List<EmotionSelVo> getEmotionMonth(EmotionSelDto dto);
     //이번달 반복하는 투두 날짜, hasTodo 가져옴.
     List<EmotionSelVo> getRepeatTodoMonth(EmotionSelDto dto);
+    //이모션 삭제
     int delEmo(EmotionDelDto dto);
-    List<EmotionSel> getEmoChart(EmotionSelAsChartDto dto);//
+    //주단위의 이모션들 가져옴.
+    List<EmotionSel> getEmoChart(EmotionSelAsChartDto dto);
+    //유저 있는지 확인.
+    int checkIuser(int iuser);
 }

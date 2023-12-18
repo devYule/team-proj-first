@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import team6.project.common.ResVo;
+import team6.project.common.exception.MyMethodArgumentNotValidException;
 import team6.project.common.utils.CommonUtils;
 import team6.project.emotion.model.*;
 import java.time.LocalDate;
@@ -24,26 +25,34 @@ public class EmotionService {
     private final CommonUtils utils;
     //(일 별)이모션 단계,이모션태그 insert//
     public ResVo postEmo(EmotionInsDto dto) {
+        int checkIuser=emotionMapper.checkIuser(dto.getIuser());
+        if(checkIuser==0){
+            throw new MyMethodArgumentNotValidException("올바른 iuser 값을 보내주세요");
+        }
+        int emoTagInt=emotionMapper.tagConvertInteger(dto.getEmoTag());
+        if(emoTagInt==0){
+            throw new MyMethodArgumentNotValidException("태그를 올바르게 작성 해 주세요");
+        }
+        dto.setEmoTagInt(emoTagInt);
         int result = emotionMapper.postEmo(dto);
+        if(result==0){
+            throw new RuntimeException("DB 오류");
+        }
         return new ResVo(result);//1이면 잘 들어감.
     }
 
     //현재까지 작성한 이모션단계,이모션태그를 월별로 출력
     //이모션을 작성한 날에 Todo가 있으면 hasTodo 1, 없으면 0.
 
-    /* TODO: 12/16/23  
-        1. repeat_end_date 가 2025년 1월 임에도 2024년 1월 을 조회하면 아무것도 조회되지 않음.
-        //수정했는데 확인부탁.
-        2. emotionCreatedAt -> day 로 변경 요망.
-        //수정완.
-        --by Hyunmin */
-
     public List<EmotionSelVo> getEmo(EmotionSelDto dto) {
         // 반복안되는 날에 할 일이 있으면 그 날 가져오고,hasTodo도 가져옴.
         List<EmotionSelVo> todo=emotionMapper.getTodoMonth(dto);
         // 반복되는 날에 할 일이 있으면 그 날 가져오고, hasTodo도 가져옴.
         todo.addAll(emotionMapper.getRepeatTodoMonth(dto));
-
+        int checkIuser= emotionMapper.checkIuser(dto.getIuser());
+        if(checkIuser==0){
+            throw new MyMethodArgumentNotValidException("올바른 iuser 값을 보내주세요");
+        }
         // 중복제거.
         List<EmotionSelVo> asMonth=todo.stream().distinct()
                 .collect(Collectors.toList());
@@ -73,6 +82,7 @@ public class EmotionService {
         }
         int i=0;
         List<EmotionSelVo> anotherList=new ArrayList<>();
+
         //다른 리스트 생성.
         for (EmotionSelVo emotionSelVo:emotionMonth) {
             //이모션이 등록되 날짜만큼 반복.
@@ -94,6 +104,10 @@ public class EmotionService {
 
     // 해당 날의 이모션들 삭제 //
     public ResVo delEmo(EmotionDelDto dto) {
+        int checkIuser= emotionMapper.checkIuser(dto.getIuser());
+        if(checkIuser==0){
+            throw new MyMethodArgumentNotValidException("올바른 iuser 값을 보내주세요");
+        }
         int result = emotionMapper.delEmo(dto);
         return new ResVo(result);
     }
@@ -101,6 +115,11 @@ public class EmotionService {
     // iuser 값을 받아 해당 주의 월요일부터 오늘까지 모든 기록된 감정과
     //감정 태그 의 주별 결산을 가져옴  //
     public EmotionSelAsChartVo getEmoChart(int iuser) {
+        int checkIuser= emotionMapper.checkIuser(iuser);
+        if(checkIuser==0){
+            throw new MyMethodArgumentNotValidException("올바른 iuser 값을 보내주세요");
+        }
+
         //오늘
         LocalDate today = LocalDate.now();
         //오늘이 일주일의 몇번째 인지 월요일=1,화요일=2,수요일=3
@@ -127,6 +146,12 @@ public class EmotionService {
         //iuser, startWeek,endWeek
         EmotionSelAsChartVo selAsChartVo = new EmotionSelAsChartVo();
         selAsChartVo.setEmoChart(emotionSelList);
+
+        if(selAsChartVo.getEmoChart().size()<7){
+            //for (:) {
+            
+            // }
+        }
         for (EmotionSel emo : emotionSelList) {
             emo.setDayOfTheWeek(utils.fromJavaTo(emo.getDayOfTheWeek()));
             switch (emo.getEmotionGrade()) {
@@ -141,6 +166,7 @@ public class EmotionService {
                     break;
             }
         }
+
         return selAsChartVo;
     }
 

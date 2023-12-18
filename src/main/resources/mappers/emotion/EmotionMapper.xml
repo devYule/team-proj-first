@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="team6.project.emotion.EmotionMapper">
+    <select id="tagConvertInteger" resultType="int">
+        SELECT iemotion_tag AS emoTagInt
+        FROM t_emotion_tag
+        WHERE emotion_tag=#{emoTag}
+    </select>
     <insert id="postEmo">
         INSERT INTO t_emotion
         <set>
-            iuser=#{iuser},iemotion_grade=#{emoGrade},iemotion_tag=#{emoTag}
+            iuser=#{iuser},iemotion_grade=#{emoGrade},iemotion_tag=#{emoTagInt}
         </set>
     </insert>
     <select id="getTodoMonth">
@@ -69,5 +74,9 @@
         AND iuser=#{iuser}
         ORDER BY created_at ASC
     </select>
+    <select id="checkIuser" resultType="int">
+        SELECT iuser AS checkIuser
+        FROM t_user
+        WHERE iuser=#{iuser}
+    </select>
 </mapper>
-        <!---->
