@@ -1,6 +1,7 @@
 package team6.project.todo;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -78,7 +79,8 @@ public class TodoController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResVo deleteTodo(TodoDeleteDto dto,
-                            @RequestParam(required = false, value = "rp") Integer delOnlyRepeat) {
+                            @RequestParam(required = false, value = "rp") @Schema(title = "반복 여부",
+                                    description = "반복일시 쿼리스트링으로 rp=1 요청, 반복 아닐경우 쿼리파라미터 자체를 기재 x", hidden = true) Integer delOnlyRepeat) {
         if (delOnlyRepeat != null && delOnlyRepeat != 1) {
             throw new BadInformationException(BAD_INFO_EX_MESSAGE);
         }
