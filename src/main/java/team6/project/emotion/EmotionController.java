@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import team6.project.common.ResVo;
+import team6.project.common.exception.BadInformationException;
 import team6.project.common.exception.MyMethodArgumentNotValidException;
 import team6.project.emotion.model.*;
 
@@ -23,7 +24,7 @@ public class EmotionController {
     public final EmotionService emotionService;
     private void checkIuser(int iuser) {
         if (iuser<1) {
-            throw new MyMethodArgumentNotValidException("올바른 iuser값 입력");
+            throw new BadInformationException("올바른 iuser값 입력");
         }
     }
     @PostMapping
@@ -46,13 +47,10 @@ public class EmotionController {
             @ApiResponse(responseCode = "400", description = "요청 오류"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public List<EmotionSelVo> getEmo(@PathVariable int iuser,
-                                     @RequestParam("y") int year,
-                                     @RequestParam("m") int month){
-        checkIuser(iuser);
-        EmotionSelDto dto = new EmotionSelDto(iuser, year, month);
-        log.info("EmotionSelDto : {}",dto);
+    public List<EmotionSelVo> getEmo(EmotionSelDto dto){
 
+        checkIuser(dto.getIuser());
+        log.info("EmotionSelDto : {}",dto);
         return emotionService.getEmo(dto);
     }
     @Hidden

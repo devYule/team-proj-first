@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import team6.project.common.ResVo;
+import team6.project.common.exception.BadInformationException;
 import team6.project.common.exception.MyMethodArgumentNotValidException;
+import team6.project.common.exception.NoSuchDataException;
 import team6.project.common.utils.CommonUtils;
 import team6.project.emotion.model.*;
 import java.time.LocalDate;
@@ -20,18 +22,20 @@ import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 @Slf4j
 @RequiredArgsConstructor
 public class EmotionService {
+
     public final EmotionMapper emotionMapper;
 
     private final CommonUtils utils;
+
     //(일 별)이모션 단계,이모션태그 insert//
     public ResVo postEmo(EmotionInsDto dto) {
         Integer checkIuser=emotionMapper.checkIuser(dto.getIuser());
         if(checkIuser==null){
-            throw new MyMethodArgumentNotValidException("올바른 iuser 값을 보내주세요");
+            throw new NoSuchDataException("올바른 iuser 값을 보내주세요");
         }
         Integer emoTagInt=emotionMapper.tagConvertInteger(dto.getEmoTag());
         if(emoTagInt==null){
-            throw new MyMethodArgumentNotValidException("태그를 올바르게 작성 해 주세요");
+            throw new BadInformationException("태그를 올바르게 작성 해 주세요");
         }
         dto.setEmoTagInt(emoTagInt);
         int result = emotionMapper.postEmo(dto);
@@ -51,7 +55,7 @@ public class EmotionService {
         todo.addAll(emotionMapper.getRepeatTodoMonth(dto));
         Integer checkIuser= emotionMapper.checkIuser(dto.getIuser());
         if(checkIuser==null){
-            throw new MyMethodArgumentNotValidException("올바른 iuser 값을 보내주세요");
+            throw new NoSuchDataException("올바른 iuser 값을 보내주세요");
         }
         // 중복제거.
         List<EmotionSelVo> asMonth=todo.stream().distinct()
@@ -106,7 +110,7 @@ public class EmotionService {
     public ResVo delEmo(EmotionDelDto dto) {
         Integer checkIuser= emotionMapper.checkIuser(dto.getIuser());
         if(checkIuser==null){
-            throw new MyMethodArgumentNotValidException("올바른 iuser 값을 보내주세요");
+            throw new NoSuchDataException("올바른 iuser 값을 보내주세요");
         }
         int result = emotionMapper.delEmo(dto);
         return new ResVo(result);
@@ -117,7 +121,7 @@ public class EmotionService {
     public EmotionSelAsChartVo getEmoChart(int iuser) {
         Integer checkIuser= emotionMapper.checkIuser(iuser);
         if(checkIuser==null){
-            throw new MyMethodArgumentNotValidException("올바른 iuser 값을 보내주세요");
+            throw new NoSuchDataException("올바른 iuser 값을 보내주세요");
         }
 
         //오늘
