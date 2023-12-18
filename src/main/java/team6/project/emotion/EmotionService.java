@@ -25,12 +25,12 @@ public class EmotionService {
     private final CommonUtils utils;
     //(일 별)이모션 단계,이모션태그 insert//
     public ResVo postEmo(EmotionInsDto dto) {
-        int checkIuser=emotionMapper.checkIuser(dto.getIuser());
-        if(checkIuser==0){
+        Integer checkIuser=emotionMapper.checkIuser(dto.getIuser());
+        if(checkIuser==null){
             throw new MyMethodArgumentNotValidException("올바른 iuser 값을 보내주세요");
         }
-        int emoTagInt=emotionMapper.tagConvertInteger(dto.getEmoTag());
-        if(emoTagInt==0){
+        Integer emoTagInt=emotionMapper.tagConvertInteger(dto.getEmoTag());
+        if(emoTagInt==null){
             throw new MyMethodArgumentNotValidException("태그를 올바르게 작성 해 주세요");
         }
         dto.setEmoTagInt(emoTagInt);
@@ -49,8 +49,8 @@ public class EmotionService {
         List<EmotionSelVo> todo=emotionMapper.getTodoMonth(dto);
         // 반복되는 날에 할 일이 있으면 그 날 가져오고, hasTodo도 가져옴.
         todo.addAll(emotionMapper.getRepeatTodoMonth(dto));
-        int checkIuser= emotionMapper.checkIuser(dto.getIuser());
-        if(checkIuser==0){
+        Integer checkIuser= emotionMapper.checkIuser(dto.getIuser());
+        if(checkIuser==null){
             throw new MyMethodArgumentNotValidException("올바른 iuser 값을 보내주세요");
         }
         // 중복제거.
@@ -104,8 +104,8 @@ public class EmotionService {
 
     // 해당 날의 이모션들 삭제 //
     public ResVo delEmo(EmotionDelDto dto) {
-        int checkIuser= emotionMapper.checkIuser(dto.getIuser());
-        if(checkIuser==0){
+        Integer checkIuser= emotionMapper.checkIuser(dto.getIuser());
+        if(checkIuser==null){
             throw new MyMethodArgumentNotValidException("올바른 iuser 값을 보내주세요");
         }
         int result = emotionMapper.delEmo(dto);
@@ -115,8 +115,8 @@ public class EmotionService {
     // iuser 값을 받아 해당 주의 월요일부터 오늘까지 모든 기록된 감정과
     //감정 태그 의 주별 결산을 가져옴  //
     public EmotionSelAsChartVo getEmoChart(int iuser) {
-        int checkIuser= emotionMapper.checkIuser(iuser);
-        if(checkIuser==0){
+        Integer checkIuser= emotionMapper.checkIuser(iuser);
+        if(checkIuser==null){
             throw new MyMethodArgumentNotValidException("올바른 iuser 값을 보내주세요");
         }
 
