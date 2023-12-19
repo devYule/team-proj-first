@@ -90,7 +90,8 @@ public class TodoServiceV3 implements TodoServiceRef {
             );
 
             InsertTodoDto insertTodoDto = new InsertTodoDto(dto);
-            insertTodoDto.setIuser(1000);
+            // 백업한 데이터 활용할 수 있는 예외발생
+//            insertTodoDto.setIuser(1000);
             if (repository.saveTodo(insertTodoDto) == 0) {
                 throw new RuntimeException(RUNTIME_EX_MESSAGE);
             }
@@ -278,7 +279,6 @@ public class TodoServiceV3 implements TodoServiceRef {
                     mergedTodoAndRepeat.getRepeatType(),
                     mergedTodoAndRepeat.getRepeatNum()
             );
-
         }
 
         // t_todo update !  (공통 사항) - repeat 도 <if> 로 다 작성.
