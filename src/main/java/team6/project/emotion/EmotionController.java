@@ -53,14 +53,14 @@ public class EmotionController {
         log.info("EmotionSelDto : {}",dto);
         return emotionService.getEmo(dto);
     }
-    @Hidden
+
     @DeleteMapping("/{iuser}/{iemo}")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "요청 오류"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @Operation(summary = "이모션 삭제",description = "유저PK,이모션PK를 받아와 해당하는 날에 등록된 이모션 삭제")
+    @Operation(summary = "이모션 삭제",description = "유저PK,이모션PK를 받아와 해당하는 날에 등록된 이모션 삭제", hidden = true)
     public ResVo deleteEmo(EmotionDelDto dto){
         checkIuser(dto.getIuser());
         log.info("EmotionDelDto : {}",dto);
