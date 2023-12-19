@@ -90,8 +90,7 @@ public class TodoServiceV3 implements TodoServiceRef {
             );
 
             InsertTodoDto insertTodoDto = new InsertTodoDto(dto);
-            // 백업한 데이터 활용할 수 있는 예외발생
-//            insertTodoDto.setIuser(1000);
+
             if (repository.saveTodo(insertTodoDto) == 0) {
                 throw new RuntimeException(RUNTIME_EX_MESSAGE);
             }
