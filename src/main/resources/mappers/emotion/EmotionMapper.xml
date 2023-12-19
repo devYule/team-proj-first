@@ -4,44 +4,47 @@
     <insert id="postEmo">
         INSERT INTO t_emotion
         <set>
-            iuser=#{iuser},iemotion_grade=#{emoGrade},iemotion_tag=#{emoTag}
+            iuser=#{iuser}
+            , iemotion_grade=#{emoGrade}
+            , iemotion_tag=#{emoTag}
         </set>
     </insert>
     <select id="getTodoMonth">
         WITH RECURSIVE T AS(
-        SELECT LAST_DAY (concat(#{year},'-',#{month},'-01') - INTERVAL 1 MONTH) + INTERVAL 1 DAY AS startDate
+        SELECT LAST_DAY (concat(#{y},'-',#{m},'-01') - INTERVAL 1 MONTH) + INTERVAL 1 DAY AS startDate
         UNION ALL
         SELECT startDate + INTERVAL 1 DAY
         FROM T
-        WHERE startDate &lt;LAST_DAY (concat(#{year},'-',#{month},'-01'))
+        WHERE startDate &lt;LAST_DAY (concat(#{y},'-',#{m},'-01'))
         )
-        SELECT T.startDate AS emotionCreatedAt, 1 AS hasTodo
+        SELECT T.startDate AS day, 1 AS hasTodo
         FROM t_todo A
         LEFT JOIN t_todo_repeat B
         ON A.itodo = B.itodo
         JOIN T
-        ON T.startDate BETWEEN A.start_date
-        AND A.end_date AND A.iuser=#{iuser}
-        WHERE B.itodo IS NULL
+        ON T.startDate BETWEEN A.start_date AND A.end_date
+        WHERE B.itodo IS NULL AND A.iuser=#{iuser}
     </select>
     <select id="getEmotionMonth">
-        SELECT DATE_FORMAT(A.created_at,'%Y-%m-%d') AS emotionCreatedAt
-        , A.iemotion_grade AS emotionGrade, A.iemotion_tag AS emotionTag
+        SELECT DATE_FORMAT(A.created_at,'%Y-%m-%d') AS day
+        , A.iemotion_grade AS emotionGrade, B.emotion_tag AS emotionTag
         FROM t_emotion A
+        JOIN t_emotion_tag B
+        ON A.iemotion_tag=B.iemotion_tag
         WHERE A.iuser=#{iuser}
-        AND DATE_FORMAT(A.created_at,'%Y-%m')=concat(#{year},'-',#{month})
+        AND DATE_FORMAT(A.created_at,'%Y-%m')=concat(#{y},'-',#{m})
         ORDER BY A.created_at
     </select>
     <select id="getRepeatTodoMonth">
         WITH RECURSIVE T AS(
-        SELECT LAST_DAY(concat(#{year},'-',#{month},'-01')- INTERVAL 1 MONTH) + INTERVAL 1 DAY AS startDate
+        SELECT LAST_DAY(concat(#{y},'-',#{m},'-01')- INTERVAL 1 MONTH) + INTERVAL 1 DAY AS startDate
         UNION ALL
         SELECT startDate + INTERVAL 1 DAY
         FROM T
-        WHERE startDate &lt;LAST_DAY(concat(#{year},'-',#{month},'-01'))
+        WHERE startDate &lt;LAST_DAY(concat(#{y},'-',#{m},'-01'))
         )
 
-        SELECT DISTINCT T.startDate AS emotionCreatedAt,1 AS hasTodo
+        SELECT DISTINCT T.startDate AS day,1 AS hasTodo
         FROM T
         JOIN t_todo_repeat A
         ON case when DAYOFWEEK(T.startDate)=1 then 7
@@ -51,16 +54,17 @@
                 when DAYOFWEEK(T.startDate)=5 then 4
                 when DAYOFWEEK(T.startDate)=6 then 5
                 when DAYOFWEEK(T.startDate)=7 then 6
-        END =case when A.repeat_type='week'
-             then A.repeat_num
-             END OR
-             case when A.repeat_type='month'
-             then A.repeat_num
-             END = DATE_FORMAT(T.startDate,'%d')
+                END =case when A.repeat_type='week'
+                then A.repeat_num
+                END OR
+                    case when A.repeat_type='month'
+                    then A.repeat_num
+                    END = DATE_FORMAT(T.startDate,'%d')
         JOIN t_todo B
         ON A.itodo=B.itodo
         WHERE (T.startDate>=B.start_date
-        AND T.startDate&lt;=B.end_date)
+        AND T.startDate&lt;=A.repeat_end_date)
+        AND B.iuser=#{iuser}
         ORDER BY T.startDate
     </select>
     <delete id="delEmo">
@@ -72,8 +76,18 @@
         SELECT iemotion_grade AS emotionGrade,DATE_FORMAT(created_at,'%w') AS dayOfTheWeek
         FROM t_emotion
         WHERE created_at >= '${startWeek} 00:00:00'
-        AND created_at &lt;='${today} 23:59:59'
+        AND created_at &lt;='${endWeek} 23:59:59'
         AND iuser=#{iuser}
         ORDER BY created_at ASC
+    </select>
+    <select id="tagConvertInteger" resultType="int">
+        SELECT iemotion_tag AS emoTagInt
+        FROM t_emotion_tag
+        WHERE emotion_tag=#{emoTag}
+    </select>
+    <select id="checkIuser" resultType="int">
+        SELECT iuser AS checkIuser
+        FROM t_user
+        WHERE iuser=#{iuser}
     </select>
 </mapper>

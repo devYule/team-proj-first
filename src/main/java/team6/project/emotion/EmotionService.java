@@ -21,7 +21,7 @@ import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 @RequiredArgsConstructor
 public class EmotionService {
 
-    public final EmotionRepository emotionRepository;
+    private final EmotionRepository emotionRepository;
     private final CommonUtils utils;
 
     //(일 별)이모션 단계,이모션태그 insert//
@@ -79,7 +79,8 @@ public class EmotionService {
         }
 
         int i=0;
-        for (EmotionSelVo emotionSelVo:emotionMonth) {
+        for (EmotionSelVo emotionSelVo : emotionMonth){
+
             i=emotionSelVo.getHasTodo();
             if(i==0){
                 asMonth.add(emotionSelVo);
@@ -88,6 +89,9 @@ public class EmotionService {
         }
         Comparator<EmotionSelVo> byDay = Comparator.comparing(EmotionSelVo::getDay);
         Collections.sort(asMonth , byDay);
+
+
+
 
         return asMonth;
     }
@@ -146,8 +150,8 @@ public class EmotionService {
             emotionSel.setEmotionGrade(3);
             emotionSel.setDayOfTheWeek(i);
             emotionSelList.add(emotionSel);
-
         }
+
         selAsChartVo.setEmoChart(emotionSelList);
         for (EmotionSel emo : emotionSelList) {
             emo.setDayOfTheWeek(utils.fromJavaTo(emo.getDayOfTheWeek()));
