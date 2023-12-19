@@ -1,5 +1,4 @@
 package team6.project.emotion;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,30 +13,29 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
+
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class EmotionService {
 
-    public final EmotionMapper emotionMapper;
-
+    public final EmotionRepository emotionRepository;
     private final CommonUtils utils;
 
     //(일 별)이모션 단계,이모션태그 insert//
     public ResVo postEmo(EmotionInsDto dto) {
-        Integer checkIuser=emotionMapper.checkIuser(dto.getIuser());
+        Integer checkIuser=emotionRepository.checkIuser(dto.getIuser());
         if(checkIuser==null){
             throw new NoSuchDataException("올바른 iuser 값을 보내주세요");
         }
-        Integer emoTagInt=emotionMapper.tagConvertInteger(dto.getEmoTag());
+        Integer emoTagInt=emotionRepository.tagConvertInteger(dto.getEmoTag());
         if(emoTagInt==null){
             throw new BadInformationException("태그를 올바르게 작성 해 주세요");
         }
         dto.setEmoTagInt(emoTagInt);
-        int result = emotionMapper.postEmo(dto);
+        int result = emotionRepository.postEmo(dto);
         if(result==0){
             throw new RuntimeException("DB 오류");
         }
@@ -48,10 +46,10 @@ public class EmotionService {
     //해당한 날에 일정이 있으면 _todo=1, 없으면 _todo=0.
     public List<EmotionSelVo> getEmo(EmotionSelDto dto) {
         // 반복X 일정.
-        List<EmotionSelVo> todo=emotionMapper.getTodoMonth(dto);
+        List<EmotionSelVo> todo=emotionRepository.getTodoMonth(dto);
         // 반복O 일정 추가.
-        todo.addAll(emotionMapper.getRepeatTodoMonth(dto));
-        Integer checkIuser= emotionMapper.checkIuser(dto.getIuser());
+        todo.addAll(emotionRepository.getRepeatTodoMonth(dto));
+        Integer checkIuser= emotionRepository.checkIuser(dto.getIuser());
         if(checkIuser==null){
             throw new NoSuchDataException("올바른 iuser 값을 보내주세요");
         }
@@ -60,7 +58,7 @@ public class EmotionService {
                 .collect(Collectors.toList());
 
         // EmotionGrade,EmotionTag를 등록한 날의 EmotionGrade, 날짜 select.
-        List<EmotionSelVo> emotionMonth=emotionMapper.getEmotionMonth(dto);
+        List<EmotionSelVo> emotionMonth=emotionRepository.getEmotionMonth(dto);
 
         for (EmotionSelVo todosel:asMonth) {
             for (EmotionSelVo emotionsel : emotionMonth) {
@@ -96,18 +94,18 @@ public class EmotionService {
 
     // 해당 날의 이모션들 삭제 //
     public ResVo delEmo(EmotionDelDto dto) {
-        Integer checkIuser= emotionMapper.checkIuser(dto.getIuser());
+        Integer checkIuser= emotionRepository.checkIuser(dto.getIuser());
         if(checkIuser==null){
             throw new NoSuchDataException("올바른 iuser 값을 보내주세요");
         }
-        int result = emotionMapper.delEmo(dto);
+        int result = emotionRepository.delEmo(dto);
         return new ResVo(result);
     }
 
     // iuser 값을 받아 해당 주의 월요일부터 오늘까지 모든 기록된 감정과
     //감정 태그 의 주별 결산을 select//
     public EmotionSelAsChartVo getEmoChart(int iuser) {
-        Integer checkIuser= emotionMapper.checkIuser(iuser);
+        Integer checkIuser= emotionRepository.checkIuser(iuser);
         if(checkIuser==null){
             throw new NoSuchDataException("올바른 iuser 값을 보내주세요");
         }
@@ -132,7 +130,7 @@ public class EmotionService {
         emoDto.setEndWeek(String.valueOf(end));
 
         //emotion이 등록된 날과,emotionGrade를 가져옴.(주 단위)
-        List<EmotionSel> emotionSelList = emotionMapper.getEmoChart(emoDto);
+        List<EmotionSel> emotionSelList = emotionRepository.getEmoChart(emoDto);
 
         List<Integer> weeks = new ArrayList<>();
         for (EmotionSel emotionSel : emotionSelList) {
@@ -165,7 +163,6 @@ public class EmotionService {
                     break;
             }
         }
-
         emotionSelList.sort(Comparator.comparing((EmotionSel::getDayOfTheWeek)));
 
         return selAsChartVo;
