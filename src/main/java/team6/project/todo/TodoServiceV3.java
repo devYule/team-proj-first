@@ -106,10 +106,11 @@ public class TodoServiceV3 implements TodoServiceRef {
         // 해당 날의 감정, 감정태그 가져오기
         EmotionSelectTmpResult emotionSelectTmpResult = repository.findEmotionAndEmotionTagBy(dto);
 
-        // 조회된 결과가 하나도 없을경우 throw
-        if (allTodos.isEmpty() && emotionSelectTmpResult == null) {
-            throw new NoSuchDataException(NO_SUCH_DATA_EX_MESSAGE);
-        }
+//        // 조회된 결과가 하나도 없을경우 throw - (?)
+//        if (allTodos.isEmpty() && emotionSelectTmpResult == null) {
+//            throw new NoSuchDataException(NO_SUCH_DATA_EX_MESSAGE);
+//        }
+
         TodoSelectVo todoSelectVo = new TodoSelectVo();
         if (emotionSelectTmpResult != null) {
             todoSelectVo.setEmotion(emotionSelectTmpResult.getEmotion());

@@ -25,7 +25,7 @@ public class ExceptionResultVo {
         if (this.message.equals(BAD_INFO_EX_MESSAGE)) {
             this.messageCode = 1002;
         }
-        if (this.message.equals(BAD_TIME_INFO_EX_MESSAGE)) {
+        if (this.message.equals(BAD_DATE_INFO_EX_MESSAGE)) {
             this.messageCode = 1003;
         }
         if (this.message.equals(NO_SUCH_DATA_EX_MESSAGE)) {

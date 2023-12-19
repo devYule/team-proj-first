@@ -153,7 +153,7 @@ public class CommonUtils {
      */
     public void checkIsBefore(LocalDateTime endDateTime, LocalDateTime startDateTime) {
         if (endDateTime.isBefore(startDateTime)) {
-            throw new BadDateInformationException(BAD_TIME_INFO_EX_MESSAGE);
+            throw new BadDateInformationException(BAD_DATE_INFO_EX_MESSAGE);
         }
     }
 
