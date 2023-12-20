@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import team6.project.common.Const;
 import team6.project.common.ResVo;
+import team6.project.common.exception.BadInformationException;
 import team6.project.common.exception.MyMethodArgumentNotValidException;
 import team6.project.user.model.UserInsDto;
 import team6.project.user.model.UserSelVo;
@@ -95,29 +97,25 @@ public class UserController {
 
 
     private void checkAllRange(String name, Integer gender, Integer age) {
-        StringBuilder sb = new StringBuilder();
         if (name != null) {
             if (name.isEmpty() || name.length() > 10) {
                 // 추가해야할 메시지:  "닉네임은 1자 이상 10자이하, "
-                sb.append("닉네임은 1자 이상 10자 이하, ");
+                throw new BadInformationException(Const.NICK_NAME_RANGE_EX_MESSAGE);
             }
         }
         if (name.equals(" ")) {
-            sb.append("닉네임은 공백불가, ");
+            throw new BadInformationException(Const.NICK_NAME_EMPTY_EX_MESSAGE);
         }
         if (!(gender >= 0 && gender <= 3)) {
             // 추가해야할 메시지:  "성별은 0이상 3이하 선택, "
-            sb.append("성별은 0이상 3이하 선택, ");
+            throw new BadInformationException(Const.GENDER_RANGE_EX_MESSAGE);
         }
         if (!(age >= 0 && age <= 150)) {
             // 추가해야할 메시지:  "나이는 0~150까지만 입력, "
-            sb.append("나이는 0~150까지만 입력, ");
+            throw new BadInformationException(Const.AGE_RANGE_EX_MESSAGE);
         }
 
-        String errorMessage = sb.toString();
-        if (StringUtils.isNotEmpty(errorMessage)) {
-            throw new MyMethodArgumentNotValidException(errorMessage.substring(0, errorMessage.length() - 2));
-        }
+
     }
 
 }
