@@ -21,14 +21,18 @@ public interface Const {
 
 
     /*
-    message = 잘못된 요청: messageCode = 1001;
-    message = 잘못된 요청 데이터: messageCode = 1002;
-    message = 잘못된 날짜 정보 입력: messageCode = 1003;
-    message = 해당하는 데이터 없음: messageCode = 2001;
-    message = Todo 는 10개 이상 등록할 수 없음: messageCode = 3001;
-    message = 제공된 데이터가 충분하지 않음: messageCode = 1004;
-    message = 잘못된 요청 타입: messageCode = 4001;
-    message = 알 수 없는 오류로 실패: messageCode = 5001;
+    message = 잘못된 요청: messageCode = 1001
+    message = 잘못된 요청 데이터: messageCode = 1002
+    message = 잘못된 날짜 정보 입력: messageCode = 1003
+    message = "닉네임은 1자 이상 10자 이하": messageCode = 1004
+    message = "성별은 0이상 3이하": messageCode = 1005
+    message = "나이는 0이상 150이하": messageCode = 1006
+    message = 제공된 데이터가 충분하지 않음: messageCode = 1007
+    message = 해당하는 데이터 없음: messageCode = 2001
+    message = Todo 는 10개 이상 등록할 수 없음: messageCode = 3001
+    message = 잘못된 요청 타입: messageCode = 4001
+    message = 알 수 없는 오류로 실패: messageCode = 5001
+
      */
 
     String WEEK = "week";
@@ -42,7 +46,6 @@ public interface Const {
 
     // hyesun
     String NICK_NAME_RANGE_EX_MESSAGE = "닉네임은 1자 이상 10자 이하";
-    String NICK_NAME_EMPTY_EX_MESSAGE="닉네임은 공백불가";
     String GENDER_RANGE_EX_MESSAGE="성별은 0이상 3이하";
     String AGE_RANGE_EX_MESSAGE="나이는 0이상 150이하";
 }

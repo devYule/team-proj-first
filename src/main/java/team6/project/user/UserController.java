@@ -32,10 +32,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResVo postUser(@RequestBody UserInsDto dto) {
-        log.info("{}", dto);
-        if (dto.getUserNickName() == null || dto.getUserNickName().isBlank()) {
-            throw new MyMethodArgumentNotValidException("닉네임은 필수값");
-        }
+
         checkAllRange(dto.getUserNickName(), dto.getUserGender(), dto.getUserAge());
         return service.postUser(dto);
 
@@ -97,21 +94,13 @@ public class UserController {
 
 
     private void checkAllRange(String name, Integer gender, Integer age) {
-        if (name != null) {
-            if (name.isEmpty() || name.length() > 10) {
-                // 추가해야할 메시지:  "닉네임은 1자 이상 10자이하, "
-                throw new BadInformationException(Const.NICK_NAME_RANGE_EX_MESSAGE);
-            }
-        }
-        if (name.equals(" ")) {
-            throw new BadInformationException(Const.NICK_NAME_EMPTY_EX_MESSAGE);
+        if (name == null || name.isBlank() || name.length() > 10) {
+            throw new BadInformationException(Const.NICK_NAME_RANGE_EX_MESSAGE);
         }
         if (!(gender >= 0 && gender <= 3)) {
-            // 추가해야할 메시지:  "성별은 0이상 3이하 선택, "
             throw new BadInformationException(Const.GENDER_RANGE_EX_MESSAGE);
         }
         if (!(age >= 0 && age <= 150)) {
-            // 추가해야할 메시지:  "나이는 0~150까지만 입력, "
             throw new BadInformationException(Const.AGE_RANGE_EX_MESSAGE);
         }
 

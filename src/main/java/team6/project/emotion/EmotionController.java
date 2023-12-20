@@ -37,7 +37,7 @@ public class EmotionController {
     public ResVo postEmo(@RequestBody EmotionInsDto dto){
         int getIuser=dto.getIuser();
         checkIuser(getIuser);
-        log.info("EmotionInsDto : {}",dto);
+        log.debug("EmotionInsDto : {}",dto);
         return emotionService.postEmo(dto);
     }
     @GetMapping("/{iuser}")
@@ -50,7 +50,7 @@ public class EmotionController {
     public List<EmotionSelVo> getEmo(EmotionSelDto dto){
 
         checkIuser(dto.getIuser());
-        log.info("EmotionSelDto : {}",dto);
+        log.debug("EmotionSelDto : {}",dto);
         return emotionService.getEmo(dto);
     }
 
@@ -63,7 +63,7 @@ public class EmotionController {
     @Operation(summary = "이모션 삭제",description = "유저PK,이모션PK를 받아와 해당하는 날에 등록된 이모션 삭제", hidden = true)
     public ResVo deleteEmo(EmotionDelDto dto){
         checkIuser(dto.getIuser());
-        log.info("EmotionDelDto : {}",dto);
+        log.debug("EmotionDelDto : {}",dto);
         return emotionService.delEmo(dto);
     }
     @GetMapping("/chart/{iuser}")
@@ -74,7 +74,7 @@ public class EmotionController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public EmotionSelAsChartVo getEmoChart(@PathVariable int iuser){
-        log.info("iuser : {}",iuser);
+        log.debug("iuser : {}",iuser);
         checkIuser(iuser);
         return emotionService.getEmoChart(iuser);
     }
