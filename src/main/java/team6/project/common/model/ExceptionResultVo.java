@@ -28,14 +28,23 @@ public class ExceptionResultVo {
         if (this.message.equals(BAD_DATE_INFO_EX_MESSAGE)) {
             this.messageCode = 1003;
         }
+        if (this.message.equals(NICK_NAME_RANGE_EX_MESSAGE)) {
+            this.messageCode = 1004;
+        }
+        if (this.message.equals(GENDER_RANGE_EX_MESSAGE)) {
+            this.messageCode = 1005;
+        }
+        if (this.message.equals(AGE_RANGE_EX_MESSAGE)) {
+            this.messageCode = 1006;
+        }
+        if (this.message.equals(NOT_ENOUGH_INFO_EX_MESSAGE)) {
+            this.messageCode = 1007;
+        }
         if (this.message.equals(NO_SUCH_DATA_EX_MESSAGE)) {
             this.messageCode = 2001;
         }
         if (this.message.equals(TODO_IS_FULL_EX_MESSAGE)) {
             this.messageCode = 3001;
-        }
-        if (this.message.equals(NOT_ENOUGH_INFO_EX_MESSAGE)) {
-            this.messageCode = 1004;
         }
         if (this.message.equals(BAD_REQUEST_TYPE_EX_MESSAGE)) {
             this.messageCode = 4001;
