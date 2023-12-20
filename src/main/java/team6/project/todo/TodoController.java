@@ -51,7 +51,7 @@ public class TodoController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public TodoSelectVo getTodo(@Validated TodoSelectDto dto) {
-        log.info("getTodo's dto = {}", dto);
+        log.debug("getTodo's dto = {}", dto);
         TodoSelectTransVo transDto = new TodoSelectTransVo(dto.getIuser(), dto.getY(), dto.getM(), dto.getD());
         return service.getTodo(transDto);
 
@@ -65,7 +65,7 @@ public class TodoController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResVo patchTodo(@Validated @RequestBody PatchTodoDto dto) {
-        log.info("patchTodo's dto = {}", dto);
+        log.debug("patchTodo's dto = {}", dto);
 
         return service.patchTodo(dto);
 
@@ -84,7 +84,7 @@ public class TodoController {
         if (delOnlyRepeat != null && delOnlyRepeat != 1) {
             throw new BadInformationException(BAD_INFO_EX_MESSAGE);
         }
-        log.info("deleteTodo's dto = {}", dto);
+        log.debug("deleteTodo's dto = {}", dto);
 
         return service.deleteTodo(dto, delOnlyRepeat);
     }
