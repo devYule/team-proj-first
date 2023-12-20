@@ -174,6 +174,12 @@ public class TodoServiceV3 implements TodoServiceRef {
     }
 
     public ResVo patchTodo(PatchTodoDto dto) {
+
+        // 모든 일정관련 데이터가 null 이면 아래 작업들을 수행할 필요가 없음.
+        commonUtils.checkObjectAllNullThrow(NotEnoughInformationException.class, NOT_ENOUGH_INFO_EX_MESSAGE,
+                dto.getTodoContent(), dto.getStartDate(), dto.getEndDate(), dto.getStartTime(),
+                dto.getEndTime(), dto.getRepeatEndDate(), dto.getRepeatType(), dto.getRepeatNum());
+
         /*
         일단 다 가져와서 검증하는 모델 생성 (병합)
         검증
