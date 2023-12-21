@@ -76,9 +76,8 @@
                 and T.itodo = #{itodo}
             </if>
             <if test="selectedDate != null">
-                AND (T.start_date <![CDATA[<=]]> #{selectedDate}
-                AND (T.end_date >= #{selectedDate}
-                OR R.repeat_end_date >= #{selectedDate}))
+                and #{selectedDate} BETWEEN T.start_date AND T.end_date OR
+                R.repeat_end_date >= #{selectedDate}
             </if>
         </where>
         limit 0, 10

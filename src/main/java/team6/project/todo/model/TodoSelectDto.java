@@ -1,5 +1,6 @@
 package team6.project.todo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -8,7 +9,7 @@ import org.hibernate.validator.constraints.Range;
 @Data
 public class TodoSelectDto {
 
-    @Schema(title = "유저 PK", minimum = "1", type = "Integer", description = "필수값", defaultValue = "1")
+    @JsonIgnore
     private Integer iuser;
 
     @NotNull(message = "년 정보는 필수값")
