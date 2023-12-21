@@ -6,9 +6,10 @@ import java.util.List;
 
 @Data
 @Schema(name = "이번주 이모션 차트", title = "주간 차트",description = "해당하는 주의 일별" +
-        "emotionGrade 조회, good,normal,bad 3가지 단계로 분기")
+        "emotionGrade 조회, good,normal,bad 3가지 단계로 분기, 해당 일주일 모두 출력.<br>" +
+        "등록하지 않은 일별 emotionGrade 의 기본값은 3.(보통)")
 public class EmotionSelAsChartVo {
-    @Schema(title = "일별 이모션 단계",type = "List<EmotionSel>",description = "List타입")
+    @Schema(title = "일별 이모션 단계",type = "List<EmotionSel>",description = "List타입.")
     private List<EmotionSel> emoChart;
     @Schema(title = "좋아요",defaultValue = "0",type = "int",description = "일단위로 Grade 분기하여 " +
             "Good,Normal,Bad 에 +1")
