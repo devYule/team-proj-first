@@ -38,7 +38,7 @@ public class TodoController {
             "성공시<br>" +
             "result: 등록된 투두의 itodo 값 리턴<br><br>" +
             "실패시<br>" +
-            "errorCode 리턴")
+            "errorMessage 와 errorCode 리턴")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "요청 오류"),
@@ -65,7 +65,7 @@ public class TodoController {
             "emotionTag: 선택된 날짜의 이모션 태그<br>" +
             "todos: 조회된 투두의 PK 와 유저가 작성한 투두의 제목(내용) (배열로 리턴)<br><br>" +
             "실패시<br>" +
-            "errorCode 리턴" +
+            "errorMessage 와 errorCode 리턴" +
             "<br><br><br>" +
             "<strong>참고</strong><br>" +
             "/api/todo/7?y=2023&m=12&d=21 으로 요청시 데이터가 존재함이 보장됨.")
@@ -92,7 +92,7 @@ public class TodoController {
             "성공시<br>" +
             "result: 1 리턴<br><br>" +
             "실패시<br>" +
-            "errorCode 리턴")
+            "errorMessage 와 errorCode 리턴")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "요청 오류"),
@@ -114,7 +114,7 @@ public class TodoController {
             "성공시<br>" +
             "result: 1 리턴<br><br>" +
             "실패시<br>" +
-            "errorCode 리턴")
+            "errorMessage 와 errorCode 리턴")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "요청 오류"),
