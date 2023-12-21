@@ -30,16 +30,15 @@ public class UserController {
 
     @PostMapping
     @Operation(summary = "유저", description = "<strong>유저 정보 등록</strong><br><br>" +
-            "iuser: 유저 PK 값 (필수값)<br>" +
             "userNickName: 유저 닉네임 (필수값)<br>" +
             "userGender: 유저 성별 (선택값)<br>" +
             "userAge: 유저 나이 (선택값)" +
             "<br><br><br>" +
             "<strong>response</strong><br><br>" +
             "성공시<br>" +
+            "iuser: 새로 등록된 해당 유저의 PK값 반환<br>"+
             "result: 1<br> " +
-            "userNickName: 설정한 닉네임<br>" +
-            "iuser: 새로 등록된 해당 유저의 PK값 반환<br><br>" +
+            "userNickName: 설정한 닉네임<br><br>" +
             "실패시<br>" +
             "errorCode 리턴")
     @ApiResponses({
