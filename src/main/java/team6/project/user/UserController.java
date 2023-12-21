@@ -26,7 +26,17 @@ public class UserController {
     private final UserService service;
 
     @PostMapping
-    @Operation(summary = "유저 등록", description = "유저 정보 등록")
+    @Operation(summary = "유저", description = "<strong>유저 정보 등록</strong><br><br>" +
+            "iuser: 유저 PK 값 (필수값)<br>" +
+            "userNickName: 유저 닉네임 (필수값)<br>" +
+            "userGender: 유저 성별 (선택값)<br>" +
+            "userAge: 유저 나이 (선택값)" +
+            "<br><br><br>" +
+            "<strong>response</strong><br><br>" +
+            "성공시<br>" +
+            "result, userNickName, iuser값 반환<br><br>" +
+            "실패시<br>" +
+            "errorCode 리턴")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "요청 오류"),
