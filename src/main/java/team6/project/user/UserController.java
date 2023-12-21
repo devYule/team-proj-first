@@ -12,6 +12,7 @@ import team6.project.common.Const;
 import team6.project.common.ResVo;
 import team6.project.common.exception.BadInformationException;
 import team6.project.common.exception.MyMethodArgumentNotValidException;
+import team6.project.user.model.ResVoWithNickName;
 import team6.project.user.model.UserInsDto;
 import team6.project.user.model.UserSelVo;
 import team6.project.user.model.UserUpDto;
@@ -31,7 +32,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "요청 오류"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public ResVo postUser(@RequestBody UserInsDto dto) {
+    public ResVoWithNickName postUser(@RequestBody UserInsDto dto) {
 
         checkAllRange(dto.getUserNickName(), dto.getUserGender(), dto.getUserAge());
         return service.postUser(dto);

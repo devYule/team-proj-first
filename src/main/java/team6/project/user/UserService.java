@@ -4,10 +4,12 @@ package team6.project.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import team6.project.common.Const;
 import team6.project.common.ResVo;
 import team6.project.common.exception.BadInformationException;
 import team6.project.common.exception.MyMethodArgumentNotValidException;
 import team6.project.common.exception.NoSuchException;
+import team6.project.user.model.ResVoWithNickName;
 import team6.project.user.model.UserInsDto;
 import team6.project.user.model.UserSelVo;
 import team6.project.user.model.UserUpDto;
@@ -18,15 +20,22 @@ import team6.project.user.model.UserUpDto;
 public class UserService {
     private final UserMapper mapper;
 
-    public ResVo postUser(UserInsDto dto) {
+    public ResVoWithNickName postUser(UserInsDto dto) {
+//        ResVoWithNickName name = new ResVoWithNickName();
+
+
 
         if (mapper.checkUser(dto) != null) {
             throw new MyMethodArgumentNotValidException("이미 생성된 닉네임");
         }
-        mapper.insUser(dto);
-        ResVo vo = new ResVo(dto.getIuser());
+        //쿼리에서 받아온 유저정보를 저장해서  iuser, result, userNickName 보내줘야한다.
 
-        return vo;
+        if(mapper.insUser(dto) == 1){
+            return new ResVoWithNickName(dto.getIuser(), 1, dto.getUserNickName());
+        }
+
+        throw new RuntimeException(Const.RUNTIME_EX_MESSAGE);
+
     }
 
     public UserSelVo getUser(int iuser) {

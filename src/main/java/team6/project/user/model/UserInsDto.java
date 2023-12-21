@@ -11,7 +11,7 @@ public class UserInsDto {
     @JsonIgnore
     private int iuser;
 
-    @Schema(title = "유저 닉네임", minimum = "1", maximum = "10", type = "String", description = "필수값", defaultValue = "유저닉네임")
+    @Schema(title = "유저 닉네임",type = "String", description = "필수값", defaultValue = "유저닉네임")
     private String userNickName;
 
 
@@ -21,6 +21,11 @@ public class UserInsDto {
 
     @Schema(title = "유저 나이", minimum = "0", maximum = "150" ,type = "Integer",defaultValue = "나이")
     private int userAge;
+
+
+
+
+
 
 }
 
