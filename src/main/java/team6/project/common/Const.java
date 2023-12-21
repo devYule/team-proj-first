@@ -28,6 +28,7 @@ public interface Const {
     message = "성별은 0이상 3이하": messageCode = 1005
     message = "나이는 0이상 150이하": messageCode = 1006
     message = 제공된 데이터가 충분하지 않음: messageCode = 1007
+    message = 잘못된 시간 정보 입력: messageCode = 1008 // 추가됨
     message = 해당하는 데이터 없음: messageCode = 2001
     message = Todo 는 10개 이상 등록할 수 없음: messageCode = 3001
     message = 잘못된 요청 타입: messageCode = 4001

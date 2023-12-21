@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import team6.project.common.exception.*;
 import team6.project.common.model.ExceptionResultVo;
 
-import static team6.project.common.Const.BAD_REQUEST_TYPE_EX_MESSAGE;
+import java.time.format.DateTimeParseException;
+import java.util.Arrays;
+
+import static team6.project.common.Const.*;
 
 @Slf4j
 @RestControllerAdvice
@@ -80,8 +83,16 @@ public class ExceptionResolver {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResultVo httpMessageNotReadableException(HttpMessageNotReadableException e) {
         log.info("message = {}", e.getMessage(), e);
+        if (e.getMessage().contains("java.time.LocalDate: (java.time.format.DateTimeParseException)")) {
+            return new ExceptionResultVo(BAD_DATE_INFO_EX_MESSAGE);
+        }
+        if (e.getMessage().contains("java.time.LocalTime: (java.time.format.DateTimeParseException)")) {
+            return new ExceptionResultVo(BAD_TIME_INFO_EX_MESSAGE);
+        }
+
         return new ExceptionResultVo(BAD_REQUEST_TYPE_EX_MESSAGE);
     }
+
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

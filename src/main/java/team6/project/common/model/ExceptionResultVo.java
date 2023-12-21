@@ -9,7 +9,6 @@ import team6.project.common.Const;
 import static team6.project.common.Const.*;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class ExceptionResultVo {
     @Schema(title = "요청 결과(에러 발생시)", type = "String", description = "에러문구 리턴", defaultValue = BAD_REQUEST_EX_MESSAGE)
@@ -39,6 +38,9 @@ public class ExceptionResultVo {
         }
         if (this.message.equals(NOT_ENOUGH_INFO_EX_MESSAGE)) {
             this.messageCode = 1007;
+        }
+        if (this.message.equals(BAD_TIME_INFO_EX_MESSAGE)) {
+            this.messageCode = 1008;
         }
         if (this.message.equals(NO_SUCH_DATA_EX_MESSAGE)) {
             this.messageCode = 2001;

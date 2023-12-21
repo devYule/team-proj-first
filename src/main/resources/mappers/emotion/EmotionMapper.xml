@@ -6,7 +6,7 @@
         <set>
             iuser=#{iuser}
             , iemotion_grade=#{emoGrade}
-            , iemotion_tag=#{emoTag}
+            , iemotion_tag=#{emoTagInt}
         </set>
     </insert>
     <select id="getTodoMonth">
