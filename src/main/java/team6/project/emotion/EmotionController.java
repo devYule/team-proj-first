@@ -58,7 +58,11 @@ public class EmotionController {
             "투두가 없는 날에 이모션이 등록되어 있으면 ,emotionGrade : 1~5  ,emotionTag : 이모션태그(String)  ,hasTodo : 0  <br>" +
             "투두가 있고 이모션도 등록되어 있으면 ,emotionGrade : 1~5  ,emotionTag : 이모션태그(String)  ,hasTodo : 1  <br>" +
             "성공시<br>" +
-            "여기 작성<br>" +
+            "day: 이모션 단계, 월 단위로 선택할 때 매일 선택한 이모션 단계를 반환 (1 ~ 5)<br>" +
+            "emotionGrade: 이모션 태그, 월 단위로 출력할 때 매일 선택한 이모션 태그를 반환. ex) emotionTag: 즐거운, emotionTag: 후련한<br>" +
+            "emotionTag: 일정, 월 단위로 출력할 때 그날 일정(Todo) 이 있으면 1, 0 이면 일정(Todo) 없음<br>" +
+            "hasTodo: 일정, 월 단위로 출력 할 때 그날 일정(Todo) 이  있으면 1, 0 이면 일정(Todo) 없음<br>" +
+            "배열로 출력<br>"+
             "실패시<br>" +
             "errorMessage 와 errorCode 리턴")
     @ApiResponses({
@@ -88,11 +92,18 @@ public class EmotionController {
         log.debug("EmotionDelDto : {}", dto);
         return emotionService.delEmo(dto);
     }
+
     @GetMapping("/chart/{iuser}")
     @Operation(summary = "주간 차트", description = "이모션이 등록된 날짜를 주 단위로 조회하여 통계출력<br>" +
-            "여기 설명 작성<br>" +
+            "해당하는 주의 일별 emotionGrade 조회, good, normal, bad 3가지 단계로 분기<br>" +
+            "해당 일주일 모두 출력.<br>" +
+            "등록하지 않은 일별 emotionGrade 의 기본값은 3 (보통)<br>" +
+            "iuser: 유저 PK 값<br><br>" +
             "성공시<br>" +
-            "여기 작성<br>" +
+            "emoChart: 일별 이모션 단계, 배열로 리턴<br>" +
+            "good: 좋아요, 일 단위로 Grade 분기하여 Good, Normal, Bad 에 +1<br>" +
+            "normal: 보통, 일 단위로 Grade 분기하여 Good, Normal, Bad 에 +1<br>" +
+            "bad: 나빠요, 일 단위로 Grade 분기하여 Good, Normal, Bad 에 +1<br>" +
             "실패시<br>" +
             "errorMessage 와 errorCode 리턴")
     @ApiResponses({

@@ -37,7 +37,9 @@ public class UserController {
             "<br><br><br>" +
             "<strong>response</strong><br><br>" +
             "성공시<br>" +
-            "result, userNickName, iuser값 반환<br><br>" +
+            "result: 1<br> " +
+            "userNickName: 설정한 닉네임<br>" +
+            "iuser: 새로 등록된 해당 유저의 PK값 반환<br><br>" +
             "실패시<br>" +
             "errorCode 리턴")
     @ApiResponses({
