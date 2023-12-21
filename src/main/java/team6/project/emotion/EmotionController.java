@@ -35,6 +35,8 @@ public class EmotionController {
     @Operation(summary = "이모션 등록", description = "iuser(int)  ,emoGrade(int)  ,emoTag(String)<br>" +
             "값을 받아서 일일 이모션 단계와 태그를 등록한다. iuser=개인마다 다른 값.<br> emoGrade=이모션 단계. 1(매우좋음)~5(매우나쁨)까지 있음." +
             "emoTag=여러가지 이모션태그 중에서 하나만 입력받는 값.ex)괴로운,귀찮은,기쁜,즐거운 ... 총 28가지.<br>" +
+            "성공시<br>" +
+            "result: 1 리턴<br>" +
             "실패시<br>" +
             "errorMessage 와 errorCode 리턴")
     @ApiResponses({
@@ -55,6 +57,8 @@ public class EmotionController {
             "이모션이 등록되어 있지 않으면 ,emotionGrade : 0  ,emotionTag : null  ,hasTodo : 1  <br>" +
             "투두가 없는 날에 이모션이 등록되어 있으면 ,emotionGrade : 1~5  ,emotionTag : 이모션태그(String)  ,hasTodo : 0  <br>" +
             "투두가 있고 이모션도 등록되어 있으면 ,emotionGrade : 1~5  ,emotionTag : 이모션태그(String)  ,hasTodo : 1  <br>" +
+            "성공시<br>" +
+            "여기 작성<br>" +
             "실패시<br>" +
             "errorMessage 와 errorCode 리턴")
     @ApiResponses({
@@ -85,8 +89,11 @@ public class EmotionController {
         return emotionService.delEmo(dto);
     }
     @GetMapping("/chart/{iuser}")
-    @Operation(summary = "주간 차트", description = "이모션이 등록된 날짜를 주 단위로 조회하여 통계출력" +
-            "<br>실패시<br>" +
+    @Operation(summary = "주간 차트", description = "이모션이 등록된 날짜를 주 단위로 조회하여 통계출력<br>" +
+            "여기 설명 작성<br>" +
+            "성공시<br>" +
+            "여기 작성<br>" +
+            "실패시<br>" +
             "errorMessage 와 errorCode 리턴")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
