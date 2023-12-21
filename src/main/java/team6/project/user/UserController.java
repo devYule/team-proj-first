@@ -12,10 +12,13 @@ import team6.project.common.Const;
 import team6.project.common.ResVo;
 import team6.project.common.exception.BadInformationException;
 import team6.project.common.exception.MyMethodArgumentNotValidException;
+import team6.project.common.exception.NotEnoughInformationException;
 import team6.project.user.model.ResVoWithNickName;
 import team6.project.user.model.UserInsDto;
 import team6.project.user.model.UserSelVo;
 import team6.project.user.model.UserUpDto;
+
+import static team6.project.common.Const.NOT_ENOUGH_INFO_EX_MESSAGE;
 
 @Slf4j
 @RestController
@@ -71,7 +74,7 @@ public class UserController {
         checkIuser(dto.getIuser());
 
         if (dto.getUserAge() == null && dto.getUserNickName() == null && dto.getUserGender() == null) {
-            throw new MyMethodArgumentNotValidException("수정할 정보가 제공되지 않음");
+            throw new NotEnoughInformationException(NOT_ENOUGH_INFO_EX_MESSAGE);
         }
 
         checkAllRange(dto.getUserNickName(), dto.getUserGender(), dto.getUserAge());
