@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import team6.project.common.exception.*;
 import team6.project.common.model.ExceptionResultVo;
 
+import java.time.DateTimeException;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 
@@ -92,6 +93,12 @@ public class ExceptionResolver {
         }
 
         return new ExceptionResultVo(BAD_REQUEST_TYPE_EX_MESSAGE);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionResultVo dateTimeException(DateTimeException e) {
+        return new ExceptionResultVo(BAD_DATE_INFO_EX_MESSAGE);
     }
 
 

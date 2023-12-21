@@ -10,19 +10,21 @@ import org.hibernate.validator.constraints.Range;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import static team6.project.common.Const.BAD_INFO_EX_MESSAGE;
+
 @Getter
 @Builder
 @ToString
 @Schema(name = "투두 수정", title = "투두 수정")
 public class PatchTodoDto {
 
-    @NotNull(message = "유저 PK 는 필수값")
-    @Range(min=1L, message = "유저 PK 는 1 이상")
+    @NotNull(message = BAD_INFO_EX_MESSAGE)
+    @Range(min=1L, message = BAD_INFO_EX_MESSAGE)
     @Schema(title = "유저 PK", minimum = "1", type = "Integer", description = "필수값", defaultValue = "1")
     private Integer iuser;
 
-    @NotNull(message = "투두 PK 는 필수값")
-    @Range(min=1L, message = "유저 PK 는 1 이상")
+    @NotNull(message = BAD_INFO_EX_MESSAGE)
+    @Range(min=1L, message = BAD_INFO_EX_MESSAGE)
     @Schema(title = "투두 PK", minimum = "1", type = "Integer", description = "필수값", defaultValue = "1")
     private Integer itodo;
 

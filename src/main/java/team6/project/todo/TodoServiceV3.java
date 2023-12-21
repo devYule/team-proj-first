@@ -136,10 +136,10 @@ public class TodoServiceV3 implements TodoServiceRef {
 
                     while (true) {
                         // 요일 체크 날짜가 해당 월의 마지막날과 같거나, 마지막날 보다 크면 다음 객체(forEach)로 넘어감.
-                        if (weekWalker.isEqual(dto.getSelectedDate().withDayOfMonth(dto.getSelectedDate().lengthOfMonth()))
-                                || weekWalker.isAfter(dto.getSelectedDate())) {
-                            return;
-                        }
+//                        if (weekWalker.isEqual(dto.getSelectedDate().withDayOfMonth(dto.getSelectedDate().lengthOfMonth()))
+//                                || weekWalker.isAfter(dto.getSelectedDate())) {
+//                            return;
+//                        }
                         // 요일 체크 날짜가 요청 온 날짜와 같다면 result 에 추가, break;
                         if (weekWalker.isEqual(dto.getSelectedDate())) {
                             result.add(new TodoInfo(todo.getItodo(), todo.getTodoContent(),
@@ -149,12 +149,20 @@ public class TodoServiceV3 implements TodoServiceRef {
                         }
                         // 1주씩 추가
                         weekWalker = weekWalker.plusWeeks(PLUS_ONE_MONTH_OR_WEEK_OR_DAY);
+
+                        // 요일 체크 날짜가 선택된 날짜 보다 크면 다음 객체(forEach)로 넘어감.
+                        if (weekWalker.isAfter(dto.getSelectedDate())) {
+                            return;
+                        }
                     }
                 }
                 if (todo.getRepeatType().equalsIgnoreCase(MONTH)) {
-                    if (todo.getRepeatNum() == dto.getSelectedDate().getDayOfMonth()) {
+                    if (todo.getRepeatNum() == dto.getSelectedDate().getDayOfMonth() &&
+                    todo.getRepeatNum() <= dto.getSelectedDate().lengthOfMonth()) {
                         result.add(new TodoInfo(todo.getItodo(), todo.getTodoContent(),
-                                todo.getStartDate(), todo.getEndDate(), todo.getStartTime(), todo.getEndTime()));
+                                todo.getStartDate(), todo.getEndDate(), todo.getStartTime(), todo.getEndTime()
+                        , todo.getRepeatEndDate(), todo.getRepeatType(), todo.getRepeatNum() //반복시 주석 제거
+                        ));
                     }
                 }
             } catch (NullPointerException e) {
