@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class EmotionDelDto {
     @Schema(title = "유저 PK", minimum = "1", type = "int", description = "필수값", defaultValue = "유저PK")
     private int iuser;
-    @NotNull
-    @Range(min = 1,max = 5)
+
     @Schema(title = "유저 PK", minimum = "1", type = "int", description = "필수값", defaultValue = "이모션PK")
     private Integer iemotion;
 }

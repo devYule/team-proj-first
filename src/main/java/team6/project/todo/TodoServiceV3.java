@@ -3,7 +3,6 @@ package team6.project.todo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import team6.project.common.ResVo;
 import team6.project.common.exception.BadInformationException;
 import team6.project.common.exception.NoSuchDataException;
@@ -113,7 +112,7 @@ public class TodoServiceV3 implements TodoServiceRef {
 
         TodoSelectVo todoSelectVo = new TodoSelectVo();
         if (emotionSelectTmpResult != null) {
-            todoSelectVo.setEmotion(emotionSelectTmpResult.getEmotion());
+            todoSelectVo.setEmotionGrade(emotionSelectTmpResult.getEmotion());
             todoSelectVo.setEmotionTag(emotionSelectTmpResult.getEmotionTag());
         }
         log.debug("allTodos size = {}", allTodos.size());
