@@ -76,7 +76,8 @@ public class ExceptionResolver {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResultVo myMethodArgumentNotValidException(MyMethodArgumentNotValidException e) {
         log.info("message = {}", e.getMessage(), e);
-        return new ExceptionResultVo(BAD_REQUEST_TYPE_EX_MESSAGE);
+//        return new ExceptionResultVo(BAD_REQUEST_TYPE_EX_MESSAGE);
+        return new ExceptionResultVo(e.getMessage());
     }
 
     @ExceptionHandler

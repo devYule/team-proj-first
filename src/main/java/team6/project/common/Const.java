@@ -13,6 +13,7 @@ public interface Const {
     String BAD_TIME_INFO_EX_MESSAGE = "잘못된 시간 정보 입력";
     String NO_SUCH_DATA_EX_MESSAGE = "해당하는 데이터 없음";
     String TODO_IS_FULL_EX_MESSAGE = "Todo 는 10개 이상 등록할 수 없음";
+
     String TODO_SAVE_FAIL_EX_MESSAGE = "투두 저장 실패";
     String REPEAT_SAVE_FAIL_EX_MESSAGE = "반복정보 저장 실패";
     String NOT_ENOUGH_INFO_EX_MESSAGE = "제공된 데이터가 충분하지 않음";
@@ -29,6 +30,7 @@ public interface Const {
     message = "나이는 0이상 150이하": messageCode = 1006
     message = 제공된 데이터가 충분하지 않음: messageCode = 1007
     message = 잘못된 시간 정보 입력: messageCode = 1008 // 추가됨
+    message = 이미 생성된 닉네임: messageCode = 1009 // 추가됨
     message = 해당하는 데이터 없음: messageCode = 2001
     message = Todo 는 10개 이상 등록할 수 없음: messageCode = 3001
     message = 잘못된 요청 타입: messageCode = 4001
@@ -49,4 +51,5 @@ public interface Const {
     String NICK_NAME_RANGE_EX_MESSAGE = "닉네임은 1자 이상 10자 이하";
     String GENDER_RANGE_EX_MESSAGE="성별은 0이상 3이하";
     String AGE_RANGE_EX_MESSAGE="나이는 0이상 150이하";
+    String NICK_NAME_IS_EXISTS = "이미 생성된 닉네임";
 }
