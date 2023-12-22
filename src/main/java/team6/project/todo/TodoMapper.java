@@ -11,6 +11,7 @@ import team6.project.todo.model.proc.TodoSelectTmpResult;
 import team6.project.todo.model.proc.RepeatInsertDto;
 import team6.project.todo.model.ref.TodoSelectVoRef;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Mapper
@@ -21,7 +22,7 @@ public interface TodoMapper {
     Integer insRepeat(RepeatInsertDto dto);
 
 
-    int getTodoListCount(Integer iuser);
+    int getTodoListCount(@Param("iuser") Integer iuser, @Param("startDate") LocalDate startDate);
     
     List<TodoSelectTmpResult> selectTodo(TodoSelectVoRef dto);
 

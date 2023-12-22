@@ -42,7 +42,7 @@ public class ExceptionResolver {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResultVo todoIsFullException(TodoIsFullException e) {
         log.info("message = {}", e.getMessage(), e);
         return new ExceptionResultVo(e.getMessage());

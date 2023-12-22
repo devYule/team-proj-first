@@ -2,6 +2,7 @@ package team6.project.todo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import team6.project.todo.model.PatchTodoDto;
 import team6.project.todo.model.TodoDeleteDto;
@@ -12,6 +13,7 @@ import team6.project.todo.model.proc.TodoSelectTmpResult;
 import team6.project.todo.model.proc.RepeatInsertDto;
 import team6.project.todo.model.ref.TodoSelectVoRef;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -22,8 +24,8 @@ public class TodoRepository implements TodoRepositoryRef {
     private final TodoMapper mapper;
 
 
-    public Integer getListCountById(Integer iuser) {
-        return mapper.getTodoListCount(iuser);
+    public Integer getListCountById(Integer iuser, LocalDate startDate) {
+        return mapper.getTodoListCount(iuser, startDate);
     }
 
     public Integer saveTodo(InsertTodoDto dto) {
@@ -38,7 +40,7 @@ public class TodoRepository implements TodoRepositoryRef {
         return mapper.selectTodo(dto);
     }
 
-    public EmotionSelectTmpResult findEmotionAndEmotionTagBy(TodoSelectTransVo dto){
+    public EmotionSelectTmpResult findEmotionAndEmotionTagBy(TodoSelectTransVo dto) {
         return mapper.selectEmotion(dto);
     }
 

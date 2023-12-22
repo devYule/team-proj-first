@@ -43,7 +43,7 @@
         SELECT COUNT(T.itodo)
         FROM t_todo T
         LEFT JOIN t_todo_repeat R ON T.itodo = R.itodo
-        WHERE T.iuser = #{iuser}
+        WHERE T.iuser = #{iuser} AND T.start_date = #{startDate}
     </select>
 
 <!--    <select id="selectTodo">-->

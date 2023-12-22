@@ -30,7 +30,9 @@ public class TodoServiceV3 implements TodoServiceRef {
 
     public ResVo regTodo(TodoRegDto dto) {
         // 투두 는 10개까지만 저장.
-        if (repository.getListCountById(dto.getIuser()) >= TODO_MAX_SIZE) {
+
+
+        if (repository.getListCountById(dto.getIuser(), dto.getStartDate()) >= TODO_MAX_SIZE) {
             throw new TodoIsFullException(TODO_IS_FULL_EX_MESSAGE);
         }
 
