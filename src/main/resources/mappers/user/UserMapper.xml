@@ -11,7 +11,7 @@
     </insert>
 
     <select id="checkUser">
-        select user_nick_name
+        select user_nick_name as userNickName, 1 as result, iuser
         from t_user
         where user_nick_name=#{userNickName}
     </select>

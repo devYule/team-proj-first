@@ -27,8 +27,13 @@ public class UserService {
 
 
 
-        if (mapper.checkUser(dto) != null) {
-            throw new MyMethodArgumentNotValidException(NICK_NAME_IS_EXISTS);
+//        if (mapper.checkUser(dto) != null) {
+//            throw new MyMethodArgumentNotValidException(NICK_NAME_IS_EXISTS);
+//        }
+        ResVoWithNickName ifIsExists = mapper.checkUser(dto);
+
+        if (ifIsExists != null && ifIsExists.getIuser() > 0 && ifIsExists.getUserNickName() != null) {
+            return ifIsExists;
         }
         //쿼리에서 받아온 유저정보를 저장해서  iuser, result, userNickName 보내줘야한다.
 
