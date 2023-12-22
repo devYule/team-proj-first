@@ -20,5 +20,7 @@ public class ResVoWithNickName {
     @Schema(title = "유저 닉네임", defaultValue = "유저닉네임")
     private String userNickName;
 
+    @Schema(title = "오늘기준 감정 등록 여부", defaultValue = "0")
+    private int hasEmotion;
 
 }

@@ -38,7 +38,7 @@ public class UserService {
         //쿼리에서 받아온 유저정보를 저장해서  iuser, result, userNickName 보내줘야한다.
 
         if(mapper.insUser(dto) == 1){
-            return new ResVoWithNickName(dto.getIuser(), 1, dto.getUserNickName());
+            return new ResVoWithNickName(dto.getIuser(), 1, dto.getUserNickName(), 0);
         }
 
         throw new RuntimeException(RUNTIME_EX_MESSAGE);

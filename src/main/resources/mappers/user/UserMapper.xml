@@ -11,9 +11,11 @@
     </insert>
 
     <select id="checkUser">
-        select user_nick_name as userNickName, 1 as result, iuser
-        from t_user
-        where user_nick_name=#{userNickName}
+        SELECT U.user_nick_name AS userNickName, 1 as result, U.iuser, COUNT(E.iemotion_grade) AS hasEmotion
+        from t_user U
+        JOIN t_emotion E
+        ON U.iuser = E.iuser AND date(E.created_at) = DATE(NOW())
+        WHERE U.user_nick_name=#{userNickName}
     </select>
 
     <select id="selUser">

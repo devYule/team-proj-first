@@ -38,7 +38,8 @@ public class UserController {
             "성공시<br>" +
             "iuser: 새로 등록된 해당 유저의 PK값 반환<br>"+
             "result: 1<br> " +
-            "userNickName: 설정한 닉네임<br><br>" +
+            "userNickName: 설정한 닉네임<br>" +
+            "hasEmotion: 오늘기준 이미 등록한 이모션이 있는지 여부 (0: 없음, 1: 있음)<br><br>" +
             "실패시<br>" +
             "errorCode 리턴")
     @ApiResponses({
