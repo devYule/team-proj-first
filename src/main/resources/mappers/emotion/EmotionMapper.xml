@@ -90,4 +90,10 @@
         FROM t_user
         WHERE iuser=#{iuser}
     </select>
+    <select id="checkDupliEmo">
+        SELECT DATE(created_at) AS emoDuplication
+        FROM t_emotion
+        WHERE iuser=#{iuser}
+        AND DATE(created_at)=#{dateToday}
+    </select>
 </mapper>

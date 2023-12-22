@@ -1,16 +1,16 @@
-spring:
-  datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://192.168.0.144:3306/db_even_first_6
-    username: even_first_6
-    password: coating
-
 #spring:
 #  datasource:
 #    driver-class-name: org.mariadb.jdbc.Driver
-#    url: jdbc:mariadb://localhost:3306/project
-#    username: root
-#    password: green502
+#    url: jdbc:mariadb://192.168.0.144:3306/db_even_first_6
+#    username: even_first_6
+#    password: coating
+
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/project
+    username: root
+    password: green502
 
 ## mysql 설정
 #spring:

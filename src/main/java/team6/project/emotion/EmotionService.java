@@ -3,6 +3,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import team6.project.common.ResVo;
+import team6.project.common.exception.BadDateInformationException;
 import team6.project.common.exception.BadInformationException;
 import team6.project.common.exception.NoSuchDataException;
 import team6.project.common.utils.CommonUtils;
@@ -29,6 +30,17 @@ public class EmotionService {
         Integer checkIuser=emotionRepository.checkIuser(dto.getIuser());
         if(checkIuser==null){
             throw new NoSuchDataException("올바른 iuser 값을 보내주세요");
+        }
+        //일단위 중복 체크.
+        LocalDate datetoday=LocalDate.now();
+        EmotionDuplicationDto duplication=new EmotionDuplicationDto();
+        duplication.setDateToday(String.valueOf(datetoday));
+        duplication.setIuser(dto.getIuser());
+
+        EmotionDuplicationVo checkDuplication=emotionRepository.checkDuplicationEmo(duplication);
+
+        if(checkDuplication!=null){
+            throw new BadDateInformationException("하루에 이모션을 중복해서 등록 불가능합니다.");
         }
         Integer emoTagInt=emotionRepository.tagConvertInteger(dto.getEmoTag());
         if(emoTagInt==null){
@@ -77,7 +89,6 @@ public class EmotionService {
                 }
             }
         }
-
         int i=0;
         for (EmotionSelVo emotionSelVo : emotionMonth){
 
@@ -89,9 +100,6 @@ public class EmotionService {
         }
         Comparator<EmotionSelVo> byDay = Comparator.comparing(EmotionSelVo::getDay);
         Collections.sort(asMonth , byDay);
-
-
-
 
         return asMonth;
     }

@@ -41,5 +41,8 @@ public class EmotionRepository {
     public List<EmotionSel> getEmoChart(EmotionSelAsChartDto dto){
         return emotionMapper.getEmoChart(dto);
     }
+    public EmotionDuplicationVo checkDuplicationEmo(EmotionDuplicationDto dto){
+        return emotionMapper.checkDupliEmo(dto);
+    }
 
 }
