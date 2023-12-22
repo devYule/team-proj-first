@@ -17,6 +17,8 @@ import team6.project.emotion.model.*;
 
 import java.util.List;
 
+import static team6.project.common.Const.BAD_INFO_EX_MESSAGE;
+
 @RequiredArgsConstructor
 @RestController
 @Slf4j
@@ -27,7 +29,7 @@ public class EmotionController {
 
     private void checkIuser(int iuser) {
         if (iuser < 1) {
-            throw new BadInformationException("올바른 iuser값 입력");
+            throw new BadInformationException(BAD_INFO_EX_MESSAGE);
         }
     }
 

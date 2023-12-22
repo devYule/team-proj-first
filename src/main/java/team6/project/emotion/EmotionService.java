@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
+import static team6.project.common.Const.BAD_INFO_EX_MESSAGE;
+import static team6.project.common.Const.RUNTIME_EX_MESSAGE;
 
 
 @Service
@@ -25,14 +27,15 @@ import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 @RequiredArgsConstructor
 public class EmotionService {
 
-    private final EmotionRepository emotionRepository;
+    private final EmotionRepositoryRef emotionRepository;
+
     private final CommonUtils utils;
 
     //(일 별)이모션 단계,이모션태그 insert//
     public ResVo postEmo(EmotionInsDto dto) {
         Integer checkIuser = emotionRepository.checkIuser(dto.getIuser());
         if (checkIuser == null) {
-            throw new NoSuchDataException("올바른 iuser 값을 보내주세요");
+            throw new NoSuchDataException(BAD_INFO_EX_MESSAGE);
         }
         //일단위 중복 체크.
         LocalDate datetoday = LocalDate.now();
@@ -43,16 +46,16 @@ public class EmotionService {
         EmotionDuplicationVo checkDuplication = emotionRepository.checkDuplicationEmo(duplication);
 
         if (checkDuplication != null) {
-            throw new BadDateInformationException("하루에 이모션을 중복해서 등록 불가능합니다.");
+            throw new BadDateInformationException(BAD_INFO_EX_MESSAGE);
         }
         Integer emoTagInt = emotionRepository.tagConvertInteger(dto.getEmoTag());
         if (emoTagInt == null) {
-            throw new BadInformationException("태그를 올바르게 작성 해 주세요");
+            throw new BadInformationException(BAD_INFO_EX_MESSAGE);
         }
         dto.setEmoTagInt(emoTagInt);
         int result = emotionRepository.postEmo(dto);
         if (result == 0) {
-            throw new RuntimeException("DB 오류");
+            throw new RuntimeException(RUNTIME_EX_MESSAGE);
         }
         return new ResVo(result);
     }
@@ -66,7 +69,7 @@ public class EmotionService {
         todo.addAll(emotionRepository.getRepeatTodoMonth(dto));
         Integer checkIuser = emotionRepository.checkIuser(dto.getIuser());
         if (checkIuser == null) {
-            throw new NoSuchDataException("올바른 iuser 값을 보내주세요");
+            throw new NoSuchDataException(BAD_INFO_EX_MESSAGE);
         }
         // 중복제거.
         List<EmotionSelVo> asMonth = todo.stream().distinct()
@@ -111,7 +114,7 @@ public class EmotionService {
     public ResVo delEmo(EmotionDelDto dto) {
         Integer checkIuser = emotionRepository.checkIuser(dto.getIuser());
         if (checkIuser == null) {
-            throw new NoSuchDataException("올바른 iuser 값을 보내주세요");
+            throw new NoSuchDataException(BAD_INFO_EX_MESSAGE);
         }
         int result = emotionRepository.delEmo(dto);
         return new ResVo(result);
@@ -122,7 +125,7 @@ public class EmotionService {
     public EmotionSelAsChartVo getEmoChart(int iuser) {
         Integer checkIuser = emotionRepository.checkIuser(iuser);
         if (checkIuser == null) {
-            throw new NoSuchDataException("올바른 iuser 값을 보내주세요");
+            throw new NoSuchDataException(BAD_INFO_EX_MESSAGE);
         }
 
         //오늘

@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 @Slf4j
 @RequiredArgsConstructor
-public class EmotionRepository {
+public class EmotionRepository implements EmotionRepositoryRef{
 
     private final EmotionMapper emotionMapper;
 
