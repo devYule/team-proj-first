@@ -75,6 +75,7 @@ public class TodoController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public TodoSelectVo getTodo(@PathVariable Integer iuser, @Validated TodoSelectDto dto) {
+        checkPathVariable(iuser);
         log.debug("getTodo's dto = {}", dto);
         dto.setIuser(iuser);
         TodoSelectTransVo transDto = new TodoSelectTransVo(dto.getIuser(), dto.getY(), dto.getM(), dto.getD());
@@ -123,6 +124,7 @@ public class TodoController {
     public ResVo deleteTodo(@PathVariable Integer iuser, @PathVariable Integer itodo,
                             @RequestParam(required = false, value = "rp") @Schema(title = "반복 여부",
                                     description = "반복일시 쿼리스트링으로 rp=1 요청, 반복 아닐경우 쿼리파라미터 자체를 기재 x", hidden = true) Integer delOnlyRepeat) {
+        checkPathVariable(iuser, itodo);
         if (delOnlyRepeat != null && delOnlyRepeat != 1) {
             throw new BadInformationException(BAD_INFO_EX_MESSAGE);
         }
@@ -131,5 +133,11 @@ public class TodoController {
 
         return service.deleteTodo(dto, delOnlyRepeat);
     }
-
+    private void checkPathVariable(Integer... pks) {
+        for (Integer pk : pks) {
+            if (pk == null || pk < 1) {
+                throw new BadInformationException(BAD_INFO_EX_MESSAGE);
+            }
+        }
+    }
 }
