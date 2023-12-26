@@ -176,7 +176,8 @@ public class CommonUtils {
                                      String repeatType, Integer repeatNum) {
         if (endDateTime.isEqual(startDateTime) || endDateTime.isAfter(startDateTime)) {
             if (repeatType.equalsIgnoreCase(WEEK)) {
-                if (startDateTime.getDayOfWeek().getValue() == repeatNum) {
+                int checkNumWhenWeek = toJavaFrom(repeatNum);
+                if (startDateTime.getDayOfWeek().getValue() == checkNumWhenWeek) {
                     return;
                 }
             }

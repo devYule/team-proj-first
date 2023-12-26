@@ -21,9 +21,9 @@ import java.util.List;
 import static team6.project.common.Const.*;
 
 @Slf4j
-//@Service
+@Service
 @RequiredArgsConstructor
-public class TodoServiceV4ForPPT implements TodoServiceRef {
+public class TodoServiceV5 implements TodoServiceRef {
 
     private final TodoRepositoryRef repository;
 

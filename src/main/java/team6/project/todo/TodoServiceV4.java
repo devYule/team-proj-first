@@ -21,7 +21,7 @@ import java.util.List;
 import static team6.project.common.Const.*;
 
 @Slf4j
-@Service
+//@Service
 @RequiredArgsConstructor
 public class TodoServiceV4 implements TodoServiceRef {
 
@@ -56,7 +56,7 @@ public class TodoServiceV4 implements TodoServiceRef {
                     LocalDateTime.of(dto.getStartDate(),
                             dto.getStartTime() == null ? LocalTime.of(0, 0, 0) : dto.getStartTime()),
                     dto.getRepeatType(),
-                    CommonUtils.toJavaFrom(dto.getRepeatNum())
+                    dto.getRepeatNum()
             );
 
             InsertTodoDto insertTodoDto = new InsertTodoDto(dto);
