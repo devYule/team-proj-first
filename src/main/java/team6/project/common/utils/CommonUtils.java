@@ -162,6 +162,9 @@ public class CommonUtils {
         }
     }
     public static void checkIsBefore(LocalDate endDate, LocalDate startDate) {
+        if (endDate == null) {
+            return;
+        }
         if (endDate.isBefore(startDate)) {
             throw new BadDateInformationException(BAD_DATE_INFO_EX_MESSAGE);
         }
