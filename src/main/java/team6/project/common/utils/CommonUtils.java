@@ -161,6 +161,11 @@ public class CommonUtils {
             throw new BadDateInformationException(BAD_DATE_INFO_EX_MESSAGE);
         }
     }
+    public static void checkIsBefore(LocalDate endDate, LocalDate startDate) {
+        if (endDate.isBefore(startDate)) {
+            throw new BadDateInformationException(BAD_DATE_INFO_EX_MESSAGE);
+        }
+    }
 
     /**
      * 반복이 있을 경우 검증 로직

@@ -46,6 +46,8 @@ public class TodoServiceV5 implements TodoServiceRef {
                     // resolve week format from JS to JAVA
                     dto.getRepeatNum()
             );
+            CommonUtils.checkIsBefore(dto.getRepeatEndDate(), dto.getStartDate());
+
 
             InsertTodoDto insertTodoDto = new InsertTodoDto(dto);
             if (repository.saveTodo(insertTodoDto) == 0) {

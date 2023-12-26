@@ -21,7 +21,7 @@ import java.util.List;
 import static team6.project.common.Const.*;
 
 @Slf4j
-//@Service
+@Service
 @RequiredArgsConstructor
 public class TodoServiceV4ForPPT implements TodoServiceRef {
 
@@ -46,6 +46,8 @@ public class TodoServiceV4ForPPT implements TodoServiceRef {
                     // resolve week format from JS to JAVA
                     dto.getRepeatNum()
             );
+            CommonUtils.checkIsBefore(dto.getRepeatEndDate(), dto.getStartDate());
+
 
             InsertTodoDto insertTodoDto = new InsertTodoDto(dto);
             if (repository.saveTodo(insertTodoDto) == 0) {
