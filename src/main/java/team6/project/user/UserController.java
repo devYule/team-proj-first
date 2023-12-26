@@ -49,7 +49,11 @@ public class UserController {
     })
     public ResVoWithNickName postUser(@RequestBody UserInsDto dto) {
 
+        if(dto.getUserNickName() ==null){
+            throw new BadInformationException(Const.NICK_NAME_RANGE_EX_MESSAGE);
+        }
         checkAllRange(dto.getUserNickName(), dto.getUserGender(), dto.getUserAge());
+
         return service.postUser(dto);
 
     }
@@ -110,7 +114,7 @@ public class UserController {
 
 
     private void checkAllRange(String name, Integer gender, Integer age) {
-        if (name == null || name.isBlank() || name.length() > 10) {
+        if ( name.isBlank() || name.length() > 10) {
             throw new BadInformationException(Const.NICK_NAME_RANGE_EX_MESSAGE);
         }
         if (!(gender >= 0 && gender <= 3)) {
