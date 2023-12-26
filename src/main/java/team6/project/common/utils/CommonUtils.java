@@ -14,6 +14,26 @@ import static team6.project.common.Const.*;
 
 @Component
 public class CommonUtils {
+//    /**
+//     * JAVA 요일 표기법 -> JS 요일 표기법
+//     *
+//     * @param target
+//     * @return JS 요일 표기법
+//     */
+//    public Integer fromJavaTo(int target) {
+//        return target + 2 >= 7 ? target + 2 - 7 : target + 2;
+//    }
+//
+//    /**
+//     * JS 요일 표기법 -> JAVA 요일 표기법
+//     *
+//     * @param target
+//     * @return JAVA 요일 표기법
+//     */
+//    public Integer toJavaFrom(int target) {
+//        return target + 5 > 7 ? target + 5 - 7 : target + 5;
+//    }
+
     /**
      * JAVA 요일 표기법 -> JS 요일 표기법
      *
@@ -21,7 +41,7 @@ public class CommonUtils {
      * @return JS 요일 표기법
      */
     public Integer fromJavaTo(int target) {
-        return target + 2 >= 7 ? target + 2 - 7 : target + 2;
+        return target - 1;
     }
 
     /**
@@ -31,7 +51,7 @@ public class CommonUtils {
      * @return JAVA 요일 표기법
      */
     public Integer toJavaFrom(int target) {
-        return target + 5 > 7 ? target + 5 - 7 : target + 5;
+        return target + 1;
     }
 
     /**
