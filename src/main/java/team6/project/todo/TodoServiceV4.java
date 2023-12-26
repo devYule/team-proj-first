@@ -314,7 +314,6 @@ public class TodoServiceV4 implements TodoServiceRef {
     }
 
     private void checkResultIfNullOrZeroThrow(Integer result, RepeatInsertDto backUpRepeat) {
-
         if (result == null || result == 0) {
             if (backUpRepeat != null) {
                 repository.saveRepeat(backUpRepeat);
@@ -345,10 +344,10 @@ public class TodoServiceV4 implements TodoServiceRef {
                 dto.getRepeatNum() == null ? selectResult.getRepeatNum() : dto.getRepeatNum()
 
         );
-        if (mergedTodoAndRepeatDto.getRepeatType() != null && mergedTodoAndRepeatDto.getRepeatType().equalsIgnoreCase(WEEK) && dto.getRepeatNum() != null) {
+        if (mergedTodoAndRepeatDto.getRepeatType() != null &&
+                mergedTodoAndRepeatDto.getRepeatType().equalsIgnoreCase(WEEK) && dto.getRepeatNum() != null) {
             mergedTodoAndRepeatDto.setRepeatNum(commonUtils.toJavaFrom(mergedTodoAndRepeatDto.getRepeatNum()));
         }
         return mergedTodoAndRepeatDto;
-
     }
 }
