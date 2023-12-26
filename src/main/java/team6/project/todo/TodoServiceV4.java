@@ -21,9 +21,9 @@ import java.util.List;
 import static team6.project.common.Const.*;
 
 @Slf4j
-//@Service
+@Service
 @RequiredArgsConstructor
-public class TodoServiceV3 implements TodoServiceRef {
+public class TodoServiceV4 implements TodoServiceRef {
 
     private final TodoRepositoryRef repository;
     private final CommonUtils commonUtils;
@@ -127,43 +127,23 @@ public class TodoServiceV3 implements TodoServiceRef {
                 // 주반복
                 // repeat 정보가 없는경우 NPE 유발.
                 if (todo.getRepeatType().equalsIgnoreCase(WEEK)) {
-                    // 1: 월 ~ 7: 일 ('JAVA format') 로 DB 에 저장되어 있는것 사용.
-                    // 현재 update 는 front 로 요일정보를 넘기지 않기 때문에 WeekFormatResolver 사용 하지 않음.
-                    LocalDate weekWalker = LocalDate.of(dto.getSelectedDate().getYear(), dto.getSelectedDate().getMonth(), FIRST_DAY);
-                    while (weekWalker.getDayOfWeek().getValue() != todo.getRepeatNum()) {
-                        // 해당 달의 첫번째 요일 (repeatNum 으로 db에 저장된것 기준)
-                        weekWalker = weekWalker.plusDays(PLUS_ONE_MONTH_OR_WEEK_OR_DAY);
-                    }
-                    // 첫번째 요일 (자바기준 week) 획득 - weekWalker
-
-                    while (true) {
-                        // 요일 체크 날짜가 해당 월의 마지막날과 같거나, 마지막날 보다 크면 다음 객체(forEach)로 넘어감.
-//                        if (weekWalker.isEqual(dto.getSelectedDate().withDayOfMonth(dto.getSelectedDate().lengthOfMonth()))
-//                                || weekWalker.isAfter(dto.getSelectedDate())) {
-//                            return;
-//                        }
-                        // 요일 체크 날짜가 요청 온 날짜와 같다면 result 에 추가, break;
-                        if (weekWalker.isEqual(dto.getSelectedDate())) {
-                            result.add(new TodoInfo(todo.getItodo(), todo.getTodoContent(),
-                                    todo.getStartDate(), todo.getEndDate(), todo.getStartTime(), todo.getEndTime(),
-                                    todo.getRepeatEndDate(), todo.getRepeatType(), todo.getRepeatNum()));
-                            return;
-                        }
-                        // 1주씩 추가
-                        weekWalker = weekWalker.plusWeeks(PLUS_ONE_MONTH_OR_WEEK_OR_DAY);
-
-                        // 요일 체크 날짜가 선택된 날짜 보다 크면 다음 객체(forEach)로 넘어감.
-                        if (weekWalker.isAfter(dto.getSelectedDate())) {
-                            return;
-                        }
+                    if (todo.getRepeatNum() == dto.getSelectedDate().getDayOfWeek().getValue()) {
+                        result.add(new TodoInfo(todo.getItodo(), todo.getTodoContent(),
+                                todo.getStartDate(), todo.getEndDate(), todo.getStartTime(), todo.getEndTime(),
+                                todo.getRepeatEndDate(), todo.getRepeatType(), todo.getRepeatNum()));
+                        return;
                     }
                 }
+                // 첫번째 요일 (자바기준 week) 획득 - weekWalker
+
                 if (todo.getRepeatType().equalsIgnoreCase(MONTH)) {
-                    if (todo.getRepeatNum() == dto.getSelectedDate().getDayOfMonth() &&
-                    todo.getRepeatNum() <= dto.getSelectedDate().lengthOfMonth()) {
+                    if (todo.getRepeatNum() <= dto.getSelectedDate().lengthOfMonth()) {
+                        return;
+                    }
+                    if (todo.getRepeatNum() == dto.getSelectedDate().getDayOfMonth()) {
                         result.add(new TodoInfo(todo.getItodo(), todo.getTodoContent(),
                                 todo.getStartDate(), todo.getEndDate(), todo.getStartTime(), todo.getEndTime()
-                        , todo.getRepeatEndDate(), todo.getRepeatType(), todo.getRepeatNum() //반복시 주석 제거
+                                , todo.getRepeatEndDate(), todo.getRepeatType(), todo.getRepeatNum() //반복시 주석 제거
                         ));
                     }
                 }
