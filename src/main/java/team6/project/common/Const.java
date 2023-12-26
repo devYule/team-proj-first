@@ -14,8 +14,8 @@ public interface Const {
     String BAD_REQUEST_TYPE_EX_MESSAGE = "잘못된 요청 타입";
     String RUNTIME_EX_MESSAGE = "알 수 없는 오류로 실패";
     String NICK_NAME_RANGE_EX_MESSAGE = "닉네임은 1자 이상 10자 이하";
-    String GENDER_RANGE_EX_MESSAGE="성별은 0이상 3이하";
-    String AGE_RANGE_EX_MESSAGE="나이는 0이상 150이하";
+    String GENDER_RANGE_EX_MESSAGE = "성별은 0이상 3이하";
+    String AGE_RANGE_EX_MESSAGE = "나이는 0이상 150이하";
 
 
     /*
@@ -41,7 +41,6 @@ public interface Const {
 
     Integer PLUS_ONE_MONTH_OR_WEEK_OR_DAY = 1;
     Integer TODO_MAX_SIZE = 10;
-
 
 
 }
