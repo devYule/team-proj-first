@@ -42,7 +42,7 @@ public class TodoServiceV4 implements TodoServiceRef {
             // repeatType == week && repeatNum >= 1 && repeatNum <= 7 과,
             // repeatType == month && repeatNum >= 1 && repeatNum <= 31 여부 체크
             // NPE 유발
-            CommonUtils.checkRepeatNumWithRepeatType(dto.getRepeatType(), CommonUtils.toJavaFrom(dto.getRepeatNum()));
+            CommonUtils.checkRepeatNumWithRepeatType(dto.getRepeatType(), dto.getRepeatNum());
             // 반복 있을때 로직
             log.debug("todo service in try");
             CommonUtils.checkRepeatInfo(dto.getRepeatEndDate(), dto.getRepeatType(), dto.getRepeatNum());

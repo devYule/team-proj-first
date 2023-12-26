@@ -137,7 +137,8 @@ public class CommonUtils {
      */
     public static void checkRepeatNumWithRepeatType(String repeatType, Integer repeatNum) {
         if (repeatType.equalsIgnoreCase(WEEK)) {
-            if (repeatNum < 1 || repeatNum > 7) {
+            int checkNumWhenWeek = toJavaFrom(repeatNum);
+            if (checkNumWhenWeek < 1 || checkNumWhenWeek > 7) {
                 throw new BadInformationException(BAD_INFO_EX_MESSAGE);
             }
         } else if (repeatType.equalsIgnoreCase(MONTH)) {
@@ -172,7 +173,7 @@ public class CommonUtils {
      * @param repeatNum     - 반복 숫자
      */
     public static void checkIsBefore(LocalDateTime endDateTime, LocalDateTime startDateTime,
-                              String repeatType, Integer repeatNum) {
+                                     String repeatType, Integer repeatNum) {
         if (endDateTime.isEqual(startDateTime) || endDateTime.isAfter(startDateTime)) {
             if (repeatType.equalsIgnoreCase(WEEK)) {
                 if (startDateTime.getDayOfWeek().getValue() == repeatNum) {

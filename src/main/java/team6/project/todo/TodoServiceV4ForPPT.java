@@ -36,7 +36,7 @@ public class TodoServiceV4ForPPT implements TodoServiceRef {
         try {
 
             CommonUtils.checkRepeatInfo(dto.getRepeatEndDate(), dto.getRepeatType(), dto.getRepeatNum());
-            CommonUtils.checkRepeatNumWithRepeatType(dto.getRepeatType(), CommonUtils.toJavaFrom(dto.getRepeatNum()));
+            CommonUtils.checkRepeatNumWithRepeatType(dto.getRepeatType(), dto.getRepeatNum());
             CommonUtils.checkIsBefore(
                     LocalDateTime.of(dto.getEndDate(),
                             dto.getEndTime() == null ? LocalTime.of(23, 59, 59) : dto.getEndTime()),
