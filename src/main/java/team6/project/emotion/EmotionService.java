@@ -29,7 +29,6 @@ public class EmotionService {
 
     private final EmotionRepositoryRef emotionRepository;
 
-    private final CommonUtils utils;
 
     //(일 별)이모션 단계,이모션태그 insert//
     public ResVo postEmo(EmotionInsDto dto) {
@@ -168,7 +167,7 @@ public class EmotionService {
 
         selAsChartVo.setEmoChart(emotionSelList);
         for (EmotionSel emo : emotionSelList) {
-            emo.setDayOfTheWeek(utils.fromJavaTo(emo.getDayOfTheWeek()));
+            emo.setDayOfTheWeek(CommonUtils.fromJavaTo(emo.getDayOfTheWeek()));
             switch (emo.getEmotionGrade()) {
                 case 1, 2:
                     selAsChartVo.setGood(selAsChartVo.getGood() + 1);

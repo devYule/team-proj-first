@@ -26,7 +26,6 @@ import static team6.project.common.Const.*;
 public class TodoServiceV3 implements TodoServiceRef {
 
     private final TodoRepositoryRef repository;
-    private final CommonUtils commonUtils;
 
     public ResVo regTodo(TodoRegDto dto) {
         // 투두 는 10개까지만 저장.
@@ -43,21 +42,21 @@ public class TodoServiceV3 implements TodoServiceRef {
             // repeatType == week && repeatNum >= 1 && repeatNum <= 7 과,
             // repeatType == month && repeatNum >= 1 && repeatNum <= 31 여부 체크
             // NPE 유발
-            commonUtils.checkRepeatNumWithRepeatType(dto.getRepeatType(), commonUtils.toJavaFrom(dto.getRepeatNum()));
+            CommonUtils.checkRepeatNumWithRepeatType(dto.getRepeatType(), CommonUtils.toJavaFrom(dto.getRepeatNum()));
             // 반복 있을때 로직
             log.debug("todo service in try");
-            commonUtils.checkRepeatInfo(dto.getRepeatEndDate(), dto.getRepeatType(), dto.getRepeatNum());
+            CommonUtils.checkRepeatInfo(dto.getRepeatEndDate(), dto.getRepeatType(), dto.getRepeatNum());
 
             // 검증 (주반복일때는 주정보일치, 월반복일때는 일정보 일치 여부 , endDate + endTime 이 startDate + startTime 보다 같거나 이후인지 여부 체크)
             // 주 반복일경우 startDateTime 이 주 반복 숫자와 동일한 숫자인지 체크,
             // 월 반복일경우 startDateTime 이 월 반복 숫자(일) 와 동일한 숫자인지 체크.
-            commonUtils.checkIsBefore(
+            CommonUtils.checkIsBefore(
                     LocalDateTime.of(dto.getEndDate(),
                             dto.getEndTime() == null ? LocalTime.of(23, 59, 59) : dto.getEndTime()),
                     LocalDateTime.of(dto.getStartDate(),
                             dto.getStartTime() == null ? LocalTime.of(0, 0, 0) : dto.getStartTime()),
                     dto.getRepeatType(),
-                    commonUtils.toJavaFrom(dto.getRepeatNum())
+                    CommonUtils.toJavaFrom(dto.getRepeatNum())
             );
 
             InsertTodoDto insertTodoDto = new InsertTodoDto(dto);
@@ -69,7 +68,7 @@ public class TodoServiceV3 implements TodoServiceRef {
                     dto, insertTodoDto.getItodo(),
                     dto.getRepeatType().equalsIgnoreCase(WEEK) ?
                             // resolve week format from JS to JAVA
-                            commonUtils.toJavaFrom(dto.getRepeatNum()) :
+                            CommonUtils.toJavaFrom(dto.getRepeatNum()) :
                             dto.getRepeatNum()
             );
             if (repository.saveRepeat(insRepeatInfoDto) == 0) {
@@ -83,7 +82,7 @@ public class TodoServiceV3 implements TodoServiceRef {
             log.debug("todo service in catch");
             // startDate & endDate 그리고 startTime & endTime 오류 검증 -> startDate & endDate 는 무조건 null 이 아님이 Controller 에서 검증됨.
             // (@Validated)
-            commonUtils.checkIsBefore(
+            CommonUtils.checkIsBefore(
                     LocalDateTime.of(dto.getEndDate(),
                             dto.getEndTime() == null ? LocalTime.of(23, 59, 59) : dto.getEndTime()),
                     LocalDateTime.of(dto.getStartDate(),
@@ -185,7 +184,7 @@ public class TodoServiceV3 implements TodoServiceRef {
     public ResVo patchTodo(PatchTodoDto dto) {
 
         // 모든 일정관련 데이터가 null 이면 아래 작업들을 수행할 필요가 없음.
-        commonUtils.checkObjectAllNullThrow(NotEnoughInformationException.class, NOT_ENOUGH_INFO_EX_MESSAGE,
+        CommonUtils.checkObjectAllNullThrow(NotEnoughInformationException.class, NOT_ENOUGH_INFO_EX_MESSAGE,
                 dto.getTodoContent(), dto.getStartDate(), dto.getEndDate(), dto.getStartTime(),
                 dto.getEndTime(), dto.getRepeatEndDate(), dto.getRepeatType(), dto.getRepeatNum());
 
@@ -248,14 +247,14 @@ public class TodoServiceV3 implements TodoServiceRef {
             );
 
             // repeatEndDate 가 startDate 의 1달 혹은 1주 후 보다 before 이면 예외 유발.
-            commonUtils.checkIsBefore(
+            CommonUtils.checkIsBefore(
                     LocalDateTime.of(repeatEndDate, LocalTime.of(23, 59, 59)),
                     LocalDateTime.of(startDateWalker, mergedTodoAndRepeat.getStartTime())
             );
             // 검증 (주반복일때는 주정보일치, 월반복일때는 일정보 일치 여부 , endDate + endTime 이 startDate + startTime 보다 같거나 이후인지 여부 체크)
             // 주 반복일경우 startDateTime 이 주 반복 숫자와 동일한 숫자인지 체크,
             // 월 반복일경우 startDateTime 이 월 반복 숫자(일) 와 동일한 숫자인지 체크.
-            commonUtils.checkIsBefore(
+            CommonUtils.checkIsBefore(
                     LocalDateTime.of(mergedTodoAndRepeat.getEndDate(),
                             mergedTodoAndRepeat.getEndTime() == null ? LocalTime.of(23, 59, 59) : mergedTodoAndRepeat.getEndTime()),
                     LocalDateTime.of(mergedTodoAndRepeat.getStartDate(),
@@ -266,7 +265,7 @@ public class TodoServiceV3 implements TodoServiceRef {
 
             // 로직 - repeat 데이터가 dto 에만 있는 경우 - repeat 데이터를 insert
             if (!hasRepeatInfoInDB) {
-                repository.saveRepeat(new RepeatInsertDto(dto, commonUtils.toJavaFrom(mergedTodoAndRepeat.getRepeatNum())));
+                repository.saveRepeat(new RepeatInsertDto(dto, CommonUtils.toJavaFrom(mergedTodoAndRepeat.getRepeatNum())));
                 // 새로 insert 했으니까 update 될 필요 없기 때문에 null 로 세팅.
                 mergedTodoAndRepeat.setRepeatEndDate(null);
                 mergedTodoAndRepeat.setRepeatType(null);
@@ -277,7 +276,7 @@ public class TodoServiceV3 implements TodoServiceRef {
         } catch (NullPointerException e) {
             // startDate & endDate 오류 검증
             // startTime & endTime 오류 검증
-            commonUtils.checkIsBefore(
+            CommonUtils.checkIsBefore(
                     LocalDateTime.of(mergedTodoAndRepeat.getEndDate(), mergedTodoAndRepeat.getEndTime()),
                     LocalDateTime.of(mergedTodoAndRepeat.getStartDate(), mergedTodoAndRepeat.getStartTime())
             );
@@ -286,7 +285,7 @@ public class TodoServiceV3 implements TodoServiceRef {
 
             // dto 와 db 모두 repeat 정보가 없는 경우.
             // NPE 가 터져서 catch 로 온 상황에 repeat 정보중 하나라도 null 이 아니라면 충분한 정보가 제공되지 않은것. (dto 에서)
-            commonUtils.checkObjectAnyNotNullThrow(
+            CommonUtils.checkObjectAnyNotNullThrow(
                     BadInformationException.class,
                     NOT_ENOUGH_INFO_EX_MESSAGE,
                     mergedTodoAndRepeat.getRepeatEndDate(),
@@ -344,12 +343,12 @@ public class TodoServiceV3 implements TodoServiceRef {
     }
 
     private void checkRepeatInfo(LocalDate repeatEndDate, String repeatType, Integer repeatNum) {
-        commonUtils.checkObjectAnyNullThrow(NotEnoughInformationException.class,
+        CommonUtils.checkObjectAnyNullThrow(NotEnoughInformationException.class,
                 NOT_ENOUGH_INFO_EX_MESSAGE,
                 repeatEndDate, repeatType, repeatNum);
 
         // checkObjectAnyNullThrow 로 인해 3가지 객체가 모두 null 이 아님이 검증됨.
-        commonUtils.checkRepeatNumWithRepeatType(repeatType, repeatNum);
+        CommonUtils.checkRepeatNumWithRepeatType(repeatType, repeatNum);
     }
 
 
@@ -366,7 +365,7 @@ public class TodoServiceV3 implements TodoServiceRef {
 
         );
         if (mergedTodoAndRepeatDto.getRepeatType() != null && mergedTodoAndRepeatDto.getRepeatType().equalsIgnoreCase(WEEK) && dto.getRepeatNum() != null) {
-            mergedTodoAndRepeatDto.setRepeatNum(commonUtils.toJavaFrom(mergedTodoAndRepeatDto.getRepeatNum()));
+            mergedTodoAndRepeatDto.setRepeatNum(CommonUtils.toJavaFrom(mergedTodoAndRepeatDto.getRepeatNum()));
         }
         return mergedTodoAndRepeatDto;
 
