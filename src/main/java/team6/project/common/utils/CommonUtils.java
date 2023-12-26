@@ -141,8 +141,7 @@ public class CommonUtils {
             if (checkNumWhenWeek < 1 || checkNumWhenWeek > 7) {
                 throw new BadInformationException(BAD_INFO_EX_MESSAGE);
             }
-        }
-        if (repeatType.equalsIgnoreCase(MONTH)) {
+        } else if (repeatType.equalsIgnoreCase(MONTH)) {
             if (repeatNum < 1 || repeatNum > 31) {
                 throw new BadInformationException(BAD_INFO_EX_MESSAGE);
             }
@@ -162,7 +161,6 @@ public class CommonUtils {
             throw new BadDateInformationException(BAD_DATE_INFO_EX_MESSAGE);
         }
     }
-
     public static void checkIsBefore(LocalDate endDate, LocalDate startDate) {
         if (endDate == null) {
             return;
