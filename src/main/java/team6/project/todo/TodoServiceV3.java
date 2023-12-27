@@ -2,7 +2,6 @@ package team6.project.todo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import team6.project.common.ResVo;
 import team6.project.common.exception.BadInformationException;
 import team6.project.common.exception.NoSuchDataException;
@@ -45,7 +44,7 @@ public class TodoServiceV3 implements TodoServiceRef {
             CommonUtils.checkRepeatNumWithRepeatType(dto.getRepeatType(), CommonUtils.toJavaFrom(dto.getRepeatNum()));
             // 반복 있을때 로직
             log.debug("todo service in try");
-            CommonUtils.checkRepeatInfo(dto.getRepeatEndDate(), dto.getRepeatType(), dto.getRepeatNum());
+            CommonUtils.checkDateInfo(dto.getRepeatEndDate(), dto.getRepeatType(), dto.getRepeatNum());
 
             // 검증 (주반복일때는 주정보일치, 월반복일때는 일정보 일치 여부 , endDate + endTime 이 startDate + startTime 보다 같거나 이후인지 여부 체크)
             // 주 반복일경우 startDateTime 이 주 반복 숫자와 동일한 숫자인지 체크,

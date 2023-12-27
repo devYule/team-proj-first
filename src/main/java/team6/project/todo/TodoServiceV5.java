@@ -2,7 +2,6 @@ package team6.project.todo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import team6.project.common.ResVo;
 import team6.project.common.exception.BadInformationException;
 import team6.project.common.exception.NoSuchDataException;
@@ -21,7 +20,7 @@ import java.util.List;
 import static team6.project.common.Const.*;
 
 @Slf4j
-@Service
+//@Service
 @RequiredArgsConstructor
 public class TodoServiceV5 implements TodoServiceRef {
 
@@ -33,20 +32,17 @@ public class TodoServiceV5 implements TodoServiceRef {
             throw new TodoIsFullException(TODO_IS_FULL_EX_MESSAGE);
         }
 
-        try {
 
-            CommonUtils.checkRepeatInfo(dto.getRepeatEndDate(), dto.getRepeatType(), dto.getRepeatNum());
-            CommonUtils.checkRepeatNumWithRepeatType(dto.getRepeatType(), dto.getRepeatNum());
-            CommonUtils.checkIsBefore(
-                    LocalDateTime.of(dto.getEndDate(),
-                            dto.getEndTime() == null ? LocalTime.of(23, 59, 59) : dto.getEndTime()),
-                    LocalDateTime.of(dto.getStartDate(),
-                            dto.getStartTime() == null ? LocalTime.of(0, 0, 0) : dto.getStartTime()),
-                    dto.getRepeatType(),
-                    // resolve week format from JS to JAVA
-                    dto.getRepeatNum()
-            );
-            CommonUtils.checkIsBefore(dto.getRepeatEndDate(), dto.getStartDate());
+        CommonUtils.checkDateInfo(
+                LocalDateTime.of(dto.getEndDate(),
+                        dto.getEndTime() == null ? LocalTime.of(23, 59, 59) : dto.getEndTime()),
+                LocalDateTime.of(dto.getStartDate(),
+                        dto.getStartTime() == null ? LocalTime.of(0, 0, 0) : dto.getStartTime())
+        );
+        try {
+            // NPE & checkRepeatInfos
+            checkRepeatInfo(dto.getEndDate(), dto.getStartDate(), dto.getRepeatEndDate(), dto.getRepeatType(),
+                    dto.getRepeatType().equalsIgnoreCase(WEEK) ? CommonUtils.toJavaFrom(dto.getRepeatNum()) : dto.getRepeatNum());
 
 
             InsertTodoDto insertTodoDto = new InsertTodoDto(dto);
@@ -65,12 +61,7 @@ public class TodoServiceV5 implements TodoServiceRef {
             }
             return new ResVo(insRepeatInfoDto.getItodo());
         } catch (NullPointerException e) {
-            CommonUtils.checkIsBefore(
-                    LocalDateTime.of(dto.getEndDate(),
-                            dto.getEndTime() == null ? LocalTime.of(23, 59, 59) : dto.getEndTime()),
-                    LocalDateTime.of(dto.getStartDate(),
-                            dto.getStartTime() == null ? LocalTime.of(0, 0, 0) : dto.getStartTime())
-            );
+
 
             InsertTodoDto insertTodoDto = new InsertTodoDto(dto);
             if (repository.saveTodo(insertTodoDto) == 0) {
@@ -79,6 +70,7 @@ public class TodoServiceV5 implements TodoServiceRef {
             return new ResVo(insertTodoDto.getItodo());
         }
     }
+
 
     public TodoSelectVo getTodo(TodoSelectTransVo dto) {
         List<TodoSelectTmpResult> allTodos = repository.findTodoAndRepeatBy(dto);
@@ -174,6 +166,9 @@ public class TodoServiceV5 implements TodoServiceRef {
                 mergedTodoAndRepeat.setRepeatEndDate(null);
                 mergedTodoAndRepeat.setRepeatType(null);
                 mergedTodoAndRepeat.setRepeatNum(null);
+                if (dto.getRepeatType().equalsIgnoreCase(WEEK)) {
+                    dto.setRepeatNum(CommonUtils.toJavaFrom(dto.getRepeatNum()));
+                }
             }
 
         } catch (NullPointerException e) {
@@ -189,6 +184,7 @@ public class TodoServiceV5 implements TodoServiceRef {
                     mergedTodoAndRepeat.getRepeatType(),
                     mergedTodoAndRepeat.getRepeatNum()
             );
+
         }
 
         return new ResVo(repository.updateTodoAndRepeatIfExists(dto));
@@ -254,5 +250,15 @@ public class TodoServiceV5 implements TodoServiceRef {
             mergedTodoAndRepeatDto.setRepeatNum(CommonUtils.toJavaFrom(mergedTodoAndRepeatDto.getRepeatNum()));
         }
         return mergedTodoAndRepeatDto;
+    }
+
+    private void checkRepeatInfo(LocalDate endDate, LocalDate startDate, LocalDate repeatEndDate,
+                                        String repeatType, Integer repeatNum) {
+
+        CommonUtils.checkRepeatNumWithRepeatType(repeatType, repeatNum);
+        CommonUtils.checkStartDateWithRepeatInfo(startDate, repeatType, repeatNum);
+        CommonUtils.checkDateWhenRepeat(endDate, startDate);
+        CommonUtils.checkRepeatEndDate(repeatEndDate, startDate, repeatType);
+
     }
 }

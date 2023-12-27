@@ -123,7 +123,7 @@ public class TodoController {
     })
     public ResVo deleteTodo(@PathVariable Integer iuser, @PathVariable Integer itodo,
                             @RequestParam(required = false, value = "rp") @Schema(title = "반복 여부",
-                                    description = "반복일시 쿼리스트링으로 rp=1 요청, 반복 아닐경우 쿼리파라미터 자체를 기재 x", hidden = true) Integer delOnlyRepeat) {
+                                    description = "반복일시 쿼리스트링으로 rp=1 요청, 반복 아닐경우 쿼리파라미터 자체를 기재 x", hidden = false) Integer delOnlyRepeat) {
         checkPathVariable(iuser, itodo);
         if (delOnlyRepeat != null && delOnlyRepeat != 1) {
             throw new BadInformationException(BAD_INFO_EX_MESSAGE);

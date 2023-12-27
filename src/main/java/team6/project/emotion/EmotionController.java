@@ -85,7 +85,7 @@ public class EmotionController {
             @ApiResponse(responseCode = "400", description = "요청 오류"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @Operation(summary = "이모션 삭제", description = "유저PK,이모션PK를 받아와 해당하는 날에 등록된 이모션 삭제", hidden = true)
+    @Operation(summary = "이모션 삭제", description = "유저PK,이모션PK를 받아와 해당하는 날에 등록된 이모션 삭제", hidden = false)
     public ResVo deleteEmo(@PathVariable int iuser,
                            @PathVariable @NotNull @Range(min = 1, max = 5) Integer iemo) {
         EmotionDelDto dto = new EmotionDelDto(iuser, iemo);

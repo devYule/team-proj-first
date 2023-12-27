@@ -1,6 +1,5 @@
 package team6.project.common.utils;
 
-import org.springframework.stereotype.Component;
 import team6.project.common.exception.BadDateInformationException;
 import team6.project.common.exception.BadInformationException;
 import team6.project.common.exception.NotEnoughInformationException;
@@ -112,6 +111,19 @@ public class CommonUtils {
     }
 
     /**
+     * endDateTime 에 제공된 날짜가 startDateTime 에 제공된 날짜보다 이전이면 예외 throw
+     *
+     * @param endDateTime   - 이후
+     * @param startDateTime - 이전
+     */
+    public static void checkDateInfo(LocalDateTime endDateTime, LocalDateTime startDateTime) {
+        if (endDateTime.isBefore(startDateTime)) {
+            throw new BadDateInformationException(BAD_DATE_INFO_EX_MESSAGE);
+        }
+    }
+
+
+    /**
      * repeatEndDate 가 null 이 아닌경우, repeatType 와 repeatNum 모두 null 이 아니여야 한다.
      * 위반시 NotEnoughInformationException 을 throw
      *
@@ -119,7 +131,7 @@ public class CommonUtils {
      * @param repeatType    - null 일 수 없다.
      * @param repeatNum     - null 일 수 없다.
      */
-    public static void checkRepeatInfo(LocalDate repeatEndDate, String repeatType, Integer repeatNum) {
+    public static void checkDateInfo(LocalDate repeatEndDate, String repeatType, Integer repeatNum) {
         if (repeatEndDate != null) {
             if (repeatType == null || repeatNum == null) {
                 throw new NotEnoughInformationException(NOT_ENOUGH_INFO_EX_MESSAGE);
@@ -196,5 +208,38 @@ public class CommonUtils {
             }
         }
         throw new BadInformationException(BAD_INFO_EX_MESSAGE);
+    }
+
+    public static void checkStartDateWithRepeatInfo(LocalDate startDate, String repeatType, Integer repeatNum) {
+        if (repeatType.equalsIgnoreCase(WEEK)) {
+            if (startDate.getDayOfWeek().getValue() == repeatNum) {
+                return;
+            }
+        }
+        if (repeatType.equalsIgnoreCase(MONTH)) {
+            if (startDate.getDayOfMonth() == repeatNum) {
+                return;
+            }
+        }
+        throw new BadInformationException(BAD_INFO_EX_MESSAGE);
+    }
+    public static void checkDateWhenRepeat(LocalDate endDate, LocalDate startDate) {
+        if (!endDate.equals(startDate)) {
+            throw new BadDateInformationException(BAD_DATE_INFO_EX_MESSAGE);
+        }
+
+    }
+
+    public static void checkTimeWhenRepeat(LocalTime endTime, LocalTime startTime) {
+        if (endTime.isBefore(startTime)) {
+            throw new BadDateInformationException(BAD_DATE_INFO_EX_MESSAGE);
+        }
+    }
+    public static void checkRepeatEndDate(LocalDate repeatEndDate, LocalDate startDate, String repeatType) {
+        LocalDate checkWalker = LocalDate.of(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth());
+        checkWalker = repeatType.equalsIgnoreCase(WEEK) ? checkWalker.plusWeeks(1) : checkWalker.plusMonths(1);
+        if (repeatEndDate.isBefore(checkWalker)) {
+            throw new BadDateInformationException(BAD_DATE_INFO_EX_MESSAGE);
+        }
     }
 }

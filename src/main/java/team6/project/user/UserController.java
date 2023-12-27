@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @GetMapping("/{iuser}")
-    @Operation(summary = "유저 조회", description = "유저 정보 조회", hidden = true)
+    @Operation(summary = "유저 조회", description = "유저 정보 조회", hidden = false)
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "요청 오류"),
@@ -70,7 +70,7 @@ public class UserController {
     }
 
     @PatchMapping
-    @Operation(summary = "유저 정보 수정", description = "유저 정보 수정", hidden = true)
+    @Operation(summary = "유저 정보 수정", description = "유저 정보 수정", hidden = false)
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "요청 오류"),
@@ -92,7 +92,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{iuser}")
-    @Operation(summary = "유저 삭제", description = "유저 정보 삭제", hidden = true)
+    @Operation(summary = "유저 삭제", description = "유저 정보 삭제", hidden = false)
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "요청 오류"),

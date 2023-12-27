@@ -38,22 +38,22 @@ public class TodoRegDto {
     @NotNull(message = BAD_DATE_INFO_EX_MESSAGE)
     private LocalDate endDate;
 
-    @Schema(title = "일정 시작 시간", type = "String", defaultValue = "00:00:00",  format = "HH:mm:ss", hidden = true)
+    @Schema(title = "일정 시작 시간", type = "String", defaultValue = "00:00:00",  format = "HH:mm:ss", hidden = false)
 //    @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime startTime;
 
-    @Schema(title = "일정 종료 시간", type = "String", defaultValue = "23:59:59",  format = "HH:mm:ss", hidden = true)
+    @Schema(title = "일정 종료 시간", type = "String", defaultValue = "23:59:59",  format = "HH:mm:ss", hidden = false)
 //    @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime endTime;
 
-    @Schema(title = "반복 종료 시간", type = "String", hidden = true)
+    @Schema(title = "반복 종료 시간", type = "String", hidden = false)
     private LocalDate repeatEndDate;
 
-    @Schema(title = "반복 종류 식별", type = "String", description = "주반복: week, 월반복: month", defaultValue = "week", hidden = true)
+    @Schema(title = "반복 종류 식별", type = "String", description = "주반복: week, 월반복: month", defaultValue = "week", hidden = false)
     private String repeatType;
 
     @Range(min = 0, max = 31, message = BAD_DATE_INFO_EX_MESSAGE)
-    @Schema(title = "반복일 식별 숫자", type = "Integer", description = "주반복일 경우: 0~6 (0금 ~ 6목), 월반복일 경우: 1~31", defaultValue = "1", hidden = true)
+    @Schema(title = "반복일 식별 숫자", type = "Integer", description = "주반복일 경우: 0~6 (0금 ~ 6목), 월반복일 경우: 1~31", defaultValue = "1", hidden = false)
     private Integer repeatNum;
 
 }
