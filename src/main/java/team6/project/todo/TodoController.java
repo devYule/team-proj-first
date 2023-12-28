@@ -26,7 +26,7 @@ import static team6.project.common.Const.BAD_INFO_EX_MESSAGE;
 public class TodoController {
 
     private final TodoServiceRef service;
-//
+
     @PostMapping
     @Operation(summary = "투두 등록", description = "<strong>투두 정보 등록</strong><br>startDate, endDate 는 동일해야함<br><br>" +
             "iuser: 유저 PK 값 (필수값)<br>" +
