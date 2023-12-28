@@ -27,14 +27,14 @@ springdoc:
   swagger-ui:
     path: /swagger.html
 
-logging:
-  level:
-    "[team6.project.todo.TodoController]": DEBUG
-    "[team6.project.todo.TodoServiceV3]": DEBUG
-    "[team6.project.todo.TodoRepository]": DEBUG
-    "[team6.project.todo.TodoMapper]": DEBUG
-    "[team6.project.emotion.EmotionController]": DEBUG
-    "[team6.project.emotion.EmotionMapper]": DEBUG
+#logging:
+#  level:
+#    "[team6.project.todo.TodoController]": DEBUG
+#    "[team6.project.todo.TodoServiceV3]": DEBUG
+#    "[team6.project.todo.TodoRepository]": DEBUG
+#    "[team6.project.todo.TodoMapper]": DEBUG
+#    "[team6.project.emotion.EmotionController]": DEBUG
+#    "[team6.project.emotion.EmotionMapper]": DEBUG
 
 
 server:
